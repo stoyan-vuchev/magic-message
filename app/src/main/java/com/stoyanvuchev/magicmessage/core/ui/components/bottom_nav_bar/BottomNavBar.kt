@@ -65,8 +65,7 @@ fun BottomNavBar(
         )
 
         Row(
-            modifier =
-                Modifier
+            modifier = Modifier
                     .fillMaxWidth()
                     .windowInsetsPadding(windowInsets)
                     .defaultMinSize(minHeight = NavigationBarHeight)
