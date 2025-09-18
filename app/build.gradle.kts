@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.stoyanVuchev.squircleShape)
     implementation(libs.chrisBanes.haze)
     implementation(libs.coil.compose)
+    implementation(libs.accompanist.permissions)
 
     // Local Storage
     implementation(libs.room.runtime)

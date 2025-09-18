@@ -27,23 +27,32 @@ package com.stoyanvuchev.magicmessage.presentation.boarding.get_started
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
+import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class GetStartedScreenViewModel @Inject constructor() : ViewModel() {
+class GetStartedScreenViewModel @Inject constructor(
+    private val appPreferences: AppPreferences
+) : ViewModel() {
 
     private val _state = MutableStateFlow(GetStartedScreenState())
     val state = _state.asStateFlow()
 
     private val _navigationChannel = Channel<NavigationEvent>()
     val navigationFlow = _navigationChannel.receiveAsFlow()
+
+    private val _uiActionChannel = Channel<GetStartedScreenUIAction>()
+    val uiActionFlow = _uiActionChannel.receiveAsFlow()
+
 
     fun onUIAction(action: GetStartedScreenUIAction) {
         when (action) {
@@ -56,15 +65,31 @@ class GetStartedScreenViewModel @Inject constructor() : ViewModel() {
                 _state.update { it.copy(isTermsOfServiceChecked = !it.isTermsOfServiceChecked) }
             }
 
+            is GetStartedScreenUIAction.ViewPrivacyPolicy -> sendUIAction(action)
+            is GetStartedScreenUIAction.ViewTermsOfService -> sendUIAction(action)
+
         }
     }
 
     fun onNavigationEvent(event: NavigationEvent) {
+        setBoardingComplete()
         sendNavigationAction(event)
+    }
+
+    private fun sendUIAction(action: GetStartedScreenUIAction) {
+        viewModelScope.launch { _uiActionChannel.send(action) }
     }
 
     private fun sendNavigationAction(event: NavigationEvent) {
         viewModelScope.launch { _navigationChannel.send(event) }
+    }
+
+    private fun setBoardingComplete() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                appPreferences.setIsBoardingComplete(true)
+            }
+        }
     }
 
 }

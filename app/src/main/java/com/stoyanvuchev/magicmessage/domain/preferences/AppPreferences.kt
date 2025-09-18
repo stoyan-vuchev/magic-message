@@ -22,18 +22,11 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.domain.preferences
 
-import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
-import kotlinx.serialization.Serializable
+interface AppPreferences {
 
-@Serializable
-sealed interface BoardingScreen : NavigationScreen {
-
-    @Serializable
-    data object Navigation : BoardingScreen
-
-    @Serializable
-    data object GetStarted : BoardingScreen
+    suspend fun getIsBoardingComplete(): Boolean?
+    suspend fun setIsBoardingComplete(isComplete: Boolean)
 
 }

@@ -26,6 +26,7 @@ package com.stoyanvuchev.magicmessage.presentation.boarding
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -34,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.presentation.boarding.get_started.GetStartedScreen
+import com.stoyanvuchev.magicmessage.presentation.boarding.get_started.GetStartedScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.boarding.get_started.GetStartedScreenViewModel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -47,6 +49,25 @@ fun NavGraphBuilder.boardingNavGraph(navController: NavHostController) {
 
             val viewModel = hiltViewModel<GetStartedScreenViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
+            val uriHandler = LocalUriHandler.current
+
+            LaunchedEffect(viewModel.uiActionFlow) {
+                viewModel.uiActionFlow.collectLatest { navigationEvent ->
+                    when (navigationEvent) {
+
+                        is GetStartedScreenUIAction.ViewPrivacyPolicy -> {
+                            uriHandler.openUri(navigationEvent.url)
+                        }
+
+                        is GetStartedScreenUIAction.ViewTermsOfService -> {
+                            uriHandler.openUri(navigationEvent.url)
+                        }
+
+                        else -> Unit
+
+                    }
+                }
+            }
 
             LaunchedEffect(viewModel.navigationFlow) {
                 viewModel.navigationFlow.collectLatest { navigationEvent ->
@@ -54,6 +75,7 @@ fun NavGraphBuilder.boardingNavGraph(navController: NavHostController) {
 
                         is NavigationEvent.NavigateTo -> {
                             navController.navigate(navigationEvent.screen) {
+                                popUpTo(navController.graph.id) { inclusive = false }
                                 launchSingleTop = true
                             }
                         }
@@ -71,12 +93,6 @@ fun NavGraphBuilder.boardingNavGraph(navController: NavHostController) {
             )
 
         }
-
-        composable<BoardingScreen.PrivacyPolicy> { }
-
-        composable<BoardingScreen.TermsOfService> { }
-
-        composable<BoardingScreen.PermissionNotice> { }
 
     }
 

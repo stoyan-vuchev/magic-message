@@ -22,18 +22,31 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.data.preferences
 
-import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
-import kotlinx.serialization.Serializable
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-@Serializable
-sealed interface BoardingScreen : NavigationScreen {
+class AppPreferencesImpl @Inject constructor(
+    private val dataStore: DataStore<Preferences>
+) : AppPreferences {
 
-    @Serializable
-    data object Navigation : BoardingScreen
+    companion object {
+        private val IS_BOARDING_COMPLETE_KEY = booleanPreferencesKey("is_boarding_complete")
+    }
 
-    @Serializable
-    data object GetStarted : BoardingScreen
+    override suspend fun getIsBoardingComplete(): Boolean? {
+        return dataStore.data.map { it[IS_BOARDING_COMPLETE_KEY] }.first() ?: false
+    }
+
+    override suspend fun setIsBoardingComplete(isComplete: Boolean) {
+        dataStore.edit { it[IS_BOARDING_COMPLETE_KEY] = isComplete }
+    }
 
 }
