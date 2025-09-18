@@ -44,7 +44,7 @@ object LightColorPaletteTokens : ColorPaletteTokens {
     override val error: Color get() = Color(0xFFCA1F2D)
     override val onError: Color get() = Color(0xFFFFFFFF)
 
-    override val outline: Color get() = Color(0xFFACC1CC)
+    override val outline: Color get() = Color(0xFFC3D2DA)
 
 }
 
@@ -53,19 +53,19 @@ object DarkColorPaletteTokens : ColorPaletteTokens {
     override val primary: Color get() = Color(0xFF007BD1)
     override val onPrimary: Color get() = Color(0xFFFFFFFF)
 
-    override val surfaceElevationLow: Color get() = Color(0xFF070E13)
+    override val surfaceElevationLow: Color get() = Color(0xFF0E1011)
     override val onSurfaceElevationLow: Color get() = Color(0xFFE7EDF0)
 
-    override val surfaceElevationMedium: Color get() = Color(0xFF0D181D)
+    override val surfaceElevationMedium: Color get() = Color(0xFF101313)
     override val onSurfaceElevationMedium: Color get() = Color(0xFFF3F6F7)
 
-    override val surfaceElevationHigh: Color get() = Color(0xFF132229)
+    override val surfaceElevationHigh: Color get() = Color(0xFF191B1C)
     override val onSurfaceElevationHigh: Color get() = Color(0xFFF3F6F7)
 
     override val error: Color get() = Color(0xFFCA1F2D)
     override val onError: Color get() = Color(0xFFFFFFFF)
 
-    override val outline: Color get() = Color(0xFF223640)
+    override val outline: Color get() = Color(0x0AFFFFFF)
 
 }
 
