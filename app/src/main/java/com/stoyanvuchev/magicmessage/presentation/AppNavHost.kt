@@ -25,14 +25,19 @@
 package com.stoyanvuchev.magicmessage.presentation
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +45,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.stoyanvuchev.magicmessage.R
+import com.stoyanvuchev.magicmessage.core.ui.components.bottom_bar.BottomBar
+import com.stoyanvuchev.magicmessage.core.ui.components.bottom_bar.BottomBarItem
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBar
 import com.stoyanvuchev.magicmessage.core.ui.navigation.InitialScreen
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
@@ -115,10 +122,108 @@ fun AppNavHost(
         },
         bottomBar = {
 
-            AppBottomNavBar(
-                navController = navController,
-                hazeState = hazeState
-            )
+            BottomBar(
+                modifier = Modifier
+                    .hazeEffect(
+                        state = hazeState,
+                        style = HazeStyle(
+                            tint = HazeTint(
+                                color = Theme.colors.surfaceElevationLow.copy(.5f)
+                            ),
+                            blurRadius = 16.dp,
+                            noiseFactor = -.5f,
+                            backgroundColor = Theme.colors.surfaceElevationLow
+
+                        )
+                    )
+            ) {
+
+                BottomBarItem(
+                    onClick = remember { {} },
+                    label = {
+                        Text(text = stringResource(R.string.draw_screen_brush_effect_label))
+                    },
+                    icon = {
+
+                        Icon(
+                            painter = painterResource(R.drawable.swibble_bubbles),
+                            contentDescription = null
+                        )
+
+                    }
+                )
+
+                BottomBarItem(
+                    onClick = remember { {} },
+                    label = {
+                        Text(text = stringResource(R.string.draw_screen_brush_width_label))
+                    },
+                    icon = {
+
+                        Icon(
+                            painter = painterResource(R.drawable.brush_medium),
+                            contentDescription = null
+                        )
+
+                    }
+                )
+
+                BottomBarItem(
+                    onClick = remember { {} },
+                    label = {
+                        Text(text = stringResource(R.string.draw_screen_color_label))
+                    },
+                    icon = {
+
+                        val color = Theme.colors.primary
+                        val strokeColor = Theme.colors.onSurfaceElevationLow
+
+                        Canvas(
+                            modifier = Modifier.size(16.dp)
+                        ) {
+
+                            drawCircle(
+                                color = color,
+                                radius = 4.dp.toPx(),
+                                center = center
+                            )
+
+                            drawCircle(
+                                color = strokeColor,
+                                radius = 8.dp.toPx(),
+                                style = Stroke(
+                                    width = 2.dp.toPx(),
+                                    cap = StrokeCap.Round
+                                ),
+                                center = center
+                            )
+
+                        }
+
+                    }
+                )
+
+                BottomBarItem(
+                    onClick = remember { {} },
+                    label = {
+                        Text(text = stringResource(R.string.draw_screen_bg_layer_label))
+                    },
+                    icon = {
+
+                        Icon(
+                            painter = painterResource(R.drawable.bg_layer),
+                            contentDescription = null
+                        )
+
+                    }
+                )
+
+            }
+
+//            AppBottomNavBar(
+//                navController = navController,
+//                hazeState = hazeState
+//            )
 
         }
     ) { _ ->

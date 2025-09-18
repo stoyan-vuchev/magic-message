@@ -11,4 +11,8 @@
     <string name="favorite_screen_label">Favorite</string>
     <string name="menu_screen_label">Menu</string>
     <string name="draw_screen_label">Drawing</string>
+    <string name="draw_screen_brush_effect_label">Effect</string>
+    <string name="draw_screen_brush_width_label">Width</string>
+    <string name="draw_screen_bg_layer_label">BG Layer</string>
+    <string name="draw_screen_color_label">Color</string>
 </resources>
