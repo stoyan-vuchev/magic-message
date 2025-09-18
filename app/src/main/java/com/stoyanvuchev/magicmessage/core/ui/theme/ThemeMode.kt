@@ -24,41 +24,21 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
-import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorPalette
-import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
-import com.stoyanvuchev.magicmessage.core.ui.theme.shape.LocalShapes
-import com.stoyanvuchev.magicmessage.core.ui.theme.shape.Shapes
-import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTypefaces
-import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.Typefaces
+import androidx.compose.runtime.compositionLocalOf
 
-@Composable
-fun MagicMessageTheme(
-    themeMode: ThemeMode = LocalThemeMode.current,
-    content: @Composable () -> Unit
-) = UIWrapper(
-    themeMode = themeMode,
-    content = content
-)
+enum class ThemeMode { System, Light, Dark }
+
+val LocalThemeMode = compositionLocalOf { ThemeMode.System }
 
 @Stable
-object Theme {
-
-    val colors: ColorPalette
-        @ReadOnlyComposable
-        @Composable
-        get() = LocalColorPalette.current
-
-    val shapes: Shapes
-        @ReadOnlyComposable
-        @Composable
-        get() = LocalShapes.current
-
-    val typefaces: Typefaces
-        @ReadOnlyComposable
-        @Composable
-        get() = LocalTypefaces.current
-
+@Composable
+fun isInDarkThemeMode(
+    themeMode: ThemeMode = LocalThemeMode.current
+) = when (themeMode) {
+    ThemeMode.System -> isSystemInDarkTheme()
+    ThemeMode.Light -> false
+    ThemeMode.Dark -> true
 }

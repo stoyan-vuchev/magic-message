@@ -25,40 +25,52 @@
 package com.stoyanvuchev.magicmessage.core.ui.theme
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalContentColor
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.asAnimatedColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.darkColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.lightColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.shape.LocalShapes
 import com.stoyanvuchev.magicmessage.core.ui.theme.shape.Shapes
+import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTextStyle
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTypefaces
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.Typefaces
+import com.stoyanvuchev.systemuibarstweaker.ProvideSystemUIBarsTweaker
 
 @Composable
-fun MagicMessageTheme(
-    themeMode: ThemeMode = LocalThemeMode.current,
+fun UIWrapper(
+    themeMode: ThemeMode = ThemeMode.System,
+    colorPalette: ColorPalette = getDefaultColorPalette(isInDarkThemeMode(themeMode)),
+    animateColorPalette: Boolean = true,
+    typefaces: Typefaces = Typefaces.Default,
+    shapes: Shapes = Shapes.Default,
     content: @Composable () -> Unit
-) = UIWrapper(
-    themeMode = themeMode,
-    content = content
-)
+) = ProvideSystemUIBarsTweaker {
+
+    val finalColorPalette by rememberUpdatedState(
+        if (animateColorPalette) colorPalette.asAnimatedColorPalette()
+        else colorPalette
+    )
+
+    CompositionLocalProvider(
+        LocalThemeMode provides themeMode,
+        LocalColorPalette provides finalColorPalette,
+        LocalContentColor provides finalColorPalette.onSurfaceElevationLow,
+        LocalTypefaces provides typefaces,
+        LocalTextStyle provides typefaces.bodyMedium,
+        LocalShapes provides shapes,
+        content = content
+    )
+
+}
 
 @Stable
-object Theme {
-
-    val colors: ColorPalette
-        @ReadOnlyComposable
-        @Composable
-        get() = LocalColorPalette.current
-
-    val shapes: Shapes
-        @ReadOnlyComposable
-        @Composable
-        get() = LocalShapes.current
-
-    val typefaces: Typefaces
-        @ReadOnlyComposable
-        @Composable
-        get() = LocalTypefaces.current
-
+fun getDefaultColorPalette(darkTheme: Boolean): ColorPalette {
+    return (if (darkTheme) darkColorPalette()
+    else lightColorPalette())
 }
