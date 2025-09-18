@@ -7,4 +7,8 @@
     <string name="get_started_screen_privacy_policy">Privacy Policy</string>
     <string name="get_started_screen_tos">Terms Of Service</string>
     <string name="get_started_screen_btn_label">Get Started</string>
+    <string name="home_screen_label">Home</string>
+    <string name="favorite_screen_label">Favorite</string>
+    <string name="menu_screen_label">Menu</string>
+    <string name="draw_screen_label">Drawing</string>
 </resources>

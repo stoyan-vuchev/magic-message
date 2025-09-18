@@ -24,7 +24,9 @@
 
 package com.stoyanvuchev.magicmessage.presentation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -32,39 +34,63 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.stoyanvuchev.magicmessage.core.ui.navigation.InitialScreen
+import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
 import com.stoyanvuchev.magicmessage.presentation.boarding.boardingNavGraph
 import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import com.stoyanvuchev.magicmessage.presentation.main.mainNavGraph
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AppNavHost(
     isBoardingComplete: Boolean?,
     navController: NavHostController
 ) {
 
-    NavHost(
-        modifier = Modifier.fillMaxSize(),
-        navController = navController,
-        startDestination = InitialScreen
-    ) {
+    val hazeState = rememberHazeState()
 
-        composable<InitialScreen> {
-            LaunchedEffect(isBoardingComplete) {
-                if (isBoardingComplete != null) {
-                    navController.navigate(
-                        if (isBoardingComplete) MainScreen.Home
-                        else BoardingScreen.GetStarted
-                    ) {
-                        popUpTo(navController.graph.id) { inclusive = false }
-                        launchSingleTop = true
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Theme.colors.surfaceElevationLow,
+        contentColor = Theme.colors.onSurfaceElevationLow,
+        bottomBar = {
+
+            AppBottomNavBar(
+                navController = navController,
+                hazeState = hazeState
+            )
+
+        }
+    ) { _ ->
+
+        NavHost(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeSource(state = hazeState),
+            navController = navController,
+            startDestination = InitialScreen
+        ) {
+
+            composable<InitialScreen> {
+                LaunchedEffect(isBoardingComplete) {
+                    if (isBoardingComplete != null) {
+                        navController.navigate(
+                            if (isBoardingComplete) MainScreen.Home
+                            else BoardingScreen.GetStarted
+                        ) {
+                            popUpTo(navController.graph.id) { inclusive = false }
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
-        }
 
-        boardingNavGraph(navController = navController)
-        mainNavGraph(navController = navController)
+            boardingNavGraph(navController = navController)
+            mainNavGraph(navController = navController)
+
+        }
 
     }
 

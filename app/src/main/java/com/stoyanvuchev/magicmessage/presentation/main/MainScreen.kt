@@ -24,25 +24,52 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface MainScreen : NavigationScreen {
+sealed class MainScreen(
+    @param:StringRes val label: Int,
+    @param:DrawableRes val icon: Int
+) : NavigationScreen {
 
     @Serializable
-    data object Navigation : MainScreen
+    data object Navigation : MainScreen(
+        label = R.string.home_screen_label,
+        icon = R.drawable.home_outlined
+    )
 
     @Serializable
-    data object Home : MainScreen
+    data object Home : MainScreen(
+        label = R.string.home_screen_label,
+        icon = R.drawable.home_outlined
+    )
 
     @Serializable
-    data object Favorite : MainScreen
+    data object Favorite : MainScreen(
+        label = R.string.favorite_screen_label,
+        icon = R.drawable.favorite_outlined
+    )
 
     @Serializable
-    data object Menu : MainScreen
+    data object Menu : MainScreen(
+        label = R.string.menu_screen_label,
+        icon = R.drawable.menu_outlined
+    )
 
     @Serializable
-    data class Draw(val messageId: String) : MainScreen
+    data class Draw(val messageId: String) : MainScreen(
+        label = R.string.draw_screen_label,
+        icon = R.drawable.logo_icon
+    )
 
 }
+
+val mainScreenNavDestinations: List<MainScreen> = listOf(
+    MainScreen.Home,
+    MainScreen.Favorite,
+    MainScreen.Menu
+)

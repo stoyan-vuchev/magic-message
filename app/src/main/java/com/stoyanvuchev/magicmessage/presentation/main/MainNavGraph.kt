@@ -24,20 +24,10 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 
 fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
@@ -45,24 +35,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         startDestination = MainScreen.Home
     ) {
 
-        composable<MainScreen.Home> {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Theme.colors.surfaceElevationLow)
-                    .windowInsetsPadding(WindowInsets.safeDrawing),
-                contentAlignment = Alignment.Center
-            ) {
-
-                Text(
-                    text = "Home, sweet Home!",
-                    color = Theme.colors.onSurfaceElevationLow
-                )
-
-            }
-
-        }
+        composable<MainScreen.Home> {}
 
         composable<MainScreen.Favorite> {}
 
