@@ -22,26 +22,13 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation
+package com.stoyanvuchev.magicmessage.core.ui.navigation
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.stoyanvuchev.magicmessage.core.ui.theme.MagicMessageTheme
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.runtime.Immutable
+import kotlinx.serialization.Serializable
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+@Immutable
+interface NavigationScreen
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val navController = rememberNavController()
-            MagicMessageTheme { AppNavHost(navController = navController) }
-        }
-    }
-
-}
+@Serializable
+data object InitialScreen : NavigationScreen

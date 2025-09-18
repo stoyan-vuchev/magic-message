@@ -22,26 +22,12 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation
+package com.stoyanvuchev.magicmessage.presentation.boarding.get_started
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.stoyanvuchev.magicmessage.core.ui.theme.MagicMessageTheme
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.runtime.Stable
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val navController = rememberNavController()
-            MagicMessageTheme { AppNavHost(navController = navController) }
-        }
-    }
-
-}
+@Stable
+data class GetStartedScreenState(
+    val isPrivacyPolicyChecked: Boolean = false,
+    val isTermsOfServiceChecked: Boolean = false
+)

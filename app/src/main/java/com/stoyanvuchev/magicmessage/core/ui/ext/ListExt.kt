@@ -22,26 +22,45 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation
+package com.stoyanvuchev.magicmessage.core.ui.ext
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.stoyanvuchev.magicmessage.core.ui.theme.MagicMessageTheme
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+fun List<Offset>.toSmoothPath(): Path {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val navController = rememberNavController()
-            MagicMessageTheme { AppNavHost(navController = navController) }
-        }
+    val path = Path()
+    if (isEmpty()) return path
+
+    path.moveTo(
+        x = first().x,
+        y = first().y
+    )
+
+    for (i in 1 until size) {
+
+        val prev = this[i - 1]
+        val current = this[i]
+        val midPoint = Offset(
+            x = (prev.x + current.x) / 2f,
+            y = (prev.y + current.y) / 2f
+        )
+
+        path.quadraticTo(
+            x1 = prev.x,
+            y1 = prev.y,
+            x2 = midPoint.x,
+            y2 = midPoint.y
+        )
+
     }
+
+    // Ensure last point is included.
+    path.lineTo(
+        x = last().x,
+        y = last().y
+    )
+
+    return path
 
 }

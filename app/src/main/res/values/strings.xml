@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Magic Message</string>
+    <string name="get_started_screen_title_one">Explore unique\nways to express\nyourself</string>
+    <string name="get_started_screen_title_two">creatively</string>
+    <string name="get_started_screen_agreement_one">I have read and agree</string>
+    <string name="get_started_screen_agreement_two">with the</string>
+    <string name="get_started_screen_privacy_policy">Privacy Policy</string>
+    <string name="get_started_screen_tos">Terms Of Service</string>
+    <string name="get_started_screen_btn_label">Get Started</string>
 </resources>

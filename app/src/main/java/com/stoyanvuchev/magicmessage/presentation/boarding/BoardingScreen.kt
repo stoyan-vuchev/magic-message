@@ -22,26 +22,27 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation
+package com.stoyanvuchev.magicmessage.presentation.boarding
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.stoyanvuchev.magicmessage.core.ui.theme.MagicMessageTheme
-import dagger.hilt.android.AndroidEntryPoint
+import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
+import kotlinx.serialization.Serializable
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+@Serializable
+sealed interface BoardingScreen : NavigationScreen {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val navController = rememberNavController()
-            MagicMessageTheme { AppNavHost(navController = navController) }
-        }
-    }
+    @Serializable
+    data object Navigation : BoardingScreen
+
+    @Serializable
+    data object GetStarted : BoardingScreen
+
+    @Serializable
+    data object PrivacyPolicy : BoardingScreen
+
+    @Serializable
+    data object TermsOfService : BoardingScreen
+
+    @Serializable
+    data object PermissionNotice : BoardingScreen
 
 }

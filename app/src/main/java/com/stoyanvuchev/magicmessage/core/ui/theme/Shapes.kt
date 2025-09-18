@@ -22,26 +22,16 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation
+package com.stoyanvuchev.magicmessage.core.ui.theme
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.stoyanvuchev.magicmessage.core.ui.theme.MagicMessageTheme
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.material3.Shapes
+import androidx.compose.ui.unit.dp
+import sv.lib.squircleshape.SquircleShape
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val navController = rememberNavController()
-            MagicMessageTheme { AppNavHost(navController = navController) }
-        }
-    }
-
-}
+val Shapes = Shapes(
+    extraSmall = SquircleShape(8.dp),
+    small = SquircleShape(12.dp),
+    medium = SquircleShape(16.dp),
+    large = SquircleShape(20.dp),
+    extraLarge = SquircleShape(32.dp)
+)

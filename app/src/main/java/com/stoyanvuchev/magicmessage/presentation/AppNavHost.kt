@@ -24,24 +24,37 @@
 
 package com.stoyanvuchev.magicmessage.presentation
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.stoyanvuchev.magicmessage.core.ui.theme.MagicMessageTheme
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.stoyanvuchev.magicmessage.core.ui.navigation.InitialScreen
+import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
+import com.stoyanvuchev.magicmessage.presentation.boarding.boardingNavGraph
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+@Composable
+fun AppNavHost(navController: NavHostController) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val navController = rememberNavController()
-            MagicMessageTheme { AppNavHost(navController = navController) }
+    NavHost(
+        modifier = Modifier.fillMaxSize(),
+        navController = navController,
+        startDestination = InitialScreen
+    ) {
+
+        composable<InitialScreen> {
+            LaunchedEffect(Unit) {
+                navController.navigate(BoardingScreen.GetStarted) {
+                    popUpTo(InitialScreen) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
         }
+
+        boardingNavGraph(navController = navController)
+
     }
 
 }
