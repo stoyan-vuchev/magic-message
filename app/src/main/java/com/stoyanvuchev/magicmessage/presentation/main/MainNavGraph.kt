@@ -22,18 +22,27 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.presentation.main
 
-import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
-import kotlinx.serialization.Serializable
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 
-@Serializable
-sealed interface BoardingScreen : NavigationScreen {
+fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
-    @Serializable
-    data object Navigation : BoardingScreen
+    navigation<MainScreen.Navigation>(
+        startDestination = MainScreen.Home
+    ) {
 
-    @Serializable
-    data object GetStarted : BoardingScreen
+        composable<MainScreen.Home> {}
+
+        composable<MainScreen.Favorite> {}
+
+        composable<MainScreen.Menu> {}
+
+        composable<MainScreen.Draw> {}
+
+    }
 
 }

@@ -22,18 +22,29 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.di
 
-import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
-import kotlinx.serialization.Serializable
+import android.app.Application
+import android.content.Context
+import androidx.datastore.preferences.preferencesDataStore
+import com.stoyanvuchev.magicmessage.data.preferences.AppPreferencesImpl
+import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@Serializable
-sealed interface BoardingScreen : NavigationScreen {
+@Module
+@InstallIn(SingletonComponent::class)
+object AppPreferencesModule {
 
-    @Serializable
-    data object Navigation : BoardingScreen
+    private val Context.dataStore by preferencesDataStore("app_preferences")
 
-    @Serializable
-    data object GetStarted : BoardingScreen
+    @Provides
+    @Singleton
+    fun provideAppPreferences(app: Application): AppPreferences {
+        return AppPreferencesImpl(app.applicationContext.dataStore)
+    }
 
 }

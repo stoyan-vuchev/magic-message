@@ -78,7 +78,7 @@ import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.components.CheckboxField
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
-import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
+import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import com.stoyanvuchev.systemuibarstweaker.LocalSystemUIBarsTweaker
 import com.stoyanvuchev.systemuibarstweaker.ScrimStyle
 
@@ -220,9 +220,7 @@ fun GetStartedScreen(
                     LinkAnnotation.Clickable(
                         tag = "privacy_policy",
                         linkInteractionListener = {
-                            onNavigationEvent(
-                                NavigationEvent.NavigateTo(BoardingScreen.PrivacyPolicy)
-                            )
+                            onUIAction(GetStartedScreenUIAction.ViewPrivacyPolicy())
                         }
                     )
                 ) {
@@ -273,9 +271,7 @@ fun GetStartedScreen(
                     LinkAnnotation.Clickable(
                         tag = "tos",
                         linkInteractionListener = {
-                            onNavigationEvent(
-                                NavigationEvent.NavigateTo(BoardingScreen.TermsOfService)
-                            )
+                            onUIAction(GetStartedScreenUIAction.ViewTermsOfService())
                         }
                     )
                 ) {
@@ -313,7 +309,7 @@ fun GetStartedScreen(
                     {
                         onNavigationEvent(
                             NavigationEvent.NavigateTo(
-                                BoardingScreen.PermissionNotice
+                                MainScreen.Home
                             )
                         )
                     }

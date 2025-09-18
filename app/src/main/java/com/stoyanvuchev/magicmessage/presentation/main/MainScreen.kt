@@ -22,18 +22,27 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.presentation.main
 
 import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface BoardingScreen : NavigationScreen {
+sealed interface MainScreen : NavigationScreen {
 
     @Serializable
-    data object Navigation : BoardingScreen
+    data object Navigation : MainScreen
 
     @Serializable
-    data object GetStarted : BoardingScreen
+    data object Home : MainScreen
+
+    @Serializable
+    data object Favorite : MainScreen
+
+    @Serializable
+    data object Menu : MainScreen
+
+    @Serializable
+    data class Draw(val messageId: String) : MainScreen
 
 }

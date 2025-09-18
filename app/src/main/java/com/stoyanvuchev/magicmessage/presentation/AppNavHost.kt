@@ -34,9 +34,14 @@ import androidx.navigation.compose.composable
 import com.stoyanvuchev.magicmessage.core.ui.navigation.InitialScreen
 import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
 import com.stoyanvuchev.magicmessage.presentation.boarding.boardingNavGraph
+import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
+import com.stoyanvuchev.magicmessage.presentation.main.mainNavGraph
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(
+    isBoardingComplete: Boolean?,
+    navController: NavHostController
+) {
 
     NavHost(
         modifier = Modifier.fillMaxSize(),
@@ -45,15 +50,21 @@ fun AppNavHost(navController: NavHostController) {
     ) {
 
         composable<InitialScreen> {
-            LaunchedEffect(Unit) {
-                navController.navigate(BoardingScreen.GetStarted) {
-                    popUpTo(InitialScreen) { inclusive = true }
-                    launchSingleTop = true
+            LaunchedEffect(isBoardingComplete) {
+                if (isBoardingComplete != null) {
+                    navController.navigate(
+                        if (isBoardingComplete) MainScreen.Home
+                        else BoardingScreen.GetStarted
+                    ) {
+                        popUpTo(navController.graph.id) { inclusive = false }
+                        launchSingleTop = true
+                    }
                 }
             }
         }
 
         boardingNavGraph(navController = navController)
+        mainNavGraph(navController = navController)
 
     }
 

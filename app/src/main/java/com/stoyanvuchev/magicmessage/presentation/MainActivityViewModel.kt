@@ -22,18 +22,35 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.presentation
 
-import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
-import kotlinx.serialization.Serializable
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-@Serializable
-sealed interface BoardingScreen : NavigationScreen {
+@HiltViewModel
+class MainActivityViewModel @Inject constructor(
+    private val appPreferences: AppPreferences
+) : ViewModel() {
 
-    @Serializable
-    data object Navigation : BoardingScreen
+    private val _isBoardingComplete = MutableStateFlow<Boolean?>(null)
+    val isBoardingComplete = _isBoardingComplete.asStateFlow()
 
-    @Serializable
-    data object GetStarted : BoardingScreen
+    init {
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                appPreferences.getIsBoardingComplete()
+            }
+            _isBoardingComplete.update { result }
+        }
+    }
 
 }
