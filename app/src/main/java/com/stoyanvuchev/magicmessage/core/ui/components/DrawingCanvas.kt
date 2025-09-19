@@ -31,57 +31,91 @@ import androidx.compose.foundation.gestures.drag
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.ParticleUpdater
 import com.stoyanvuchev.magicmessage.core.ui.ext.drawStroke
-import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
-import com.stoyanvuchev.magicmessage.domain.BrushType
+import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
+import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 
 @Composable
 fun DrawingCanvas(
     modifier: Modifier = Modifier,
     controller: DrawingController,
-    color: Color = Theme.colors.primary,
-    width: Dp = 5.dp
+    drawConfiguration: DrawConfiguration,
 ) {
 
-    ParticleUpdater(controller = controller)
+    ParticleUpdater(
+        controller = controller,
+        effect = drawConfiguration.effect
+    )
 
     Canvas(
         modifier = modifier
             .clipToBounds()
-            .pointerInput(Unit) {
+            .pointerInput(drawConfiguration) {
                 if (!controller.drawingEnabled) return@pointerInput
                 awaitEachGesture {
 
                     val down = awaitFirstDown()
                     controller.startStroke(
                         offset = down.position,
-                        color = color
+                        color = drawConfiguration.color,
+                        effect = drawConfiguration.effect
                     )
 
                     drag(down.id) { change ->
                         controller.addPoint(
                             change.position,
-                            color = color
+                            color = drawConfiguration.color,
+                            effect = drawConfiguration.effect
                         )
                         change.consume()
                     }
 
                     controller.endStroke(
-                        color = color,
-                        width = width.toPx(),
-                        brush = BrushType.NORMAL
+                        color = drawConfiguration.color,
+                        width = drawConfiguration.thickness.thickness.toPx(),
+                        effect = drawConfiguration.effect
                     )
 
                 }
             }
     ) {
+
+        // Draw the background layer.
+        when (drawConfiguration.bgLayer) {
+
+            is BackgroundLayer.ColorLayer -> {
+
+                drawRect(
+                    color = drawConfiguration.bgLayer.color,
+                    size = size
+                )
+
+            }
+
+            is BackgroundLayer.LinearGradientLayer -> {
+
+                val brush = Brush.linearGradient(
+                    colors = drawConfiguration.bgLayer.colors,
+                    start = drawConfiguration.bgLayer.start,
+                    end = drawConfiguration.bgLayer.end ?: Offset.Infinite
+                )
+
+                drawRect(
+                    brush = brush,
+                    size = size
+                )
+
+            }
+
+            else -> Unit
+
+        }
 
         // Draw completed strokes.
         controller.strokes.forEach { drawStroke(it) }
@@ -91,9 +125,9 @@ fun DrawingCanvas(
             drawStroke(
                 StrokeModel(
                     points = controller.currentPoints.toList(),
-                    color = color,
-                    width = width.toPx(),
-                    brush = BrushType.GLOW
+                    color = drawConfiguration.color,
+                    width = drawConfiguration.thickness.thickness.toPx(),
+                    effect = drawConfiguration.effect
                 )
             )
         }

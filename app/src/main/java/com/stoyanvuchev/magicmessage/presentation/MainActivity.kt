@@ -45,14 +45,12 @@ class MainActivity : ComponentActivity() {
 
             val viewModel = hiltViewModel<MainActivityViewModel>()
             val isBoardingComplete by viewModel.isBoardingComplete.collectAsStateWithLifecycle()
-            val controller by viewModel.controller.collectAsStateWithLifecycle()
             val navController = rememberNavController()
 
             MagicMessageTheme {
                 AppNavHost(
                     isBoardingComplete = isBoardingComplete,
-                    navController = navController,
-                    controller = controller
+                    navController = navController
                 )
             }
 

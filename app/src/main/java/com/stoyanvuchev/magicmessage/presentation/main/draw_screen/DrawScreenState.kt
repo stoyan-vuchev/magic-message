@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
+import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
 
 @Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
+data class DrawScreenState(
+    val dialogEditType: DialogEditType = DialogEditType.NONE,
+    val drawConfiguration: DrawConfiguration = DrawConfiguration()
 )

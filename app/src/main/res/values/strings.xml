@@ -15,4 +15,23 @@
     <string name="draw_screen_brush_width_label">Width</string>
     <string name="draw_screen_bg_layer_label">BG Layer</string>
     <string name="draw_screen_color_label">Color</string>
+    <string name="draw_screen_brush_effect_none_label">None</string>
+    <string name="draw_screen_brush_effect_bubbles_label">Bubbles</string>
+    <string name="draw_screen_brush_effect_stars_label">Stars</string>
+    <string name="draw_screen_brush_effect_hearts_label">Hearts</string>
+    <string name="draw_screen_brush_width_thin_label">Thin</string>
+    <string name="draw_screen_brush_width_medium_label">Medium</string>
+    <string name="draw_screen_brush_width_large_label">Large</string>
+    <string name="draw_screen_brush_width_thick_label">Thick</string>
+    <string name="draw_screen_bg_layer_colors_label">Colors</string>
+    <string name="draw_screen_bg_layer_gradients_label">Gradients</string>
+    <string name="draw_screen_bg_layer_images_label">Images</string>
+    <string name="exporter_label_preparing">Preparing</string>
+    <string name="exporter_label_exporting">Exporting</string>
+    <string name="exporter_label_completed">All done!</string>
+    <string name="exporter_label_preparing_description">Initializing the Export Engine …</string>
+    <string name="exporter_label_exporting_description">You can minimize the app while\nthe export is in progress:</string>
+    <string name="exporter_label_completed_description">"Enjoy the GIF 🎉"</string>
+    <string name="exporter_label_view">View</string>
+    <string name="exporter_label_cancel">Cancel</string>
 </resources>

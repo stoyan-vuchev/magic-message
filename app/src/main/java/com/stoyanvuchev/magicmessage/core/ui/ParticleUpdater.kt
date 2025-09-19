@@ -26,35 +26,41 @@ package com.stoyanvuchev.magicmessage.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
 @Composable
-fun ParticleUpdater(controller: DrawingController) {
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.Default) {
+fun ParticleUpdater(
+    controller: DrawingController,
+    effect: BrushEffect
+) {
+    if (effect != BrushEffect.NONE) {
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.Default) {
 
-            var lastTime = System.currentTimeMillis()
-            while (isActive) {
+                var lastTime = System.currentTimeMillis()
+                while (isActive) {
 
-                val now = System.currentTimeMillis()
-                val delta = now - lastTime
-                lastTime = now
+                    val now = System.currentTimeMillis()
+                    val delta = now - lastTime
+                    lastTime = now
 
-                // Update physics off UI thread.
-                controller.updateParticles(delta)
+                    // Update physics off UI thread.
+                    controller.updateParticles(delta)
 
-                // Sync to Compose state on Main thread.
-                withContext(Dispatchers.Main) {
-                    controller.syncParticlesToUI()
+                    // Sync to Compose state on Main thread.
+                    withContext(Dispatchers.Main) {
+                        controller.syncParticlesToUI()
+                    }
+
+                    delay(16L) // ~60fps
+
                 }
 
-                delay(16L) // ~60fps
-
             }
-
         }
     }
 }

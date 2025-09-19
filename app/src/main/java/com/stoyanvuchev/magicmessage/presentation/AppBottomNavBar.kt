@@ -42,18 +42,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBar
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarItem
-import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
+import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.presentation.main.mainScreenNavDestinations
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 fun AppBottomNavBar(
@@ -86,19 +82,7 @@ fun AppBottomNavBar(
     ) {
 
         BottomNavBar(
-            modifier = Modifier
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeStyle(
-                        tint = HazeTint(
-                            color = Theme.colors.surfaceElevationLow.copy(.5f)
-                        ),
-                        blurRadius = 16.dp,
-                        noiseFactor = -.5f,
-                        backgroundColor = Theme.colors.surfaceElevationLow
-
-                    )
-                )
+            modifier = Modifier.defaultHazeEffect(hazeState = hazeState)
         ) {
 
             destinations.forEachIndexed { index, destination ->

@@ -34,7 +34,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import com.stoyanvuchev.magicmessage.core.ui.utils.ParticleUtils
-import com.stoyanvuchev.magicmessage.domain.BrushType
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import com.stoyanvuchev.magicmessage.domain.model.Particle
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
@@ -65,18 +65,22 @@ class DrawingController {
 
     fun startStroke(
         offset: Offset,
-        color: Color
+        color: Color,
+        effect: BrushEffect
     ) {
         if (!drawingEnabled) return
         currentPoints.clear()
         startTime = System.currentTimeMillis()
         currentPoints.add(TimedPoint(offset, 0L))
-        spawnParticles(offset, color)
+        if (effect != BrushEffect.NONE) {
+            spawnParticles(offset, color)
+        }
     }
 
     fun addPoint(
         offset: Offset,
-        color: Color
+        color: Color,
+        effect: BrushEffect
     ) {
 
         if (!drawingEnabled) return
@@ -91,14 +95,16 @@ class DrawingController {
         val t = System.currentTimeMillis() - startTime
         val point = TimedPoint(offset, t)
         currentPoints.add(point)
-        spawnParticles(offset, color)
+        if (effect != BrushEffect.NONE) {
+            spawnParticles(offset, color)
+        }
 
     }
 
     fun endStroke(
         color: Color,
         width: Float,
-        brush: BrushType
+        effect: BrushEffect
     ) {
         if (currentPoints.isNotEmpty()) {
 
@@ -106,7 +112,7 @@ class DrawingController {
                 points = currentPoints.toList(),
                 color = color,
                 width = width,
-                brush = brush
+                effect = effect
             )
 
             strokes.add(stroke)

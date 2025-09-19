@@ -32,10 +32,14 @@ import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.stoyanvuchev.magicmessage.R
+import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
-import com.stoyanvuchev.magicmessage.framework.Exporter
+import com.stoyanvuchev.magicmessage.framework.export.Exporter
+import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
+import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +48,7 @@ import javax.inject.Inject
 
 object ExportDataHolder {
     lateinit var strokes: List<StrokeModel>
+    lateinit var bgLayer: BackgroundLayer
 }
 
 @AndroidEntryPoint
@@ -52,38 +57,50 @@ class ExportGifService : Service() {
     @Inject
     lateinit var exporter: Exporter
 
+    @Inject
+    lateinit var progressObserver: ExporterProgressObserver
+
     companion object Companion {
         private const val CHANNEL_ID = "gif_export_channel"
         private const val PROGRESS_NOTIFICATION_ID = 1
         private const val COMPLETED_NOTIFICATION_ID = 2
     }
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int
+    ): Int {
+
+        progressObserver.resetAll()
+        progressObserver.updateExporterState(ExporterState.PREPARING)
+
         createNotificationChannel()
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        val width = intent?.getIntExtra("width", 0) ?: 1080
-        val height = intent?.getIntExtra("height", 0) ?: 1920
-
         startForeground(
             PROGRESS_NOTIFICATION_ID,
             buildProgressNotification(0)
         )
 
+        val width = intent?.getIntExtra("width", 0) ?: 1080
+        val height = intent?.getIntExtra("height", 0) ?: 1920
+
         CoroutineScope(Dispatchers.Default).launch {
+
+            progressObserver.updateExporterState(ExporterState.EXPORTING)
 
             val uri = exporter.exportGif(
                 strokes = ExportDataHolder.strokes,
                 width = width,
-                height = height
+                height = height,
+                background = ExportDataHolder.bgLayer
             ) { progress ->
+                progressObserver.updateProgress(progress)
                 updateProgress(progress)
             }
 
             uri?.let {
+                progressObserver.updateExportedUri(it)
+                progressObserver.updateExporterState(ExporterState.COMPLETED)
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
                 showCompletedNotification(it)
@@ -106,22 +123,25 @@ class ExportGifService : Service() {
         val channel = NotificationChannel(
             CHANNEL_ID,
             "GIF Export",
-            NotificationManager.IMPORTANCE_LOW
-        ).apply { description = "Notifications for Magic Message GIF export" }
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply { description = "Notifications for Magic Message GIF export." }
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(channel)
     }
 
-    private fun buildProgressNotification(progress: Int): Notification =
-        NotificationCompat.Builder(this, CHANNEL_ID)
+    private fun buildProgressNotification(progress: Int): Notification {
+        Log.d("ExportGifService", "Progress: $progress%")
+        return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Exporting GIF")
             .setContentText("Progress: $progress%")
             .setSmallIcon(R.drawable.export)
-            //.setOnlyAlertOnce(true)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setOnlyAlertOnce(true)
             .setOngoing(true)
             .setAutoCancel(false)
             .setProgress(100, progress, false)
             .build()
+    }
 
     private fun updateProgress(progress: Int) {
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -146,6 +166,7 @@ class ExportGifService : Service() {
             .setContentText("Tap to view your GIF 🎉")
             .setSmallIcon(R.drawable.logo_icon)
             .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(true)
             .build()
 

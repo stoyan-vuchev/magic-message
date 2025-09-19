@@ -32,9 +32,9 @@ import sv.lib.squircleshape.SquircleShape
 
 internal object DefaultShapeTokens : ShapeTokens {
     override val largeShape: Shape get() = SquircleShape(24.dp, CornerSmoothing.Medium)
-    override val mediumShape: Shape get() = SquircleShape(12.dp, CornerSmoothing.Medium)
+    override val mediumShape: Shape get() = SquircleShape(14.dp, CornerSmoothing.Medium)
     override val smallShape: Shape get() = SquircleShape(8.dp, CornerSmoothing.Medium)
-    override val verySmallShape: Shape get() = SquircleShape(4.dp, CornerSmoothing.Medium)
+    override val verySmallShape: Shape get() = SquircleShape(5.dp, CornerSmoothing.Medium)
 }
 
 @Immutable

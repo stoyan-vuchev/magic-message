@@ -22,16 +22,21 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.domain
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 
-@Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
+val defaultDrawColors = listOf(
+    Color(0xFFE0218A),
+    Color(0xFF8968CD),
+    Color(0xFF007FFF),
+    Color(0xFF00BCD4),
+    Color(0xFF4CAF50),
+    Color(0xFFFFEB3B),
+    Color(0xFFFF9800),
+    Color(0xFFF00000),
+    Color(0xFFB96F3B),
+    Color(0xFFFFFFFF),
+    Color(0xFF808080),
+    Color(0xFF000000),
 )

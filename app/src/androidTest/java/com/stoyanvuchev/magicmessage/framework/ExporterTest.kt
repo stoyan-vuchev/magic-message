@@ -32,9 +32,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import assertk.assertThat
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
-import com.stoyanvuchev.magicmessage.domain.BrushType
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
+import com.stoyanvuchev.magicmessage.framework.export.Exporter
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,7 +55,7 @@ class ExporterTest {
     }
 
     @Test
-    fun `exportGif should create a GIF and return non-null Uri`() {
+    fun `exportGif should create a GIF and return non-null Uri`() = runTest {
 
         // Prepare a simple stroke with two points.
         val strokes = listOf(
@@ -69,7 +72,7 @@ class ExporterTest {
                 ),
                 color = Color.Cyan,
                 width = 12f,
-                brush = BrushType.NORMAL
+                effect = BrushEffect.NONE
             )
         )
 
@@ -77,7 +80,8 @@ class ExporterTest {
         val uri = exporter.exportGif(
             strokes = strokes,
             width = 1080,
-            height = 1920
+            height = 1920,
+            background = BackgroundLayer.ColorLayer(Color.Black),
         ) { progress ->
             lastProgress = progress
         }
