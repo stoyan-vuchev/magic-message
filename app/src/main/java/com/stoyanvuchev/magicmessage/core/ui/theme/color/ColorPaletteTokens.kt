@@ -59,7 +59,7 @@ object DarkColorPaletteTokens : ColorPaletteTokens {
     override val surfaceElevationMedium: Color get() = Color(0xFF101313)
     override val onSurfaceElevationMedium: Color get() = Color(0xFFF3F6F7)
 
-    override val surfaceElevationHigh: Color get() = Color(0xFF191B1C)
+    override val surfaceElevationHigh: Color get() = Color(0xFF1D1F20)
     override val onSurfaceElevationHigh: Color get() = Color(0xFFF3F6F7)
 
     override val error: Color get() = Color(0xFFCA1F2D)

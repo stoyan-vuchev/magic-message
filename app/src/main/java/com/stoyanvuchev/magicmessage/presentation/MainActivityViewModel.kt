@@ -26,6 +26,7 @@ package com.stoyanvuchev.magicmessage.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +44,9 @@ class MainActivityViewModel @Inject constructor(
 
     private val _isBoardingComplete = MutableStateFlow<Boolean?>(null)
     val isBoardingComplete = _isBoardingComplete.asStateFlow()
+
+    private val _controller = MutableStateFlow(DrawingController())
+    val controller = _controller.asStateFlow()
 
     init {
         viewModelScope.launch {
