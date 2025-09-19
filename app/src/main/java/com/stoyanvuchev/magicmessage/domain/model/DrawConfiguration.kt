@@ -26,12 +26,15 @@ package com.stoyanvuchev.magicmessage.domain.model
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import com.stoyanvuchev.magicmessage.domain.DefaultBGLayers
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.brush.BrushThickness
+import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 
 @Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
+data class DrawConfiguration(
+    val effect: BrushEffect = BrushEffect.BUBBLES,
+    val thickness: BrushThickness = BrushThickness.MEDIUM,
+    val color: Color = Color.White,
+    val bgLayer: BackgroundLayer = DefaultBGLayers.linearGradientLayers.first()
 )

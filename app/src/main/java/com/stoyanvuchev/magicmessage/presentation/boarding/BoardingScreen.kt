@@ -24,16 +24,19 @@
 
 package com.stoyanvuchev.magicmessage.presentation.boarding
 
+import android.os.Parcelable
 import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
-sealed interface BoardingScreen : NavigationScreen {
+sealed class BoardingScreen : Parcelable, NavigationScreen() {
 
     @Serializable
-    data object Navigation : BoardingScreen
+    data object Navigation : BoardingScreen()
 
     @Serializable
-    data object GetStarted : BoardingScreen
+    data object GetStarted : BoardingScreen()
 
 }

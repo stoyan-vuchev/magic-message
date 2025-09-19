@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain
+package com.stoyanvuchev.magicmessage.framework.export
 
-enum class BrushType { NORMAL, GLOW }
+enum class ExporterState { IDLE, PREPARING, EXPORTING, COMPLETED }

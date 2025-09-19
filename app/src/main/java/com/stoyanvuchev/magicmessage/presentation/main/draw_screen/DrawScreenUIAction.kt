@@ -22,16 +22,45 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.brush.BrushThickness
+import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
+import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
 
-@Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+@Immutable
+interface DrawScreenUIAction {
+
+    data object Undo : DrawScreenUIAction
+    data object Redo : DrawScreenUIAction
+    data object DismissExporterDialog : DrawScreenUIAction
+
+    data class Export(
+        val width: Int,
+        val height: Int
+    ) : DrawScreenUIAction
+
+    data class SetDialogEditType(
+        val type: DialogEditType
+    ) : DrawScreenUIAction
+
+    data class SetBrushEffect(
+        val effect: BrushEffect
+    ) : DrawScreenUIAction
+
+    data class SetBrushThickness(
+        val thickness: BrushThickness
+    ) : DrawScreenUIAction
+
+    data class SetBrushColor(
+        val color: Color
+    ) : DrawScreenUIAction
+
+    data class SetBGLayer(
+        val layer: BackgroundLayer
+    ) : DrawScreenUIAction
+
+}

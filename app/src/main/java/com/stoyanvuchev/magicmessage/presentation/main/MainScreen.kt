@@ -24,17 +24,20 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main
 
+import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 sealed class MainScreen(
     @param:StringRes val label: Int,
     @param:DrawableRes val icon: Int
-) : NavigationScreen {
+) : Parcelable, NavigationScreen() {
 
     @Serializable
     data object Navigation : MainScreen(

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.dagger.hilt.android)
 }
 
@@ -80,6 +81,7 @@ dependencies {
     implementation(libs.chrisBanes.haze)
     implementation(libs.coil.compose)
     implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.drawable.painter)
 
     // Local Storage
     implementation(libs.room.runtime)

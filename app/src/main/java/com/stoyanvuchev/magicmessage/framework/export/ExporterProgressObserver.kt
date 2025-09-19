@@ -22,35 +22,42 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation
+package com.stoyanvuchev.magicmessage.framework.export
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import android.net.Uri
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@HiltViewModel
-class MainActivityViewModel @Inject constructor(
-    private val appPreferences: AppPreferences
-) : ViewModel() {
+class ExporterProgressObserver @Inject constructor() {
 
-    private val _isBoardingComplete = MutableStateFlow<Boolean?>(null)
-    val isBoardingComplete = _isBoardingComplete.asStateFlow()
+    private val _progress = MutableStateFlow(0)
+    val progress: StateFlow<Int> = _progress.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                appPreferences.getIsBoardingComplete()
-            }
-            _isBoardingComplete.update { result }
-        }
+    private val _exporterState = MutableStateFlow(ExporterState.IDLE)
+    val exporterState: StateFlow<ExporterState> = _exporterState.asStateFlow()
+
+    private val _exportedUri = MutableStateFlow<Uri?>(null)
+    val exportedUri: StateFlow<Uri?> = _exportedUri.asStateFlow()
+
+    internal fun updateProgress(newProgress: Int) {
+        _progress.update { newProgress }
+    }
+
+    internal fun updateExporterState(newState: ExporterState) {
+        _exporterState.update { newState }
+    }
+
+    internal fun updateExportedUri(newUri: Uri) {
+        _exportedUri.update { newUri }
+    }
+
+    fun resetAll() {
+        _progress.update { 0 }
+        _exporterState.update { ExporterState.IDLE }
+        _exportedUri.update { null }
     }
 
 }

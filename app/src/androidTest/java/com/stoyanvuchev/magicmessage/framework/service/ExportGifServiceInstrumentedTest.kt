@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025 Stoyan Vuchev
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.stoyanvuchev.magicmessage.framework.service
 
 import android.content.Context
@@ -9,10 +33,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import assertk.assertThat
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isNotNull
-import com.stoyanvuchev.magicmessage.domain.BrushType
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
-import com.stoyanvuchev.magicmessage.framework.Exporter
+import com.stoyanvuchev.magicmessage.framework.export.Exporter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -51,7 +76,7 @@ class ExportGifServiceInstrumentedTest {
                 ),
                 color = Color.Cyan,
                 width = 12f,
-                brush = BrushType.NORMAL
+                effect = BrushEffect.NONE
             )
         )
 
@@ -75,7 +100,8 @@ class ExportGifServiceInstrumentedTest {
         val uri = exporter.exportGif(
             strokes = strokes,
             width = 100,
-            height = 100
+            height = 100,
+            background = BackgroundLayer.ColorLayer(Color.Black)
         ) { _ -> }
 
         assertThat(uri).isNotNull()

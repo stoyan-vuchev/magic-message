@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.domain.brush
 
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
-@Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+enum class BrushThickness(
+    val thickness: Dp
+) {
+    THIN(thickness = 2.dp),
+    MEDIUM(thickness = 6.dp),
+    LARGE(thickness = 10.dp),
+    THICK(thickness = 20.dp)
+}

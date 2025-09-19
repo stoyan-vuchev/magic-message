@@ -32,7 +32,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import com.stoyanvuchev.magicmessage.domain.BrushType
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import org.junit.Before
 import org.junit.Test
 
@@ -47,7 +47,7 @@ class DrawingControllerTest {
 
     @Test
     fun `startStroke initializes currentPoints with first point`() {
-        controller.startStroke(Offset(1f, 2f), Color.Red)
+        controller.startStroke(Offset(1f, 2f), Color.Red, BrushEffect.NONE)
         assertThat(controller.currentPoints).hasSize(1)
         assertThat(controller.currentPoints.first().offset).isEqualTo(Offset(1f, 2f))
         assertThat(controller.totalPointCount).isEqualTo(0)
@@ -55,16 +55,16 @@ class DrawingControllerTest {
 
     @Test
     fun `addPoint appends to currentPoints`() {
-        controller.startStroke(Offset(0f, 0f), Color.Red)
-        controller.addPoint(Offset(5f, 5f), Color.Red)
+        controller.startStroke(Offset(0f, 0f), Color.Red, BrushEffect.NONE)
+        controller.addPoint(Offset(5f, 5f), Color.Red, BrushEffect.NONE)
         assertThat(controller.currentPoints).hasSize(2)
     }
 
     @Test
     fun `endStroke creates stroke and clears currentPoints`() {
-        controller.startStroke(Offset(0f, 0f), Color.Red)
-        controller.addPoint(Offset(10f, 10f), Color.Red)
-        controller.endStroke(Color.Red, 4f, BrushType.NORMAL)
+        controller.startStroke(Offset(0f, 0f), Color.Red, BrushEffect.NONE)
+        controller.addPoint(Offset(10f, 10f), Color.Red, BrushEffect.NONE)
+        controller.endStroke(Color.Red, 4f, BrushEffect.NONE)
         assertThat(controller.strokes).hasSize(1)
         assertThat(controller.strokes.first().points).hasSize(2) // start + added point
         assertThat(controller.currentPoints).isEmpty()
@@ -75,9 +75,9 @@ class DrawingControllerTest {
     fun `exceeding maxPoints disables drawing`() {
         // Fill up to the limit
         repeat(controller.maxPoints) {
-            controller.startStroke(Offset(it.toFloat(), 0f), Color.Black)
-            controller.addPoint(Offset(it.toFloat(), 1f), Color.Black)
-            controller.endStroke(Color.Black, 2f, BrushType.NORMAL)
+            controller.startStroke(Offset(it.toFloat(), 0f), Color.Black, BrushEffect.NONE)
+            controller.addPoint(Offset(it.toFloat(), 1f), Color.Black, BrushEffect.NONE)
+            controller.endStroke(Color.Black, 2f, BrushEffect.NONE)
         }
 
         assertThat(controller.drawingEnabled).isFalse()
@@ -85,9 +85,9 @@ class DrawingControllerTest {
 
     @Test
     fun `undo removes last stroke`() {
-        controller.startStroke(Offset(0f, 0f), Color.Blue)
-        controller.addPoint(Offset(1f, 1f), Color.Blue)
-        controller.endStroke(Color.Blue, 2f, BrushType.NORMAL)
+        controller.startStroke(Offset(0f, 0f), Color.Blue, BrushEffect.NONE)
+        controller.addPoint(Offset(1f, 1f), Color.Blue, BrushEffect.NONE)
+        controller.endStroke(Color.Blue, 2f, BrushEffect.NONE)
 
         assertThat(controller.strokes).hasSize(1)
 
@@ -98,9 +98,9 @@ class DrawingControllerTest {
 
     @Test
     fun `clear resets everything`() {
-        controller.startStroke(Offset(0f, 0f), Color.Magenta)
-        controller.addPoint(Offset(3f, 3f), Color.Magenta)
-        controller.endStroke(Color.Magenta, 5f, BrushType.NORMAL)
+        controller.startStroke(Offset(0f, 0f), Color.Magenta, BrushEffect.NONE)
+        controller.addPoint(Offset(3f, 3f), Color.Magenta, BrushEffect.NONE)
+        controller.endStroke(Color.Magenta, 5f, BrushEffect.NONE)
 
         controller.clear()
 
@@ -112,9 +112,9 @@ class DrawingControllerTest {
 
     @Test
     fun `redo restores last undone stroke`() {
-        controller.startStroke(Offset(0f, 0f), Color.Green)
-        controller.addPoint(Offset(2f, 2f), Color.Green)
-        controller.endStroke(Color.Green, 3f, BrushType.NORMAL)
+        controller.startStroke(Offset(0f, 0f), Color.Green, BrushEffect.NONE)
+        controller.addPoint(Offset(2f, 2f), Color.Green, BrushEffect.NONE)
+        controller.endStroke(Color.Green, 3f, BrushEffect.NONE)
 
         controller.undo()
         assertThat(controller.strokes).isEmpty()

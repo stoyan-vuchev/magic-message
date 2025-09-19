@@ -24,15 +24,26 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main
 
+import android.content.Intent
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.stoyanvuchev.magicmessage.framework.service.ExportGifService
+import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreen
+import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
+import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
     navigation<MainScreen.Navigation>(
-        startDestination = MainScreen.Home
+        startDestination = MainScreen.Draw("") // fixme. To be changed.
     ) {
 
         composable<MainScreen.Home> {}
@@ -41,7 +52,48 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
         composable<MainScreen.Menu> {}
 
-        composable<MainScreen.Draw> {}
+        composable<MainScreen.Draw> {
+
+            val viewModel = hiltViewModel<DrawScreenViewModel>()
+            val context = LocalContext.current
+
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val drawingController by viewModel.drawingController.collectAsStateWithLifecycle()
+
+            val exporterProgress by viewModel.exporterProgress.collectAsStateWithLifecycle()
+            val exporterState by viewModel.exporterState.collectAsStateWithLifecycle()
+            val exportedUri by viewModel.exportedUri.collectAsStateWithLifecycle()
+
+            LaunchedEffect(Unit) {
+                viewModel.uiActionFlow.collectLatest { action ->
+                    when (action) {
+
+                        is DrawScreenUIAction.Export -> {
+                            Intent(
+                                context,
+                                ExportGifService::class.java
+                            ).apply {
+                                putExtra("width", action.width)
+                                putExtra("height", action.height)
+                            }.also { context.startForegroundService(it) }
+                        }
+
+                        else -> Unit
+
+                    }
+                }
+            }
+
+            DrawScreen(
+                state = state,
+                exporterProgress = exporterProgress,
+                exporterState = exporterState,
+                exportedUri = exportedUri,
+                drawingController = drawingController,
+                onUIAction = viewModel::onUIAction
+            )
+
+        }
 
     }
 

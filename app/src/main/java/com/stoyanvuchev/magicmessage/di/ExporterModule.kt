@@ -1,7 +1,8 @@
 package com.stoyanvuchev.magicmessage.di
 
 import android.app.Application
-import com.stoyanvuchev.magicmessage.framework.Exporter
+import com.stoyanvuchev.magicmessage.framework.export.Exporter
+import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +19,12 @@ object ExporterModule {
         app: Application
     ): Exporter {
         return Exporter(context = app.applicationContext)
+    }
+
+    @Provides
+    @Singleton
+    fun provideExporterProgressObserver(): ExporterProgressObserver {
+        return ExporterProgressObserver()
     }
 
 }

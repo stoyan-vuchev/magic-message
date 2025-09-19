@@ -22,16 +22,6 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog
 
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-
-@Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+enum class DialogEditType { NONE, EFFECT, THICKNESS, COLOR, BG_LAYER }

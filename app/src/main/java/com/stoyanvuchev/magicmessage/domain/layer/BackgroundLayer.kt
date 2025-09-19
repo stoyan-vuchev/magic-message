@@ -22,16 +22,29 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.domain.layer
 
+import android.net.Uri
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import kotlinx.serialization.Contextual
 
 @Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+sealed class BackgroundLayer {
+
+    data class ColorLayer(
+        @Contextual val color: Color
+    ) : BackgroundLayer()
+
+    data class LinearGradientLayer(
+        @Contextual val colors: List<Color>,
+        val start: Offset = Offset.Zero,
+        val end: Offset? = null
+    ) : BackgroundLayer()
+
+    data class ImageLayer(
+        @Contextual val uri: Uri
+    ) : BackgroundLayer()
+
+}
