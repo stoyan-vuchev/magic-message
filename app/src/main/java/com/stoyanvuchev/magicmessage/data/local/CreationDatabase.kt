@@ -33,7 +33,7 @@ import androidx.room.TypeConverters
     version = 1,
     exportSchema = true
 )
-@TypeConverters(StrokesConverter::class)
+@TypeConverters(CreationTypeConverters::class)
 abstract class CreationDatabase : RoomDatabase() {
     abstract fun creationDao(): CreationDao
 }

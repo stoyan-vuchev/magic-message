@@ -30,11 +30,15 @@ import com.stoyanvuchev.magicmessage.domain.DefaultBGLayers
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import com.stoyanvuchev.magicmessage.domain.brush.BrushThickness
 import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
+import com.stoyanvuchev.magicmessage.domain.serializer.BackgroundLayerSerializer
+import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
+import kotlinx.serialization.Serializable
 
 @Stable
+@Serializable
 data class DrawConfiguration(
     val effect: BrushEffect = BrushEffect.BUBBLES,
     val thickness: BrushThickness = BrushThickness.MEDIUM,
-    val color: Color = Color.White,
-    val bgLayer: BackgroundLayer = DefaultBGLayers.linearGradientLayers.first()
+    @Serializable(with = ColorSerializer::class) val color: Color = Color.White,
+    @Serializable(with = BackgroundLayerSerializer::class) val bgLayer: BackgroundLayer = DefaultBGLayers.linearGradientLayers.first()
 )

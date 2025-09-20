@@ -22,34 +22,23 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.repository
+package com.stoyanvuchev.magicmessage.domain.usecase
 
-import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
+import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import javax.inject.Inject
 
-interface CreationRepository {
+class CreationSaveOrUpdateUseCase @Inject constructor(
+    private val repository: CreationRepository
+) {
 
-    suspend fun saveOrUpdateDraft(
+    suspend operator fun invoke(
         draftId: Long?,
         strokes: List<StrokeModel>,
         drawConfiguration: DrawConfiguration
-    ): Long
-
-    suspend fun markAsFinished(
-        id: Long,
-        previewUri: String?
-    )
-
-    suspend fun markAsFavorite(id: Long)
-    suspend fun removeAsFavorite(id: Long)
-
-    suspend fun getDrafts(): List<CreationModel>
-    suspend fun getFinished(): List<CreationModel>
-    suspend fun getById(id: Long): CreationModel?
-
-    suspend fun deleteAllDrafts()
-    suspend fun deleteAllCreations()
-    suspend fun deleteById(id: Long)
+    ): Long {
+        return repository.saveOrUpdateDraft(draftId, strokes, drawConfiguration)
+    }
 
 }

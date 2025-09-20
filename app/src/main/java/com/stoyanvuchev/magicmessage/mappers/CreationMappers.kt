@@ -33,14 +33,6 @@ fun CreationEntity.toModel() = CreationModel(
     previewUri = previewUri,
     isDraft = isDraft,
     isFavorite = isFavorite,
-    strokes = strokes
-)
-
-fun CreationModel.toEntity() = CreationEntity(
-    id = id,
-    createdAt = createdAt,
-    previewUri = previewUri,
-    isDraft = isDraft,
-    isFavorite = isFavorite,
-    strokes = strokes
+    strokes = strokes,
+    drawConfiguration = drawConfiguration
 )

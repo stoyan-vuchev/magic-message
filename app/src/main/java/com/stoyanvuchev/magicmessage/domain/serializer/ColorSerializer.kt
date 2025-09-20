@@ -22,37 +22,27 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.layer
+package com.stoyanvuchev.magicmessage.domain.serializer
 
-import android.net.Uri
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.serializer.ColorListSerializer
-import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
-import com.stoyanvuchev.magicmessage.domain.serializer.OffsetSerializer
-import com.stoyanvuchev.magicmessage.domain.serializer.UriSerializer
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-@Stable
-@Serializable
-sealed class BackgroundLayer {
+object ColorSerializer : KSerializer<Color> {
 
-    @Serializable
-    data class ColorLayer(
-        @Serializable(with = ColorSerializer::class) val color: Color
-    ) : BackgroundLayer()
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("Color", PrimitiveKind.STRING)
 
-    @Serializable
-    data class LinearGradientLayer(
-        @Serializable(with = ColorListSerializer::class) val colors: List<Color>,
-        @Serializable(with = OffsetSerializer::class) val start: Offset = Offset.Zero,
-        @Serializable(with = OffsetSerializer::class) val end: Offset? = null
-    ) : BackgroundLayer()
+    override fun serialize(encoder: Encoder, value: Color) {
+        encoder.encodeString(value.value.toULong().toString())
+    }
 
-    @Serializable
-    data class ImageLayer(
-        @Serializable(with = UriSerializer::class) val uri: Uri
-    ) : BackgroundLayer()
+    override fun deserialize(decoder: Decoder): Color {
+        return Color(decoder.decodeString().toULong())
+    }
 
 }

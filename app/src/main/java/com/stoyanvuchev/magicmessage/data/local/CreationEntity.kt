@@ -27,6 +27,7 @@ package com.stoyanvuchev.magicmessage.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 
 @Entity(tableName = "creations")
@@ -40,7 +41,10 @@ data class CreationEntity(
     val isDraft: Boolean = true,
     val isFavorite: Boolean = false,
 
-    @param:TypeConverters(StrokesConverter::class)
-    val strokes: List<StrokeModel> = emptyList()
+    @param:TypeConverters(CreationTypeConverters::class)
+    val strokes: List<StrokeModel> = emptyList(),
+
+    @param:TypeConverters(CreationTypeConverters::class)
+    val drawConfiguration: DrawConfiguration = DrawConfiguration()
 
 )

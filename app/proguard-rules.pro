@@ -21,5 +21,12 @@
 #-renamesourcefileattribute SourceFile
 
 # Ignore missing classes referenced by annotation processors
--keep public class pl.droidsonroids.gif.GifIOException{<init>(int);}
--keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
+-dontwarn javax.lang.model.**
+-dontwarn com.google.j2objc.annotations.**
+-dontwarn com.squareup.javapoet.**
+-dontwarn com.google.auto.**
+-dontwarn com.google.common.collect.Immutable*
+
+-keep class com.google.common.collect.** { *; }
+-keep class com.squareup.javapoet.** { *; }
+-keep class com.google.auto.** { *; }

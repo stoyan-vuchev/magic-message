@@ -33,5 +33,6 @@ data class CreationModel(
     val previewUri: String?,
     val isDraft: Boolean,
     val isFavorite: Boolean,
-    val strokes: List<StrokeModel>
+    val strokes: List<StrokeModel>,
+    val drawConfiguration: DrawConfiguration
 )
