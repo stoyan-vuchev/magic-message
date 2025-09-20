@@ -64,7 +64,7 @@ sealed class MainScreen(
     )
 
     @Serializable
-    data class Draw(val messageId: String) : MainScreen(
+    data class Draw(val messageId: Long) : MainScreen(
         label = R.string.draw_screen_label,
         icon = R.drawable.logo_icon
     )

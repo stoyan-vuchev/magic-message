@@ -53,7 +53,7 @@ class CreationDatabaseTest {
         db = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             CreationDatabase::class.java
-        ).apply { addTypeConverter(StrokesConverter()) }.build()
+        ).apply { addTypeConverter(CreationTypeConverters()) }.build()
         dao = db.creationDao()
     }
 

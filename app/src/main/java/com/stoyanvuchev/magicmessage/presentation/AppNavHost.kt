@@ -77,7 +77,7 @@ fun AppNavHost(
                 LaunchedEffect(isBoardingComplete) {
                     if (isBoardingComplete != null) {
                         navController.navigate(
-                            if (isBoardingComplete) MainScreen.Draw("") // fixme: To be changed.
+                            if (isBoardingComplete) MainScreen.Draw(0L) // fixme: To be changed.
                             else BoardingScreen.GetStarted
                         ) {
                             popUpTo(navController.graph.id) { inclusive = false }

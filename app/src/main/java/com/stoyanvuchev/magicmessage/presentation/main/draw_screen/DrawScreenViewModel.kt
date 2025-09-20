@@ -24,12 +24,17 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
 import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
 import com.stoyanvuchev.magicmessage.framework.service.ExportDataHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,8 +45,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DrawScreenViewModel @Inject constructor(
-    private val progressObserver: ExporterProgressObserver
+    private val progressObserver: ExporterProgressObserver,
+    private val useCases: CreationUseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private var id = savedStateHandle.get<Long?>("messageId")
 
     private val _drawingController = MutableStateFlow(DrawingController())
     val drawingController = _drawingController.asStateFlow()
@@ -61,6 +70,12 @@ class DrawScreenViewModel @Inject constructor(
 
             is DrawScreenUIAction.Undo -> _drawingController.value.undo()
             is DrawScreenUIAction.Redo -> _drawingController.value.redo()
+            is DrawScreenUIAction.OnStrokeEnded -> onStrokeEnded(
+                action.color,
+                action.width,
+                action.effect
+            )
+
             is DrawScreenUIAction.Export -> exportGif(action)
             is DrawScreenUIAction.DismissExporterDialog -> progressObserver.resetAll()
 
@@ -85,6 +100,7 @@ class DrawScreenViewModel @Inject constructor(
                 )
             )
         }
+        saveDraft()
     }
 
     private fun setBrushColor(
@@ -97,6 +113,7 @@ class DrawScreenViewModel @Inject constructor(
                 )
             )
         }
+        saveDraft()
     }
 
     private fun setBrushThickness(
@@ -109,6 +126,7 @@ class DrawScreenViewModel @Inject constructor(
                 )
             )
         }
+        saveDraft()
     }
 
     private fun setBrushEffect(
@@ -121,6 +139,7 @@ class DrawScreenViewModel @Inject constructor(
                 )
             )
         }
+        saveDraft()
     }
 
     private fun setDialogEditType(action: DrawScreenUIAction.SetDialogEditType) {
@@ -135,6 +154,41 @@ class DrawScreenViewModel @Inject constructor(
 
     private fun sendUIAction(action: DrawScreenUIAction) {
         viewModelScope.launch { _uiActionChannel.send(action) }
+    }
+
+    private fun onStrokeEnded(
+        color: Color,
+        width: Float,
+        effect: BrushEffect
+    ) {
+        _drawingController.value.endStroke(color, width, effect)
+        saveDraft()
+    }
+
+    private fun saveDraft() {
+        viewModelScope.launch(Dispatchers.IO) {
+            id = useCases.saveOrUpdateUseCase(
+                draftId = id,
+                strokes = _drawingController.value.strokes.toList(),
+                drawConfiguration = _state.value.drawConfiguration
+            )
+        }
+    }
+
+    private fun loadDraft(existingDraftId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCases.getByIdUseCase(existingDraftId)?.let { model ->
+                _state.update { it.copy(drawConfiguration = model.drawConfiguration) }
+                _drawingController.value.clear()
+                _drawingController.value.strokes.addAll(model.strokes)
+            }
+        }
+    }
+
+    init {
+        id?.let {
+            loadDraft(it)
+        }
     }
 
 }

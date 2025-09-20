@@ -22,34 +22,9 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.repository
+package com.stoyanvuchev.magicmessage.domain.usecase
 
-import com.stoyanvuchev.magicmessage.domain.model.CreationModel
-import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
-
-interface CreationRepository {
-
-    suspend fun saveOrUpdateDraft(
-        draftId: Long?,
-        strokes: List<StrokeModel>,
-        drawConfiguration: DrawConfiguration
-    ): Long
-
-    suspend fun markAsFinished(
-        id: Long,
-        previewUri: String?
-    )
-
-    suspend fun markAsFavorite(id: Long)
-    suspend fun removeAsFavorite(id: Long)
-
-    suspend fun getDrafts(): List<CreationModel>
-    suspend fun getFinished(): List<CreationModel>
-    suspend fun getById(id: Long): CreationModel?
-
-    suspend fun deleteAllDrafts()
-    suspend fun deleteAllCreations()
-    suspend fun deleteById(id: Long)
-
-}
+data class CreationUseCases(
+    val saveOrUpdateUseCase: CreationSaveOrUpdateUseCase,
+    val getByIdUseCase: CreationGetByIdUseCase,
+)

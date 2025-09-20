@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
     navigation<MainScreen.Navigation>(
-        startDestination = MainScreen.Draw("") // fixme. To be changed.
+        startDestination = MainScreen.Draw(0L) // fixme. To be changed.
     ) {
 
         composable<MainScreen.Home> {}

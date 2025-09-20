@@ -27,8 +27,12 @@ package com.stoyanvuchev.magicmessage.di
 import android.app.Application
 import androidx.room.Room
 import com.stoyanvuchev.magicmessage.data.local.CreationDatabase
+import com.stoyanvuchev.magicmessage.data.local.CreationTypeConverters
 import com.stoyanvuchev.magicmessage.data.repository.CreationRepositoryImpl
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationGetByIdUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationSaveOrUpdateUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,18 +45,38 @@ object CreationModule {
 
     @Provides
     @Singleton
-    fun provideCreationDatabase(app: Application): CreationDatabase {
+    fun provideStrokesConverter(): CreationTypeConverters = CreationTypeConverters()
+
+    @Provides
+    @Singleton
+    fun provideCreationDatabase(
+        app: Application,
+        creationTypeConverters: CreationTypeConverters
+    ): CreationDatabase {
         return Room.databaseBuilder(
             app.applicationContext,
             CreationDatabase::class.java,
             "creation_db"
-        ).build()
+        ).apply { addTypeConverter(creationTypeConverters) }.build()
     }
 
     @Provides
     @Singleton
-    fun provideCreationRepository(db: CreationDatabase): CreationRepository {
+    fun provideCreationRepository(
+        db: CreationDatabase
+    ): CreationRepository {
         return CreationRepositoryImpl(db.creationDao())
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreationUseCases(
+        repository: CreationRepository
+    ): CreationUseCases {
+        return CreationUseCases(
+            saveOrUpdateUseCase = CreationSaveOrUpdateUseCase(repository),
+            getByIdUseCase = CreationGetByIdUseCase(repository)
+        )
     }
 
 }

@@ -33,7 +33,8 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import com.stoyanvuchev.magicmessage.data.local.CreationDao
 import com.stoyanvuchev.magicmessage.data.local.CreationDatabase
-import com.stoyanvuchev.magicmessage.data.local.StrokesConverter
+import com.stoyanvuchev.magicmessage.data.local.CreationTypeConverters
+import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -54,7 +55,7 @@ class CreationRepositoryTest {
         db = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             CreationDatabase::class.java
-        ).apply { addTypeConverter(StrokesConverter()) }.build()
+        ).apply { addTypeConverter(CreationTypeConverters()) }.build()
 
         dao = db.creationDao()
         repository = CreationRepositoryImpl(dao)
@@ -70,7 +71,7 @@ class CreationRepositoryTest {
 
     @Test
     fun saveOrUpdateDraft_inserts_whenNew() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList())
+        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
         val loaded = repository.getById(id)
 
         assertThat(loaded).isNotNull()
@@ -80,10 +81,10 @@ class CreationRepositoryTest {
 
     @Test
     fun saveOrUpdateDraft_updates_whenExisting() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList())
+        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
         val updatedStrokes = listOf<StrokeModel>() // could populate later
 
-        val sameId = repository.saveOrUpdateDraft(id, updatedStrokes)
+        val sameId = repository.saveOrUpdateDraft(id, updatedStrokes, DrawConfiguration())
         val loaded = repository.getById(sameId)
 
         assertThat(sameId).isEqualTo(id)
@@ -92,7 +93,7 @@ class CreationRepositoryTest {
 
     @Test
     fun markAsFinished_updatesDraftToFinished() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList())
+        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
         repository.markAsFinished(id, "preview.png")
 
         val loaded = repository.getById(id)
@@ -103,7 +104,7 @@ class CreationRepositoryTest {
 
     @Test
     fun deleteById_removesEntity() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList())
+        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
         repository.deleteById(id)
 
         val loaded = repository.getById(id)

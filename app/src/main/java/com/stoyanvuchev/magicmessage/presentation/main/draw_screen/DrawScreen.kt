@@ -55,7 +55,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
-import com.stoyanvuchev.magicmessage.core.ui.components.DrawingCanvas
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
@@ -159,7 +158,8 @@ fun DrawScreen(
                         canvasSize = it.size
                     },
                 controller = drawingController,
-                drawConfiguration = state.drawConfiguration
+                drawConfiguration = state.drawConfiguration,
+                onUIAction = onUIAction
             )
 
             val progress by remember(drawingController.totalPointCount) {

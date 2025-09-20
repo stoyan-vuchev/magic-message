@@ -38,6 +38,12 @@ interface DrawScreenUIAction {
     data object Redo : DrawScreenUIAction
     data object DismissExporterDialog : DrawScreenUIAction
 
+    data class OnStrokeEnded(
+        val color: Color,
+        val width: Float,
+        val effect: BrushEffect
+    ) : DrawScreenUIAction
+
     data class Export(
         val width: Int,
         val height: Int

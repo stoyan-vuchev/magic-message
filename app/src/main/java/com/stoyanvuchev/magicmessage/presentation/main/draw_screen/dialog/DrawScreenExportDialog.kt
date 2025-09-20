@@ -29,6 +29,8 @@ import android.graphics.ImageDecoder
 import android.graphics.drawable.AnimatedImageDrawable
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -104,7 +106,13 @@ fun DrawScreenExportDialog(
                     )
                     .background(Theme.colors.surfaceElevationHigh.copy(.33f))
                     .padding(16.dp)
-                    .animateContentSize()
+                    .animateContentSize(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        ),
+                        alignment = Alignment.Center
+                    )
             ) {
 
                 val title by rememberUpdatedState(

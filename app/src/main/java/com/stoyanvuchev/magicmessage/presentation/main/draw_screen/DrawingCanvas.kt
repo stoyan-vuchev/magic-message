@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.components
+package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -46,6 +46,7 @@ fun DrawingCanvas(
     modifier: Modifier = Modifier,
     controller: DrawingController,
     drawConfiguration: DrawConfiguration,
+    onUIAction: (DrawScreenUIAction) -> Unit
 ) {
 
     ParticleUpdater(
@@ -76,10 +77,12 @@ fun DrawingCanvas(
                         change.consume()
                     }
 
-                    controller.endStroke(
-                        color = drawConfiguration.color,
-                        width = drawConfiguration.thickness.thickness.toPx(),
-                        effect = drawConfiguration.effect
+                    onUIAction(
+                        DrawScreenUIAction.OnStrokeEnded(
+                            color = drawConfiguration.color,
+                            width = drawConfiguration.thickness.thickness.toPx(),
+                            effect = drawConfiguration.effect
+                        )
                     )
 
                 }

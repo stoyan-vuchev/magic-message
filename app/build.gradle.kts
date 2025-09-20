@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.android.ndk.gif)
-    implementation(libs.google.gson)
+    implementation(libs.kotlinx.serialization.json)
 
     // Fancy UI
     implementation(libs.stoyanVuchev.systemUIBarsTweaker)

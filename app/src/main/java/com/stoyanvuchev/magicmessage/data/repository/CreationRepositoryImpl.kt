@@ -27,6 +27,7 @@ package com.stoyanvuchev.magicmessage.data.repository
 import com.stoyanvuchev.magicmessage.data.local.CreationDao
 import com.stoyanvuchev.magicmessage.data.local.CreationEntity
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
+import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
 import com.stoyanvuchev.magicmessage.mappers.toModel
@@ -38,7 +39,8 @@ class CreationRepositoryImpl @Inject constructor(
 
     override suspend fun saveOrUpdateDraft(
         draftId: Long?,
-        strokes: List<StrokeModel>
+        strokes: List<StrokeModel>,
+        drawConfiguration: DrawConfiguration
     ): Long {
 
         suspend fun insert() = dao.insert(
@@ -47,14 +49,20 @@ class CreationRepositoryImpl @Inject constructor(
                 strokes = strokes,
                 isDraft = true,
                 isFavorite = false,
-                createdAt = System.currentTimeMillis()
+                createdAt = System.currentTimeMillis(),
+                drawConfiguration = drawConfiguration
             )
         )
 
         return if (draftId != null) {
             val creation = dao.getById(draftId)
             if (creation != null) {
-                dao.update(creation.copy(strokes = strokes))
+                dao.update(
+                    creation.copy(
+                        strokes = strokes,
+                        drawConfiguration = drawConfiguration
+                    )
+                )
                 draftId
             } else insert()
         } else insert()

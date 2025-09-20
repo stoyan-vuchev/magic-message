@@ -26,9 +26,12 @@ package com.stoyanvuchev.magicmessage.domain.model
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
+import com.stoyanvuchev.magicmessage.domain.serializer.OffsetSerializer
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Stable
 data class TimedPoint(
-    val offset: Offset,
+    @Serializable(with = OffsetSerializer::class) val offset: Offset,
     val timestamp: Long
 )
