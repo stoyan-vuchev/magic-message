@@ -25,8 +25,8 @@
 package com.stoyanvuchev.magicmessage.di
 
 import android.app.Application
-import com.stoyanvuchev.magicmessage.framework.export.Exporter
-import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
+import androidx.room.Room
+import com.stoyanvuchev.magicmessage.data.local.CreationDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,20 +35,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ExporterModule {
+object CreationDatabaseModule {
 
     @Provides
     @Singleton
-    fun provideExporter(
-        app: Application
-    ): Exporter {
-        return Exporter(context = app.applicationContext)
-    }
-
-    @Provides
-    @Singleton
-    fun provideExporterProgressObserver(): ExporterProgressObserver {
-        return ExporterProgressObserver()
+    fun provideCreationDatabase(app: Application): CreationDatabase {
+        return Room.databaseBuilder(
+            app.applicationContext,
+            CreationDatabase::class.java,
+            "creation_db"
+        ).build()
     }
 
 }

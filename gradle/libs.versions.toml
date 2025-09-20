@@ -14,6 +14,7 @@ navigationCompose = "2.9.4"
 composeBom = "2025.09.00"
 material = "1.13.0"
 androidNdkGif = "v1.0.2"
+googleGson = "2.13.2"
 
 # Fancy UI Libs Versions
 systemUIBarsTweaker = "1.2.4"
@@ -56,6 +57,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 android-ndk-gif = { group = "com.github.DonMarv00", name = "android-ndk-gif-16kb", version.ref = "androidNdkGif" }
+google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "googleGson" }
 
 # Fancy UI Libs
 stoyanVuchev-systemUIBarsTweaker = { group = "com.github.stoyan-vuchev", name = "system-ui-bars-tweaker", version.ref = "systemUIBarsTweaker" }

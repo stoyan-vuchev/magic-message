@@ -85,8 +85,7 @@ class DrawingController {
 
         if (!drawingEnabled) return
 
-        // Check if adding this point exceeds the max
-        val prospectiveTotal = totalPointCount + currentPoints.size + 1
+        val prospectiveTotal = totalPointCount + 1
         if (prospectiveTotal > maxPoints) {
             drawingEnabled = false
             return
@@ -95,6 +94,9 @@ class DrawingController {
         val t = System.currentTimeMillis() - startTime
         val point = TimedPoint(offset, t)
         currentPoints.add(point)
+
+        totalPointCount += 1
+
         if (effect != BrushEffect.NONE) {
             spawnParticles(offset, color)
         }
@@ -119,7 +121,6 @@ class DrawingController {
             undoStack.addLast(stroke)
             redoStack.clear()
 
-            totalPointCount += stroke.points.size
             if (totalPointCount >= maxPoints) {
                 drawingEnabled = false
             }

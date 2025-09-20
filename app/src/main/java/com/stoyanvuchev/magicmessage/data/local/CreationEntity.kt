@@ -22,33 +22,25 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.di
+package com.stoyanvuchev.magicmessage.data.local
 
-import android.app.Application
-import com.stoyanvuchev.magicmessage.framework.export.Exporter
-import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 
-@Module
-@InstallIn(SingletonComponent::class)
-object ExporterModule {
+@Entity(tableName = "creations")
+data class CreationEntity(
 
-    @Provides
-    @Singleton
-    fun provideExporter(
-        app: Application
-    ): Exporter {
-        return Exporter(context = app.applicationContext)
-    }
+    @PrimaryKey(autoGenerate = true)
+    val id: Long? = null,
 
-    @Provides
-    @Singleton
-    fun provideExporterProgressObserver(): ExporterProgressObserver {
-        return ExporterProgressObserver()
-    }
+    val createdAt: Long,
+    val previewUri: String?,
+    val isDraft: Boolean,
+    val isFavorite: Boolean,
 
-}
+    @param:TypeConverters(StrokesConverter::class)
+    val strokes: List<StrokeModel>
+
+)

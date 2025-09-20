@@ -22,33 +22,31 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.di
+package com.stoyanvuchev.magicmessage.data.local
 
-import android.app.Application
-import com.stoyanvuchev.magicmessage.framework.export.Exporter
-import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import androidx.room.ProvidedTypeConverter
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 
-@Module
-@InstallIn(SingletonComponent::class)
-object ExporterModule {
+@ProvidedTypeConverter
+class StrokesConverter {
 
-    @Provides
-    @Singleton
-    fun provideExporter(
-        app: Application
-    ): Exporter {
-        return Exporter(context = app.applicationContext)
+    @TypeConverter
+    fun fromStrokes(
+        value: List<StrokeModel>?
+    ): String {
+        val type = object : TypeToken<List<StrokeModel>>() {}.type
+        return Gson().toJson(value, type)
     }
 
-    @Provides
-    @Singleton
-    fun provideExporterProgressObserver(): ExporterProgressObserver {
-        return ExporterProgressObserver()
+    @TypeConverter
+    fun toStrokes(
+        value: String?
+    ): List<StrokeModel> {
+        val type = object : TypeToken<List<StrokeModel>>() {}.type
+        return Gson().fromJson(value, type)
     }
 
 }

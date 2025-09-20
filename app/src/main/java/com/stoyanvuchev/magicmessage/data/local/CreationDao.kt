@@ -22,33 +22,40 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.di
+package com.stoyanvuchev.magicmessage.data.local
 
-import android.app.Application
-import com.stoyanvuchev.magicmessage.framework.export.Exporter
-import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 
-@Module
-@InstallIn(SingletonComponent::class)
-object ExporterModule {
+@Dao
+interface CreationDao {
 
-    @Provides
-    @Singleton
-    fun provideExporter(
-        app: Application
-    ): Exporter {
-        return Exporter(context = app.applicationContext)
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(creation: CreationEntity): Long
 
-    @Provides
-    @Singleton
-    fun provideExporterProgressObserver(): ExporterProgressObserver {
-        return ExporterProgressObserver()
-    }
+    @Update
+    suspend fun update(creation: CreationEntity)
+
+    @Delete
+    suspend fun delete(creation: CreationEntity)
+
+    @Query("SELECT * FROM creations ORDER BY createdAt DESC")
+    suspend fun getAll(): List<CreationEntity>
+
+    @Query("SELECT * FROM creations WHERE isDraft IS 1 ORDER BY createdAt DESC")
+    suspend fun getAllDrafts(): List<CreationEntity>
+
+    @Query("SELECT * FROM creations WHERE id = :id")
+    suspend fun getById(id: Long): CreationEntity?
+
+    @Query("DELETE FROM creations WHERE isDraft IS 1")
+    suspend fun deleteAllDrafts()
+
+    @Query("DELETE FROM creations")
+    suspend fun deleteAllCreations()
 
 }

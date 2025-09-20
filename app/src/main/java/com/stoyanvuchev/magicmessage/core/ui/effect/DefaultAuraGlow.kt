@@ -24,28 +24,47 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.effect
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
-fun Modifier.defaultHazeEffect(
-    hazeState: HazeState
+fun Modifier.defaultAuraGlow(
+    radius: Dp = 1.dp,
+    color: Color,
+    centerOffset: IntOffset,
+    glowOffset: Dp,
+    alpha: Float,
+    spread: Dp = 0.dp
 ): Modifier {
-    return composed {
-        hazeEffect(
-            state = hazeState,
-            style = HazeStyle(
-                tint = HazeTint(color = Theme.colors.surfaceElevationLow.copy(.5f)),
-                blurRadius = 16.dp,
-                noiseFactor = -.5f,
-                backgroundColor = Theme.colors.surfaceElevationLow
-
-            )
+    return dropShadow(
+        shape = CircleShape,
+        shadow = Shadow(
+            radius = radius,
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    color,
+                    color.copy(.75f),
+                    color.copy(0f)
+                ),
+                center = Offset(
+                    x = centerOffset.x.toFloat(),
+                    y = centerOffset.y.toFloat()
+                )
+            ),
+            offset = DpOffset(
+                x = glowOffset,
+                y = glowOffset
+            ),
+            alpha = alpha,
+            spread = spread
         )
-    }
+    )
 }
