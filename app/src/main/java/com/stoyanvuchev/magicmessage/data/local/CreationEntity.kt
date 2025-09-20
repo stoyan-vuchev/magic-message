@@ -35,12 +35,12 @@ data class CreationEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
 
-    val createdAt: Long,
-    val previewUri: String?,
-    val isDraft: Boolean,
-    val isFavorite: Boolean,
+    val createdAt: Long = 0L,
+    val previewUri: String? = "",
+    val isDraft: Boolean = true,
+    val isFavorite: Boolean = false,
 
     @param:TypeConverters(StrokesConverter::class)
-    val strokes: List<StrokeModel>
+    val strokes: List<StrokeModel> = emptyList()
 
 )

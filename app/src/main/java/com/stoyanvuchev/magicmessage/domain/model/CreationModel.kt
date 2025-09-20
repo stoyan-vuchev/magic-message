@@ -22,40 +22,16 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.data.local
+package com.stoyanvuchev.magicmessage.domain.model
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.compose.runtime.Stable
 
-@Dao
-interface CreationDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(creation: CreationEntity): Long
-
-    @Update
-    suspend fun update(creation: CreationEntity)
-
-    @Delete
-    suspend fun delete(creation: CreationEntity)
-
-    @Query("SELECT * FROM creations WHERE isDraft IS 0 ORDER BY createdAt DESC")
-    suspend fun getAll(): List<CreationEntity>
-
-    @Query("SELECT * FROM creations WHERE isDraft IS 1 ORDER BY createdAt DESC")
-    suspend fun getAllDrafts(): List<CreationEntity>
-
-    @Query("SELECT * FROM creations WHERE id = :id")
-    suspend fun getById(id: Long): CreationEntity?
-
-    @Query("DELETE FROM creations WHERE isDraft IS 1")
-    suspend fun deleteAllDrafts()
-
-    @Query("DELETE FROM creations")
-    suspend fun deleteAllCreations()
-
-}
+@Stable
+data class CreationModel(
+    val id: Long,
+    val createdAt: Long,
+    val previewUri: String?,
+    val isDraft: Boolean,
+    val isFavorite: Boolean,
+    val strokes: List<StrokeModel>
+)

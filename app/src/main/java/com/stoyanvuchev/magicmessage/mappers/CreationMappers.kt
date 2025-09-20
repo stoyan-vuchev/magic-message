@@ -22,29 +22,25 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.di
+package com.stoyanvuchev.magicmessage.mappers
 
-import android.app.Application
-import androidx.room.Room
-import com.stoyanvuchev.magicmessage.data.local.CreationDatabase
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import com.stoyanvuchev.magicmessage.data.local.CreationEntity
+import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
-@Module
-@InstallIn(SingletonComponent::class)
-object CreationDatabaseModule {
+fun CreationEntity.toModel() = CreationModel(
+    id = id ?: 0,
+    createdAt = createdAt,
+    previewUri = previewUri,
+    isDraft = isDraft,
+    isFavorite = isFavorite,
+    strokes = strokes
+)
 
-    @Provides
-    @Singleton
-    fun provideCreationDatabase(app: Application): CreationDatabase {
-        return Room.databaseBuilder(
-            app.applicationContext,
-            CreationDatabase::class.java,
-            "creation_db"
-        ).build()
-    }
-
-}
+fun CreationModel.toEntity() = CreationEntity(
+    id = id,
+    createdAt = createdAt,
+    previewUri = previewUri,
+    isDraft = isDraft,
+    isFavorite = isFavorite,
+    strokes = strokes
+)

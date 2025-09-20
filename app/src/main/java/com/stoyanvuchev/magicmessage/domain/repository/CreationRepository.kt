@@ -22,40 +22,32 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.data.local
+package com.stoyanvuchev.magicmessage.domain.repository
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import com.stoyanvuchev.magicmessage.domain.model.CreationModel
+import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 
-@Dao
-interface CreationDao {
+interface CreationRepository {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(creation: CreationEntity): Long
+    suspend fun saveOrUpdateDraft(
+        draftId: Long?,
+        strokes: List<StrokeModel>
+    ): Long
 
-    @Update
-    suspend fun update(creation: CreationEntity)
+    suspend fun markAsFinished(
+        id: Long,
+        previewUri: String?
+    )
 
-    @Delete
-    suspend fun delete(creation: CreationEntity)
+    suspend fun markAsFavorite(id: Long)
+    suspend fun removeAsFavorite(id: Long)
 
-    @Query("SELECT * FROM creations WHERE isDraft IS 0 ORDER BY createdAt DESC")
-    suspend fun getAll(): List<CreationEntity>
+    suspend fun getDrafts(): List<CreationModel>
+    suspend fun getFinished(): List<CreationModel>
+    suspend fun getById(id: Long): CreationModel?
 
-    @Query("SELECT * FROM creations WHERE isDraft IS 1 ORDER BY createdAt DESC")
-    suspend fun getAllDrafts(): List<CreationEntity>
-
-    @Query("SELECT * FROM creations WHERE id = :id")
-    suspend fun getById(id: Long): CreationEntity?
-
-    @Query("DELETE FROM creations WHERE isDraft IS 1")
     suspend fun deleteAllDrafts()
-
-    @Query("DELETE FROM creations")
     suspend fun deleteAllCreations()
+    suspend fun deleteById(id: Long)
 
 }
