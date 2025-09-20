@@ -31,6 +31,9 @@ import com.stoyanvuchev.magicmessage.data.local.CreationTypeConverters
 import com.stoyanvuchev.magicmessage.data.repository.CreationRepositoryImpl
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationGetByIdUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationGetDraftsUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationGetExportedUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationMarkAsExportedUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationSaveOrUpdateUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
 import dagger.Module
@@ -75,7 +78,10 @@ object CreationModule {
     ): CreationUseCases {
         return CreationUseCases(
             saveOrUpdateUseCase = CreationSaveOrUpdateUseCase(repository),
-            getByIdUseCase = CreationGetByIdUseCase(repository)
+            getByIdUseCase = CreationGetByIdUseCase(repository),
+            getExportedUseCase = CreationGetExportedUseCase(repository),
+            getDraftsUseCase = CreationGetDraftsUseCase(repository),
+            markAsExportedUseCase = CreationMarkAsExportedUseCase(repository)
         )
     }
 

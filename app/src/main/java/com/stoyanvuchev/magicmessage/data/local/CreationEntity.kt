@@ -28,8 +28,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
+import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Entity(tableName = "creations")
 data class CreationEntity(
 
@@ -37,14 +39,13 @@ data class CreationEntity(
     val id: Long? = null,
 
     val createdAt: Long = 0L,
-    val previewUri: String? = "",
     val isDraft: Boolean = true,
     val isFavorite: Boolean = false,
 
     @param:TypeConverters(CreationTypeConverters::class)
-    val strokes: List<StrokeModel> = emptyList(),
+    val drawConfiguration: DrawConfiguration = DrawConfiguration(),
 
     @param:TypeConverters(CreationTypeConverters::class)
-    val drawConfiguration: DrawConfiguration = DrawConfiguration()
+    val drawingSnapshot: DrawingSnapshot
 
 )

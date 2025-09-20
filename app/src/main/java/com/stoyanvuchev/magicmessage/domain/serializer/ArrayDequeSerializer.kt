@@ -22,15 +22,28 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
+package com.stoyanvuchev.magicmessage.domain.serializer
 
-import androidx.compose.runtime.Stable
-import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-@Stable
-data class DrawScreenState(
-    val messageId: Long? = null,
-    val dialogEditType: DialogEditType = DialogEditType.NONE,
-    val drawConfiguration: DrawConfiguration = DrawConfiguration()
-)
+open class ArrayDequeSerializer<T>(
+    dataSerializer: KSerializer<T>
+) : KSerializer<ArrayDeque<T>> {
+
+    private val delegate = ListSerializer(dataSerializer)
+
+    override val descriptor: SerialDescriptor = delegate.descriptor
+
+    override fun serialize(encoder: Encoder, value: ArrayDeque<T>) {
+        delegate.serialize(encoder, value.toList())
+    }
+
+    override fun deserialize(decoder: Decoder): ArrayDeque<T> {
+        val list = delegate.deserialize(decoder)
+        return ArrayDeque<T>().apply { addAll(list) }
+    }
+}

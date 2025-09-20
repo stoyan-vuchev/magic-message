@@ -31,6 +31,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.data.local.CreationDao
 import com.stoyanvuchev.magicmessage.data.local.CreationDatabase
 import com.stoyanvuchev.magicmessage.data.local.CreationTypeConverters
@@ -71,44 +72,74 @@ class CreationRepositoryTest {
 
     @Test
     fun saveOrUpdateDraft_inserts_whenNew() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
+
+        val id = repository.saveOrUpdateDraft(
+            null,
+            DrawConfiguration(),
+            DrawingController().snapshot()
+        )
+
         val loaded = repository.getById(id)
 
         assertThat(loaded).isNotNull()
         assertThat(loaded!!.id).isEqualTo(id)
         assertThat(loaded.isDraft).isEqualTo(true)
+
     }
 
     @Test
     fun saveOrUpdateDraft_updates_whenExisting() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
+
+        val id = repository.saveOrUpdateDraft(
+            null,
+            DrawConfiguration(),
+            DrawingController().snapshot()
+        )
         val updatedStrokes = listOf<StrokeModel>() // could populate later
 
-        val sameId = repository.saveOrUpdateDraft(id, updatedStrokes, DrawConfiguration())
+        val sameId = repository.saveOrUpdateDraft(
+            id,
+            DrawConfiguration(),
+            DrawingController().snapshot().copy(strokes = updatedStrokes)
+        )
         val loaded = repository.getById(sameId)
 
         assertThat(sameId).isEqualTo(id)
-        assertThat(loaded!!.strokes).isEqualTo(updatedStrokes)
+        assertThat(loaded!!.drawingSnapshot.strokes).isEqualTo(updatedStrokes)
+
     }
 
     @Test
     fun markAsFinished_updatesDraftToFinished() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
-        repository.markAsFinished(id, "preview.png")
+
+        val id = repository.saveOrUpdateDraft(
+            null,
+            DrawConfiguration(),
+            DrawingController().snapshot()
+        )
+
+        repository.markAsFinished(id)
 
         val loaded = repository.getById(id)
 
         assertThat(loaded!!.isDraft).isEqualTo(false)
-        assertThat(loaded.previewUri).isEqualTo("preview.png")
+
     }
 
     @Test
     fun deleteById_removesEntity() = runTest {
-        val id = repository.saveOrUpdateDraft(null, emptyList(), DrawConfiguration())
+
+        val id = repository.saveOrUpdateDraft(
+            null,
+            DrawConfiguration(),
+            DrawingController().snapshot()
+        )
+
         repository.deleteById(id)
 
         val loaded = repository.getById(id)
         assertThat(loaded).isNull()
+
     }
 
 }

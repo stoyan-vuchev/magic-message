@@ -96,7 +96,6 @@ fun DrawScreenExportDialog(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 40.dp)
-                    .fillMaxWidth()
                     .clip(Theme.shapes.mediumShape)
                     .defaultHazeEffect(hazeState = hazeState)
                     .border(

@@ -34,4 +34,7 @@
     <string name="exporter_label_completed_description">"Enjoy the GIF 🎉"</string>
     <string name="exporter_label_view">View</string>
     <string name="exporter_label_cancel">Cancel</string>
+    <string name="home_screen_exported_label">Exported</string>
+    <string name="home_screen_drafted_label">Drafts</string>
+    <string name="home_screen_empty_text">Tap the pen icon\nto draw something.</string>
 </resources>

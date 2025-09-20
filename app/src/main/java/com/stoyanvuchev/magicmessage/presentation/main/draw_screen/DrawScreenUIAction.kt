@@ -46,7 +46,8 @@ interface DrawScreenUIAction {
 
     data class Export(
         val width: Int,
-        val height: Int
+        val height: Int,
+        val messageId: Long?
     ) : DrawScreenUIAction
 
     data class SetDialogEditType(

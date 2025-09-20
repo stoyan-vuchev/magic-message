@@ -28,9 +28,12 @@ import com.stoyanvuchev.magicmessage.data.local.CreationDao
 import com.stoyanvuchev.magicmessage.data.local.CreationEntity
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
+import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
 import com.stoyanvuchev.magicmessage.mappers.toModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CreationRepositoryImpl @Inject constructor(
@@ -39,18 +42,18 @@ class CreationRepositoryImpl @Inject constructor(
 
     override suspend fun saveOrUpdateDraft(
         draftId: Long?,
-        strokes: List<StrokeModel>,
-        drawConfiguration: DrawConfiguration
+        drawConfiguration: DrawConfiguration,
+        drawingSnapshot: DrawingSnapshot
     ): Long {
 
         suspend fun insert() = dao.insert(
             CreationEntity(
                 id = draftId,
-                strokes = strokes,
                 isDraft = true,
                 isFavorite = false,
                 createdAt = System.currentTimeMillis(),
-                drawConfiguration = drawConfiguration
+                drawConfiguration = drawConfiguration,
+                drawingSnapshot = drawingSnapshot
             )
         )
 
@@ -59,8 +62,8 @@ class CreationRepositoryImpl @Inject constructor(
             if (creation != null) {
                 dao.update(
                     creation.copy(
-                        strokes = strokes,
-                        drawConfiguration = drawConfiguration
+                        drawConfiguration = drawConfiguration,
+                        drawingSnapshot = drawingSnapshot
                     )
                 )
                 draftId
@@ -69,9 +72,9 @@ class CreationRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun markAsFinished(id: Long, previewUri: String?) {
-        val creation = dao.getById(id) ?: return
-        dao.update(creation.copy(isDraft = false, previewUri = previewUri))
+    override suspend fun markAsFinished(messageId: Long) {
+        val creation = dao.getById(messageId) ?: return
+        dao.update(creation.copy(isDraft = false))
     }
 
     override suspend fun markAsFavorite(id: Long) {
@@ -84,12 +87,12 @@ class CreationRepositoryImpl @Inject constructor(
         dao.update(creation.copy(isFavorite = false))
     }
 
-    override suspend fun getDrafts(): List<CreationModel> {
-        return dao.getAllDrafts().map { it.toModel() }
+    override fun getDrafts(): Flow<List<CreationModel>> {
+        return dao.getAllDrafts().map { it.map { e -> e.toModel() } }
     }
 
-    override suspend fun getFinished(): List<CreationModel> {
-        return dao.getAll().map { it.toModel() }
+    override fun getFinished(): Flow<List<CreationModel>> {
+        return dao.getAll().map { it.map { e -> e.toModel() } }
     }
 
     override suspend fun getById(id: Long): CreationModel? {

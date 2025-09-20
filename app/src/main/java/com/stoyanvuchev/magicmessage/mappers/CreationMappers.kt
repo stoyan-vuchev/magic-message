@@ -30,9 +30,8 @@ import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 fun CreationEntity.toModel() = CreationModel(
     id = id ?: 0,
     createdAt = createdAt,
-    previewUri = previewUri,
     isDraft = isDraft,
     isFavorite = isFavorite,
-    strokes = strokes,
-    drawConfiguration = drawConfiguration
+    drawConfiguration = drawConfiguration,
+    drawingSnapshot = drawingSnapshot
 )

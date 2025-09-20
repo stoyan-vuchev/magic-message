@@ -29,6 +29,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
+import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
 import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
@@ -61,6 +62,9 @@ class DrawScreenViewModel @Inject constructor(
     private val _uiActionChannel = Channel<DrawScreenUIAction>()
     val uiActionFlow = _uiActionChannel.receiveAsFlow()
 
+    private val _navigationEventChannel = Channel<NavigationEvent>()
+    val navigationEventFlow = _navigationEventChannel.receiveAsFlow()
+
     val exporterState = progressObserver.exporterState
     val exporterProgress = progressObserver.progress
     val exportedUri = progressObserver.exportedUri
@@ -88,6 +92,11 @@ class DrawScreenViewModel @Inject constructor(
             else -> Unit
 
         }
+    }
+
+    fun onNavigationEvent(event: NavigationEvent) {
+        saveDraft()
+        sendNavigationEvent(event)
     }
 
     private fun setBGLayer(
@@ -156,6 +165,10 @@ class DrawScreenViewModel @Inject constructor(
         viewModelScope.launch { _uiActionChannel.send(action) }
     }
 
+    private fun sendNavigationEvent(event: NavigationEvent) {
+        viewModelScope.launch { _navigationEventChannel.send(event) }
+    }
+
     private fun onStrokeEnded(
         color: Color,
         width: Float,
@@ -167,20 +180,32 @@ class DrawScreenViewModel @Inject constructor(
 
     private fun saveDraft() {
         viewModelScope.launch(Dispatchers.IO) {
-            id = useCases.saveOrUpdateUseCase(
-                draftId = id,
-                strokes = _drawingController.value.strokes.toList(),
-                drawConfiguration = _state.value.drawConfiguration
-            )
+            val snapshot = _drawingController.value.snapshot()
+            if (snapshot.strokes.isNotEmpty()) {
+                id = useCases.saveOrUpdateUseCase(
+                    draftId = id,
+                    drawConfiguration = _state.value.drawConfiguration,
+                    drawingSnapshot = snapshot
+                )
+            }
         }
     }
 
     private fun loadDraft(existingDraftId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             useCases.getByIdUseCase(existingDraftId)?.let { model ->
-                _state.update { it.copy(drawConfiguration = model.drawConfiguration) }
-                _drawingController.value.clear()
-                _drawingController.value.strokes.addAll(model.strokes)
+
+                _drawingController.update {
+                    DrawingController.fromSnapshot(model.drawingSnapshot)
+                }
+
+                _state.update {
+                    it.copy(
+                        messageId = model.id,
+                        drawConfiguration = model.drawConfiguration
+                    )
+                }
+
             }
         }
     }

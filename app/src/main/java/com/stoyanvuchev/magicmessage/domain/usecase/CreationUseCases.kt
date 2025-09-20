@@ -27,4 +27,7 @@ package com.stoyanvuchev.magicmessage.domain.usecase
 data class CreationUseCases(
     val saveOrUpdateUseCase: CreationSaveOrUpdateUseCase,
     val getByIdUseCase: CreationGetByIdUseCase,
+    val getExportedUseCase: CreationGetExportedUseCase,
+    val getDraftsUseCase: CreationGetDraftsUseCase,
+    val markAsExportedUseCase: CreationMarkAsExportedUseCase
 )

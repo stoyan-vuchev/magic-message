@@ -24,51 +24,35 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateValue
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
+import com.stoyanvuchev.magicmessage.core.ui.components.AuraButton
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBar
-import com.stoyanvuchev.magicmessage.core.ui.effect.defaultAuraGlow
 import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
-import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
+import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun DrawScreenTopBar(
-    hazeState: HazeState,
     state: DrawScreenState,
+    hazeState: HazeState,
     drawingController: DrawingController,
     canvasSize: IntSize,
-    onUIAction: (DrawScreenUIAction) -> Unit
+    onUIAction: (DrawScreenUIAction) -> Unit,
+    onNavigationEvent: (NavigationEvent) -> Unit
 ) {
 
     TopBar(
@@ -76,7 +60,9 @@ fun DrawScreenTopBar(
         title = { Text(text = stringResource(R.string.app_name)) },
         navigationAction = {
 
-            IconButton(onClick = remember { { drawingController.clear() } }) {
+            IconButton(
+                onClick = remember { { onNavigationEvent(NavigationEvent.NavigateUp) } }
+            ) {
                 Icon(
                     modifier = Modifier.size(28.dp),
                     painter = painterResource(R.drawable.arrow_left_outlined),
@@ -105,87 +91,32 @@ fun DrawScreenTopBar(
                 )
             }
 
-            var exportOffset by remember { mutableStateOf(IntOffset.Zero) }
-            val animated by rememberUpdatedState(
-                drawingController.totalPointCount == drawingController.maxPoints
+            val isGlowVisible by rememberUpdatedState(
+                drawingController.totalPointCount
+                        == DrawingController.MAX_POINTS
             )
 
-            val transition = rememberInfiniteTransition(
-                label = "export-button-transition"
-            )
-
-            val glowOffsetX1 by transition.animateValue(
-                initialValue = 0.dp,
-                targetValue = 0.dp,
-                typeConverter = Dp.VectorConverter,
-                animationSpec = infiniteRepeatable(
-                    animation = keyframes {
-                        (-2).dp at 0
-                        2.dp at 1000
-                        durationMillis = 2000
-                    },
-                    repeatMode = RepeatMode.Reverse
-                )
-
-            )
-
-            val glowOffsetX2 by transition.animateValue(
-                initialValue = 0.dp,
-                targetValue = 0.dp,
-                typeConverter = Dp.VectorConverter,
-                animationSpec = infiniteRepeatable(
-                    animation = keyframes {
-                        2.dp at 0
-                        (-2).dp at 1000
-                        durationMillis = 2000
-                    },
-                    repeatMode = RepeatMode.Reverse
-                )
-
-            )
-
-            val alpha by animateFloatAsState(
-                targetValue = if (animated) 1f else 0f,
-                animationSpec = tween(durationMillis = 360)
-            )
-
-            OutlinedIconButton(
-                modifier = Modifier
-                    .onSizeChanged { exportOffset = it.center }
-                    .defaultAuraGlow(
-                        color = state.drawConfiguration.color,
-                        centerOffset = exportOffset,
-                        glowOffset = glowOffsetX1,
-                        alpha = alpha
-                    )
-                    .defaultAuraGlow(
-                        color = state.drawConfiguration.color,
-                        centerOffset = exportOffset,
-                        glowOffset = glowOffsetX2,
-                        alpha = alpha,
-                        spread = (-1).dp
-                    ),
+            AuraButton(
+                size = 40.dp,
                 onClick = {
                     onUIAction(
                         DrawScreenUIAction.Export(
                             width = canvasSize.width,
-                            height = canvasSize.height
+                            height = canvasSize.height,
+                            messageId = state.messageId
                         )
                     )
                 },
-                colors = IconButtonDefaults.outlinedIconButtonColors(
-                    containerColor = Theme.colors.surfaceElevationHigh,
-                    contentColor = Theme.colors.onSurfaceElevationHigh
-                ),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = Theme.colors.outline
-                )
+                hazeState = hazeState,
+                isGlowVisible = isGlowVisible,
+                glowColor = state.drawConfiguration.color
             ) {
+
                 Icon(
                     painter = painterResource(R.drawable.export),
                     contentDescription = null
                 )
+
             }
 
         }

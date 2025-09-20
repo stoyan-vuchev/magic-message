@@ -25,6 +25,7 @@
 package com.stoyanvuchev.magicmessage.presentation.main
 
 import android.content.Intent
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -34,19 +35,58 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.framework.service.ExportGifService
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreen
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenViewModel
+import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreen
+import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenUIAction
+import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
     navigation<MainScreen.Navigation>(
-        startDestination = MainScreen.Draw(0L) // fixme. To be changed.
+        startDestination = MainScreen.Home
     ) {
 
-        composable<MainScreen.Home> {}
+        composable<MainScreen.Home> {
+
+            val viewModel = hiltViewModel<HomeScreenViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            LaunchedEffect(viewModel.uiActionFlow) {
+                viewModel.uiActionFlow.collectLatest { action ->
+                    when (action) {
+                        is HomeScreenUIAction.NewMessage -> Unit
+                    }
+                }
+            }
+
+            LaunchedEffect(viewModel.navigationFlow) {
+                viewModel.navigationFlow.collectLatest { event ->
+                    when (event) {
+
+                        is NavigationEvent.NavigateTo -> {
+                            navController.navigate(event.screen) {
+                                launchSingleTop = true
+                            }
+                        }
+
+                        else -> Unit
+
+                    }
+                }
+            }
+
+            HomeScreen(
+                state = state,
+                onUIAction = viewModel::onUIAction,
+                onNavigationEvent = viewModel::onNavigationEvent
+            )
+
+        }
 
         composable<MainScreen.Favorite> {}
 
@@ -64,6 +104,10 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
             val exporterState by viewModel.exporterState.collectAsStateWithLifecycle()
             val exportedUri by viewModel.exportedUri.collectAsStateWithLifecycle()
 
+            BackHandler(enabled = true) {
+                viewModel.onNavigationEvent(NavigationEvent.NavigateUp)
+            }
+
             LaunchedEffect(Unit) {
                 viewModel.uiActionFlow.collectLatest { action ->
                     when (action) {
@@ -75,7 +119,27 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                             ).apply {
                                 putExtra("width", action.width)
                                 putExtra("height", action.height)
+                                putExtra("messageId", action.messageId)
                             }.also { context.startForegroundService(it) }
+                        }
+
+                        else -> Unit
+
+                    }
+                }
+            }
+
+            LaunchedEffect(viewModel.navigationEventFlow) {
+                viewModel.navigationEventFlow.collectLatest { event ->
+                    when (event) {
+
+                        is NavigationEvent.NavigateUp -> {
+                            navController.navigate(MainScreen.Home) {
+                                popUpTo(navController.graph.id) {
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
+                            }
                         }
 
                         else -> Unit
@@ -90,7 +154,8 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                 exporterState = exporterState,
                 exportedUri = exportedUri,
                 drawingController = drawingController,
-                onUIAction = viewModel::onUIAction
+                onUIAction = viewModel::onUIAction,
+                onNavigationEvent = viewModel::onNavigationEvent
             )
 
         }

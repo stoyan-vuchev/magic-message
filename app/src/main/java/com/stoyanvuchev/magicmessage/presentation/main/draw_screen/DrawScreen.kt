@@ -55,6 +55,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
+import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
@@ -75,7 +76,8 @@ fun DrawScreen(
     exporterState: ExporterState,
     exportedUri: Uri?,
     drawingController: DrawingController,
-    onUIAction: (DrawScreenUIAction) -> Unit
+    onUIAction: (DrawScreenUIAction) -> Unit,
+    onNavigationEvent: (NavigationEvent) -> Unit
 ) {
 
     val hazeState = rememberHazeState()
@@ -122,11 +124,12 @@ fun DrawScreen(
         topBar = {
 
             DrawScreenTopBar(
-                hazeState = hazeState,
                 state = state,
+                hazeState = hazeState,
                 drawingController = drawingController,
                 canvasSize = canvasSize,
-                onUIAction = onUIAction
+                onUIAction = onUIAction,
+                onNavigationEvent = onNavigationEvent
             )
 
         },
@@ -164,7 +167,7 @@ fun DrawScreen(
 
             val progress by remember(drawingController.totalPointCount) {
                 derivedStateOf {
-                    drawingController.totalPointCount.toFloat() / drawingController.maxPoints
+                    drawingController.totalPointCount.toFloat() / DrawingController.MAX_POINTS
                 }
             }
 

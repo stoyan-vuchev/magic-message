@@ -147,6 +147,8 @@ class Exporter @Inject constructor(
                 elapsedTime += strokeEnd - strokeStart
             }
 
+        } catch (e: Exception) {
+            e.printStackTrace()
         } finally {
             encoder.close()
         }
