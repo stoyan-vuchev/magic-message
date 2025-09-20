@@ -22,33 +22,18 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.di
+package com.stoyanvuchev.magicmessage.data.local
 
-import android.app.Application
-import com.stoyanvuchev.magicmessage.framework.export.Exporter
-import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Module
-@InstallIn(SingletonComponent::class)
-object ExporterModule {
-
-    @Provides
-    @Singleton
-    fun provideExporter(
-        app: Application
-    ): Exporter {
-        return Exporter(context = app.applicationContext)
-    }
-
-    @Provides
-    @Singleton
-    fun provideExporterProgressObserver(): ExporterProgressObserver {
-        return ExporterProgressObserver()
-    }
-
+@Database(
+    entities = [CreationEntity::class],
+    version = 1,
+    exportSchema = true
+)
+@TypeConverters(StrokesConverter::class)
+abstract class CreationDatabase : RoomDatabase() {
+    abstract fun creationDao(): CreationDao
 }

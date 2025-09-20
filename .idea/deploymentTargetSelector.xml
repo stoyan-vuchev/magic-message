@@ -19,6 +19,9 @@
       <SelectionState runConfigName="ExportGifServiceInstrumentedTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="CreationDatabaseTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

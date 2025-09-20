@@ -27,25 +27,16 @@ package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 import android.net.Uri
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -60,23 +51,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.components.DrawingCanvas
-import com.stoyanvuchev.magicmessage.core.ui.components.bottom_bar.BottomBar
-import com.stoyanvuchev.magicmessage.core.ui.components.bottom_bar.BottomBarItem
-import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBar
-import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-import com.stoyanvuchev.magicmessage.domain.brush.BrushThickness
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DrawScreenDialog
@@ -141,213 +122,22 @@ fun DrawScreen(
         contentColor = Theme.colors.onSurfaceElevationLow,
         topBar = {
 
-            TopBar(
-                modifier = Modifier.defaultHazeEffect(hazeState = hazeState),
-                title = { Text(text = stringResource(R.string.app_name)) },
-                navigationAction = {
-
-                    IconButton(onClick = remember { { drawingController.clear() } }) {
-                        Icon(
-                            modifier = Modifier.size(28.dp),
-                            painter = painterResource(R.drawable.arrow_left_outlined),
-                            contentDescription = null
-                        )
-                    }
-
-                },
-                actions = {
-
-                    IconButton(
-                        onClick = remember { { onUIAction(DrawScreenUIAction.Undo) } },
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.undo),
-                            contentDescription = null
-                        )
-                    }
-
-                    IconButton(
-                        onClick = remember { { onUIAction(DrawScreenUIAction.Redo) } }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.redo),
-                            contentDescription = null
-                        )
-                    }
-
-                    OutlinedIconButton(
-                        onClick = {
-                            onUIAction(
-                                DrawScreenUIAction.Export(
-                                    width = canvasSize.width,
-                                    height = canvasSize.height
-                                )
-                            )
-                        },
-                        colors = IconButtonDefaults.outlinedIconButtonColors(
-                            containerColor = Theme.colors.surfaceElevationHigh,
-                            contentColor = Theme.colors.onSurfaceElevationHigh
-                        ),
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = Theme.colors.outline
-                        )
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.export),
-                            contentDescription = null
-                        )
-                    }
-
-                }
+            DrawScreenTopBar(
+                hazeState = hazeState,
+                state = state,
+                drawingController = drawingController,
+                canvasSize = canvasSize,
+                onUIAction = onUIAction
             )
 
         },
         bottomBar = {
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-
-                BottomBar(
-                    modifier = Modifier.defaultHazeEffect(hazeState = hazeState)
-                ) {
-
-                    BottomBarItem(
-                        onClick = remember {
-                            {
-                                onUIAction(
-                                    DrawScreenUIAction.SetDialogEditType(
-                                        DialogEditType.EFFECT
-                                    )
-                                )
-                            }
-                        },
-                        label = {
-                            Text(text = stringResource(R.string.draw_screen_brush_effect_label))
-                        },
-                        icon = {
-
-                            val icon by rememberUpdatedState(
-                                painterResource(
-                                    when (state.drawConfiguration.effect) {
-                                        BrushEffect.NONE -> R.drawable.swibble_line
-                                        BrushEffect.BUBBLES -> R.drawable.swibble_bubbles
-                                        BrushEffect.STARS -> R.drawable.swibble_stars
-                                        BrushEffect.HEARTS -> R.drawable.swibble_hearts
-                                    }
-                                )
-                            )
-
-                            Icon(
-                                painter = icon,
-                                contentDescription = null
-                            )
-
-                        }
-                    )
-
-                    BottomBarItem(
-                        onClick = remember {
-                            {
-                                onUIAction(
-                                    DrawScreenUIAction.SetDialogEditType(
-                                        DialogEditType.THICKNESS
-                                    )
-                                )
-                            }
-                        },
-                        label = {
-                            Text(text = stringResource(R.string.draw_screen_brush_width_label))
-                        },
-                        icon = {
-
-                            val icon by rememberUpdatedState(
-                                painterResource(
-                                    when (state.drawConfiguration.thickness) {
-                                        BrushThickness.THIN -> R.drawable.brush_thin
-                                        BrushThickness.MEDIUM -> R.drawable.brush_medium
-                                        BrushThickness.LARGE -> R.drawable.brush_medium
-                                        BrushThickness.THICK -> R.drawable.brush_thick
-                                    }
-                                )
-                            )
-
-                            Icon(
-                                painter = icon,
-                                contentDescription = null
-                            )
-
-                        }
-                    )
-
-                    BottomBarItem(
-                        onClick = remember {
-                            {
-                                onUIAction(
-                                    DrawScreenUIAction.SetDialogEditType(
-                                        DialogEditType.COLOR
-                                    )
-                                )
-                            }
-                        },
-                        label = {
-                            Text(text = stringResource(R.string.draw_screen_color_label))
-                        },
-                        icon = {
-
-                            val strokeColor = Theme.colors.onSurfaceElevationLow
-
-                            Canvas(
-                                modifier = Modifier
-                                    .size(22.dp)
-                            ) {
-
-                                drawCircle(
-                                    color = state.drawConfiguration.color,
-                                    radius = 4.dp.toPx(),
-                                    center = center
-                                )
-
-                                drawCircle(
-                                    color = strokeColor,
-                                    radius = 8.dp.toPx(),
-                                    style = Stroke(
-                                        width = 2.dp.toPx(),
-                                        cap = StrokeCap.Round
-                                    ),
-                                    center = center
-                                )
-
-                            }
-
-                        }
-                    )
-
-                    BottomBarItem(
-                        onClick = remember {
-                            {
-                                onUIAction(
-                                    DrawScreenUIAction.SetDialogEditType(
-                                        DialogEditType.BG_LAYER
-                                    )
-                                )
-                            }
-                        },
-                        label = {
-                            Text(text = stringResource(R.string.draw_screen_bg_layer_label))
-                        },
-                        icon = {
-
-                            Icon(
-                                painter = painterResource(R.drawable.bg_layer),
-                                contentDescription = null
-                            )
-
-                        }
-                    )
-
-                }
-
-            }
+            DrawScreenBottomBar(
+                hazeState = hazeState,
+                state = state,
+                onUIAction = onUIAction
+            )
 
         }
     ) { innerPadding ->
