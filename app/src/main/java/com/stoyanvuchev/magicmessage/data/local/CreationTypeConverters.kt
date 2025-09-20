@@ -32,6 +32,7 @@ import androidx.room.TypeConverter
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
+import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
 import com.stoyanvuchev.magicmessage.domain.serializer.BackgroundLayerSerializer
@@ -143,6 +144,16 @@ class CreationTypeConverters {
     @TypeConverter
     fun toDrawConfiguration(data: String): DrawConfiguration {
         return json.decodeFromString(data)
+    }
+
+    @TypeConverter
+    fun fromDrawingSnapshot(snapshot: DrawingSnapshot): String {
+        return json.encodeToString(DrawingSnapshot.serializer(), snapshot)
+    }
+
+    @TypeConverter
+    fun toDrawingSnapshot(data: String): DrawingSnapshot {
+        return json.decodeFromString(DrawingSnapshot.serializer(), data)
     }
 
 }

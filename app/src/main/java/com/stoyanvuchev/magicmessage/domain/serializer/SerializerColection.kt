@@ -22,15 +22,20 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
+package com.stoyanvuchev.magicmessage.domain.serializer
 
-import androidx.compose.runtime.Stable
-import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
+import com.stoyanvuchev.magicmessage.domain.model.Particle
+import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
+import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
 
-@Stable
-data class DrawScreenState(
-    val messageId: Long? = null,
-    val dialogEditType: DialogEditType = DialogEditType.NONE,
-    val drawConfiguration: DrawConfiguration = DrawConfiguration()
-)
+object StrokeModelListSerializer :
+    SnapshotStateListSerializer<StrokeModel>(StrokeModel.serializer())
+
+object ParticleListSerializer :
+    SnapshotStateListSerializer<Particle>(Particle.serializer())
+
+object TimedPointListSerializer :
+    SnapshotStateListSerializer<TimedPoint>(TimedPoint.serializer())
+
+object StrokeDequeSerializer :
+    ArrayDequeSerializer<StrokeModel>(StrokeModel.serializer())

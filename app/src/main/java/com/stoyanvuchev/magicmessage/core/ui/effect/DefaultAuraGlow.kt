@@ -27,25 +27,29 @@ package com.stoyanvuchev.magicmessage.core.ui.effect
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
-fun Modifier.defaultAuraGlow(
-    radius: Dp = 1.dp,
+fun Modifier.outerAuraGlow(
+    radius: Dp = 8.dp,
     color: Color,
     centerOffset: IntOffset,
-    glowOffset: Dp,
+    glowOffset1: Dp,
+    glowOffset2: Dp,
     alpha: Float,
-    spread: Dp = 0.dp
+    spread: Dp = 0.dp,
+    shape: Shape = CircleShape
 ): Modifier {
     return dropShadow(
-        shape = CircleShape,
+        shape = shape,
         shadow = Shadow(
             radius = radius,
             brush = Brush.radialGradient(
@@ -60,8 +64,60 @@ fun Modifier.defaultAuraGlow(
                 )
             ),
             offset = DpOffset(
-                x = glowOffset,
-                y = glowOffset
+                x = glowOffset1,
+                y = glowOffset1
+            ),
+            alpha = alpha,
+            spread = spread
+        )
+    ).then(
+        Modifier.dropShadow(
+            shape = shape,
+            shadow = Shadow(
+                radius = radius,
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        color,
+                        color.copy(.75f),
+                        color.copy(0f)
+                    ),
+                    center = Offset(
+                        x = centerOffset.x.toFloat(),
+                        y = centerOffset.y.toFloat()
+                    )
+                ),
+                offset = DpOffset(
+                    x = glowOffset2,
+                    y = glowOffset2
+                ),
+                alpha = alpha,
+                spread = spread
+            )
+        )
+    )
+}
+
+fun Modifier.innerAuraGlow(
+    radius: Dp = 8.dp,
+    color: Color,
+    centerOffset: IntOffset,
+    alpha: Float,
+    spread: Dp = (-0).dp,
+    shape: Shape = CircleShape
+): Modifier {
+    return innerShadow(
+        shape = shape,
+        shadow = Shadow(
+            radius = radius,
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    color.copy(0f),
+                    color
+                ),
+                center = Offset(
+                    x = centerOffset.x.toFloat(),
+                    y = centerOffset.y.toFloat()
+                )
             ),
             alpha = alpha,
             spread = spread

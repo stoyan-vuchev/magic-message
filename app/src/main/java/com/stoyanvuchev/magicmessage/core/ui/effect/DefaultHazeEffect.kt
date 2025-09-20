@@ -40,7 +40,7 @@ fun Modifier.defaultHazeEffect(
         hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                tint = HazeTint(color = Theme.colors.surfaceElevationLow.copy(.5f)),
+                tint = HazeTint(color = Theme.colors.surfaceElevationLow.copy(.75f)),
                 blurRadius = 16.dp,
                 noiseFactor = -.5f,
                 backgroundColor = Theme.colors.surfaceElevationLow

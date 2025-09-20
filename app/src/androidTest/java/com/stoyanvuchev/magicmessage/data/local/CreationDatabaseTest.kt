@@ -33,6 +33,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
@@ -80,11 +81,10 @@ class CreationDatabaseTest {
 
         val creation = CreationEntity(
             id = 0, // auto-gen
-            strokes = strokes,
             createdAt = System.currentTimeMillis(),
             isDraft = true,
             isFavorite = true,
-            previewUri = null
+            drawingSnapshot = DrawingController().snapshot().copy(strokes = strokes)
         )
 
         val id = dao.insert(creation)
@@ -92,7 +92,7 @@ class CreationDatabaseTest {
 
         assertThat(draft).isNotNull()
         assertThat(draft?.id).isEqualTo(id)
-        assertThat(draft?.strokes?.first()?.points?.size).isEqualTo(2)
+        assertThat(draft?.drawingSnapshot?.strokes?.first()?.points?.size).isEqualTo(2)
 
     }
 
@@ -100,17 +100,21 @@ class CreationDatabaseTest {
     fun markDraftAsFinished() = runTest {
         val creation = CreationEntity(
             id = 0,
-            strokes = emptyList(),
             createdAt = System.currentTimeMillis(),
             isDraft = true,
             isFavorite = true,
-            previewUri = null
+            drawingSnapshot = DrawingController().snapshot()
         )
 
         val id = dao.insert(creation)
-        dao.update(creation.copy(isDraft = false, previewUri = "content://preview"))
-        val draft = dao.getById(id)
+        dao.update(
+            creation.copy(
+                isDraft = false,
+                drawingSnapshot = DrawingController().snapshot()
+            )
+        )
 
+        val draft = dao.getById(id)
         assertThat(draft?.isDraft).isEqualTo(false)
 
     }
@@ -120,11 +124,10 @@ class CreationDatabaseTest {
         val id = dao.insert(
             CreationEntity(
                 id = 0,
-                strokes = emptyList(),
                 createdAt = System.currentTimeMillis(),
                 isDraft = true,
                 isFavorite = true,
-                previewUri = null
+                drawingSnapshot = DrawingController().snapshot()
             )
         )
         val creation = dao.getById(id)
@@ -140,11 +143,10 @@ class CreationDatabaseTest {
             dao.insert(
                 CreationEntity(
                     id = id,
-                    strokes = emptyList(),
                     createdAt = System.currentTimeMillis(),
                     isDraft = true,
                     isFavorite = true,
-                    previewUri = null
+                    drawingSnapshot = DrawingController().snapshot()
                 )
             )
         }
@@ -152,7 +154,7 @@ class CreationDatabaseTest {
         dao.deleteAllDrafts()
 
         val drafts = dao.getAllDrafts()
-        assertThat(drafts).isEqualTo(emptyList())
+        assertThat(drafts).isEqualTo(emptyList<CreationEntity>())
 
     }
 
@@ -163,11 +165,10 @@ class CreationDatabaseTest {
             dao.insert(
                 CreationEntity(
                     id = id,
-                    strokes = emptyList(),
                     createdAt = System.currentTimeMillis(),
                     isDraft = false,
                     isFavorite = true,
-                    previewUri = null
+                    drawingSnapshot = DrawingController().snapshot()
                 )
             )
         }
@@ -175,7 +176,7 @@ class CreationDatabaseTest {
         dao.deleteAllCreations()
 
         val drafts = dao.getAll()
-        assertThat(drafts).isEqualTo(emptyList())
+        assertThat(drafts).isEqualTo(emptyList<CreationEntity>())
 
     }
 

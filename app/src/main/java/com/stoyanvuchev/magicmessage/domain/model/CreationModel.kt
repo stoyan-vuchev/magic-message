@@ -25,14 +25,15 @@
 package com.stoyanvuchev.magicmessage.domain.model
 
 import androidx.compose.runtime.Stable
+import kotlinx.serialization.Serializable
 
 @Stable
+@Serializable
 data class CreationModel(
-    val id: Long,
+    val id: Long?,
     val createdAt: Long,
-    val previewUri: String?,
     val isDraft: Boolean,
     val isFavorite: Boolean,
-    val strokes: List<StrokeModel>,
-    val drawConfiguration: DrawConfiguration
+    val drawConfiguration: DrawConfiguration,
+    val drawingSnapshot: DrawingSnapshot
 )

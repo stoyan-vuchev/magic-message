@@ -51,7 +51,7 @@ fun DrawingCanvas(
 
     ParticleUpdater(
         controller = controller,
-        effect = drawConfiguration.effect
+        brushEffect = drawConfiguration.effect
     )
 
     Canvas(

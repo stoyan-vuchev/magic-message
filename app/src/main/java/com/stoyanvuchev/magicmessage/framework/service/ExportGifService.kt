@@ -37,6 +37,7 @@ import androidx.core.app.NotificationCompat
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
 import com.stoyanvuchev.magicmessage.framework.export.Exporter
 import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
@@ -44,6 +45,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 object ExportDataHolder {
@@ -59,6 +61,9 @@ class ExportGifService : Service() {
 
     @Inject
     lateinit var progressObserver: ExporterProgressObserver
+
+    @Inject
+    lateinit var creationUseCases: CreationUseCases
 
     companion object Companion {
         private const val CHANNEL_ID = "gif_export_channel"
@@ -83,6 +88,7 @@ class ExportGifService : Service() {
 
         val width = intent?.getIntExtra("width", 0) ?: 1080
         val height = intent?.getIntExtra("height", 0) ?: 1920
+        val messageId = intent?.getLongExtra("messageId", 0L) ?: 0L
 
         CoroutineScope(Dispatchers.Default).launch {
 
@@ -99,11 +105,19 @@ class ExportGifService : Service() {
             }
 
             uri?.let {
+
+                withContext(Dispatchers.IO) {
+                    creationUseCases.markAsExportedUseCase(messageId = messageId)
+                }
+
                 progressObserver.updateExportedUri(it)
                 progressObserver.updateExporterState(ExporterState.COMPLETED)
+
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
+
                 showCompletedNotification(it)
+
             }
 
         }.invokeOnCompletion {

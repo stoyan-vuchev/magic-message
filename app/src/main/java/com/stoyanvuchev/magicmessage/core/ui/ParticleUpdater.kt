@@ -35,32 +35,30 @@ import kotlinx.coroutines.withContext
 @Composable
 fun ParticleUpdater(
     controller: DrawingController,
-    effect: BrushEffect
-) {
-    if (effect != BrushEffect.NONE) {
-        LaunchedEffect(Unit) {
-            withContext(Dispatchers.Default) {
+    brushEffect: BrushEffect
+) = LaunchedEffect(controller, brushEffect) {
+    if (brushEffect != BrushEffect.NONE) {
+        withContext(Dispatchers.Default) {
 
-                var lastTime = System.currentTimeMillis()
-                while (isActive) {
+            var lastTime = System.currentTimeMillis()
+            while (isActive) {
 
-                    val now = System.currentTimeMillis()
-                    val delta = now - lastTime
-                    lastTime = now
+                val now = System.currentTimeMillis()
+                val delta = now - lastTime
+                lastTime = now
 
-                    // Update physics off UI thread.
-                    controller.updateParticles(delta)
+                // Update physics off UI thread.
+                controller.updateParticles(delta)
 
-                    // Sync to Compose state on Main thread.
-                    withContext(Dispatchers.Main) {
-                        controller.syncParticlesToUI()
-                    }
-
-                    delay(16L) // ~60fps
-
+                // Sync to Compose state on Main thread.
+                withContext(Dispatchers.Main) {
+                    controller.syncParticlesToUI()
                 }
 
+                delay(16L) // ~60fps
+
             }
+
         }
     }
 }

@@ -26,26 +26,24 @@ package com.stoyanvuchev.magicmessage.domain.repository
 
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
+import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
+import kotlinx.coroutines.flow.Flow
 
 interface CreationRepository {
 
     suspend fun saveOrUpdateDraft(
         draftId: Long?,
-        strokes: List<StrokeModel>,
-        drawConfiguration: DrawConfiguration
+        drawConfiguration: DrawConfiguration,
+        drawingSnapshot: DrawingSnapshot
     ): Long
 
-    suspend fun markAsFinished(
-        id: Long,
-        previewUri: String?
-    )
+    suspend fun markAsFinished(messageId: Long)
 
     suspend fun markAsFavorite(id: Long)
     suspend fun removeAsFavorite(id: Long)
 
-    suspend fun getDrafts(): List<CreationModel>
-    suspend fun getFinished(): List<CreationModel>
+    fun getDrafts(): Flow<List<CreationModel>>
+    fun getFinished(): Flow<List<CreationModel>>
     suspend fun getById(id: Long): CreationModel?
 
     suspend fun deleteAllDrafts()

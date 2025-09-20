@@ -74,7 +74,7 @@ class DrawingControllerTest {
     @Test
     fun `exceeding maxPoints disables drawing`() {
         // Fill up to the limit
-        repeat(controller.maxPoints) {
+        repeat(DrawingController.MAX_POINTS) {
             controller.startStroke(Offset(it.toFloat(), 0f), Color.Black, BrushEffect.NONE)
             controller.addPoint(Offset(it.toFloat(), 1f), Color.Black, BrushEffect.NONE)
             controller.endStroke(Color.Black, 2f, BrushEffect.NONE)

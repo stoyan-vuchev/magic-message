@@ -30,6 +30,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CreationDao {
@@ -43,11 +44,11 @@ interface CreationDao {
     @Delete
     suspend fun delete(creation: CreationEntity)
 
-    @Query("SELECT * FROM creations WHERE isDraft IS 0 ORDER BY createdAt DESC")
-    suspend fun getAll(): List<CreationEntity>
+    @Query("SELECT * FROM creations WHERE isDraft IS FALSE ORDER BY createdAt DESC")
+    fun getAll(): Flow<List<CreationEntity>>
 
-    @Query("SELECT * FROM creations WHERE isDraft IS 1 ORDER BY createdAt DESC")
-    suspend fun getAllDrafts(): List<CreationEntity>
+    @Query("SELECT * FROM creations WHERE isDraft IS TRUE ORDER BY createdAt DESC")
+    fun getAllDrafts(): Flow<List<CreationEntity>>
 
     @Query("SELECT * FROM creations WHERE id = :id")
     suspend fun getById(id: Long): CreationEntity?

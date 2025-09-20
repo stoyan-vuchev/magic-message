@@ -25,6 +25,7 @@
 package com.stoyanvuchev.magicmessage.domain.usecase
 
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
+import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
 import javax.inject.Inject
@@ -35,10 +36,16 @@ class CreationSaveOrUpdateUseCase @Inject constructor(
 
     suspend operator fun invoke(
         draftId: Long?,
-        strokes: List<StrokeModel>,
-        drawConfiguration: DrawConfiguration
+        drawConfiguration: DrawConfiguration,
+        drawingSnapshot: DrawingSnapshot
     ): Long {
-        return repository.saveOrUpdateDraft(draftId, strokes, drawConfiguration)
+
+        return repository.saveOrUpdateDraft(
+            draftId = draftId,
+            drawConfiguration = drawConfiguration,
+            drawingSnapshot = drawingSnapshot
+        )
+
     }
 
 }
