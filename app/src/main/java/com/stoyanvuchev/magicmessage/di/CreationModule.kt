@@ -22,40 +22,37 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.data.local
+package com.stoyanvuchev.magicmessage.di
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import android.app.Application
+import androidx.room.Room
+import com.stoyanvuchev.magicmessage.data.local.CreationDatabase
+import com.stoyanvuchev.magicmessage.data.repository.CreationRepositoryImpl
+import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@Dao
-interface CreationDao {
+@Module
+@InstallIn(SingletonComponent::class)
+object CreationModule {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(creation: CreationEntity): Long
+    @Provides
+    @Singleton
+    fun provideCreationDatabase(app: Application): CreationDatabase {
+        return Room.databaseBuilder(
+            app.applicationContext,
+            CreationDatabase::class.java,
+            "creation_db"
+        ).build()
+    }
 
-    @Update
-    suspend fun update(creation: CreationEntity)
-
-    @Delete
-    suspend fun delete(creation: CreationEntity)
-
-    @Query("SELECT * FROM creations WHERE isDraft IS 0 ORDER BY createdAt DESC")
-    suspend fun getAll(): List<CreationEntity>
-
-    @Query("SELECT * FROM creations WHERE isDraft IS 1 ORDER BY createdAt DESC")
-    suspend fun getAllDrafts(): List<CreationEntity>
-
-    @Query("SELECT * FROM creations WHERE id = :id")
-    suspend fun getById(id: Long): CreationEntity?
-
-    @Query("DELETE FROM creations WHERE isDraft IS 1")
-    suspend fun deleteAllDrafts()
-
-    @Query("DELETE FROM creations")
-    suspend fun deleteAllCreations()
+    @Provides
+    @Singleton
+    fun provideCreationRepository(db: CreationDatabase): CreationRepository {
+        return CreationRepositoryImpl(db.creationDao())
+    }
 
 }
