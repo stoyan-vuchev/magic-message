@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog
+package com.stoyanvuchev.magicmessage.presentation
 
 import android.content.Context
 import android.graphics.ImageDecoder
@@ -66,16 +66,15 @@ import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
-import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
 import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun DrawScreenExportDialog(
+fun ExportDialog(
     exporterProgress: Int,
     exporterState: ExporterState,
     exportedUri: Uri?,
     hazeState: HazeState,
-    onUIAction: (DrawScreenUIAction) -> Unit,
+    onDismissExportDialog: () -> Unit,
 ) {
 
     Dialog(
@@ -238,9 +237,7 @@ fun DrawScreenExportDialog(
                             val uriHandler = LocalUriHandler.current
 
                             TextButton(
-                                onClick = {
-                                    onUIAction(DrawScreenUIAction.DismissExporterDialog)
-                                },
+                                onClick = onDismissExportDialog,
                                 colors = ButtonDefaults.textButtonColors(
                                     contentColor = Theme.colors.primary
                                 )
@@ -255,7 +252,7 @@ fun DrawScreenExportDialog(
                                 onClick = {
                                     exportedUri?.let {
                                         uriHandler.openUri(it.toString())
-                                        onUIAction(DrawScreenUIAction.DismissExporterDialog)
+                                        onDismissExportDialog()
                                     }
                                 },
                                 colors = ButtonDefaults.textButtonColors(

@@ -36,7 +36,11 @@ interface DrawScreenUIAction {
 
     data object Undo : DrawScreenUIAction
     data object Redo : DrawScreenUIAction
-    data object DismissExporterDialog : DrawScreenUIAction
+
+    data class UpdateCanvasSize(
+        val width: Int,
+        val height: Int
+    ) : DrawScreenUIAction
 
     data class OnStrokeEnded(
         val color: Color,
@@ -45,8 +49,6 @@ interface DrawScreenUIAction {
     ) : DrawScreenUIAction
 
     data class Export(
-        val width: Int,
-        val height: Int,
         val messageId: Long?
     ) : DrawScreenUIAction
 

@@ -34,6 +34,8 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.IntSize
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.ParticleUpdater
 import com.stoyanvuchev.magicmessage.core.ui.ext.drawStroke
@@ -43,6 +45,7 @@ import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 
 @Composable
 fun DrawingCanvas(
+    onSizeChanged: (IntSize) -> Unit,
     modifier: Modifier = Modifier,
     controller: DrawingController,
     drawConfiguration: DrawConfiguration,
@@ -56,6 +59,7 @@ fun DrawingCanvas(
 
     Canvas(
         modifier = modifier
+            .onGloballyPositioned { onSizeChanged(it.size) }
             .clipToBounds()
             .pointerInput(drawConfiguration) {
                 if (!controller.drawingEnabled) return@pointerInput

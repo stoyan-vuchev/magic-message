@@ -35,7 +35,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
@@ -50,7 +49,6 @@ fun DrawScreenTopBar(
     state: DrawScreenState,
     hazeState: HazeState,
     drawingController: DrawingController,
-    canvasSize: IntSize,
     onUIAction: (DrawScreenUIAction) -> Unit,
     onNavigationEvent: (NavigationEvent) -> Unit
 ) {
@@ -98,15 +96,7 @@ fun DrawScreenTopBar(
 
             AuraButton(
                 size = 40.dp,
-                onClick = {
-                    onUIAction(
-                        DrawScreenUIAction.Export(
-                            width = canvasSize.width,
-                            height = canvasSize.height,
-                            messageId = state.messageId
-                        )
-                    )
-                },
+                onClick = { onUIAction(DrawScreenUIAction.Export(messageId = state.messageId)) },
                 hazeState = hazeState,
                 isGlowVisible = isGlowVisible,
                 glowColor = state.drawConfiguration.color

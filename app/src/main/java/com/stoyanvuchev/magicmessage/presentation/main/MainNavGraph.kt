@@ -55,11 +55,25 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
             val viewModel = hiltViewModel<HomeScreenViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
+            val context = LocalContext.current
 
             LaunchedEffect(viewModel.uiActionFlow) {
                 viewModel.uiActionFlow.collectLatest { action ->
                     when (action) {
-                        is HomeScreenUIAction.NewMessage -> Unit
+
+                        is HomeScreenUIAction.ExportGif -> {
+                            Intent(
+                                context,
+                                ExportGifService::class.java
+                            ).apply {
+                                putExtra("width", action.creation.drawConfiguration.canvasWidth)
+                                putExtra("height", action.creation.drawConfiguration.canvasHeight)
+                                putExtra("messageId", action.creation.id)
+                            }.also { context.startForegroundService(it) }
+                        }
+
+                        else -> Unit
+
                     }
                 }
             }
@@ -88,77 +102,70 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
         }
 
-        composable<MainScreen.Favorite> {}
+    }
 
-        composable<MainScreen.Menu> {}
+    composable<MainScreen.Favorite> {}
 
-        composable<MainScreen.Draw> {
+    composable<MainScreen.Menu> {}
 
-            val viewModel = hiltViewModel<DrawScreenViewModel>()
-            val context = LocalContext.current
+    composable<MainScreen.Draw> {
 
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            val drawingController by viewModel.drawingController.collectAsStateWithLifecycle()
+        val viewModel = hiltViewModel<DrawScreenViewModel>()
+        val context = LocalContext.current
 
-            val exporterProgress by viewModel.exporterProgress.collectAsStateWithLifecycle()
-            val exporterState by viewModel.exporterState.collectAsStateWithLifecycle()
-            val exportedUri by viewModel.exportedUri.collectAsStateWithLifecycle()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val drawingController by viewModel.drawingController.collectAsStateWithLifecycle()
 
-            BackHandler(enabled = true) {
-                viewModel.onNavigationEvent(NavigationEvent.NavigateUp)
-            }
-
-            LaunchedEffect(Unit) {
-                viewModel.uiActionFlow.collectLatest { action ->
-                    when (action) {
-
-                        is DrawScreenUIAction.Export -> {
-                            Intent(
-                                context,
-                                ExportGifService::class.java
-                            ).apply {
-                                putExtra("width", action.width)
-                                putExtra("height", action.height)
-                                putExtra("messageId", action.messageId)
-                            }.also { context.startForegroundService(it) }
-                        }
-
-                        else -> Unit
-
-                    }
-                }
-            }
-
-            LaunchedEffect(viewModel.navigationEventFlow) {
-                viewModel.navigationEventFlow.collectLatest { event ->
-                    when (event) {
-
-                        is NavigationEvent.NavigateUp -> {
-                            navController.navigate(MainScreen.Home) {
-                                popUpTo(navController.graph.id) {
-                                    inclusive = false
-                                }
-                                launchSingleTop = true
-                            }
-                        }
-
-                        else -> Unit
-
-                    }
-                }
-            }
-
-            DrawScreen(
-                state = state,
-                exporterProgress = exporterProgress,
-                exporterState = exporterState,
-                exportedUri = exportedUri,
-                drawingController = drawingController,
-                onUIAction = viewModel::onUIAction,
-                onNavigationEvent = viewModel::onNavigationEvent
-            )
-
+        BackHandler(enabled = true) {
+            viewModel.onNavigationEvent(NavigationEvent.NavigateUp)
         }
+
+        LaunchedEffect(Unit) {
+            viewModel.uiActionFlow.collectLatest { action ->
+                when (action) {
+
+                    is DrawScreenUIAction.Export -> {
+                        Intent(
+                            context,
+                            ExportGifService::class.java
+                        ).apply {
+                            putExtra("width", state.drawConfiguration.canvasWidth)
+                            putExtra("height", state.drawConfiguration.canvasHeight)
+                            putExtra("messageId", action.messageId)
+                        }.also { context.startForegroundService(it) }
+                    }
+
+                    else -> Unit
+
+                }
+            }
+        }
+
+        LaunchedEffect(viewModel.navigationEventFlow) {
+            viewModel.navigationEventFlow.collectLatest { event ->
+                when (event) {
+
+                    is NavigationEvent.NavigateUp -> {
+                        navController.navigate(MainScreen.Home) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+
+                    else -> Unit
+
+                }
+            }
+        }
+
+        DrawScreen(
+            state = state,
+            drawingController = drawingController,
+            onUIAction = viewModel::onUIAction,
+            onNavigationEvent = viewModel::onNavigationEvent
+        )
 
     }
 

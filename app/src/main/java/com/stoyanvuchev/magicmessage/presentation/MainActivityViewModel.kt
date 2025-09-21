@@ -27,6 +27,7 @@ package com.stoyanvuchev.magicmessage.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
+import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,11 +39,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val progressObserver: ExporterProgressObserver
 ) : ViewModel() {
 
     private val _isBoardingComplete = MutableStateFlow<Boolean?>(null)
     val isBoardingComplete = _isBoardingComplete.asStateFlow()
+
+    val exporterState = progressObserver.exporterState
+    val exporterProgress = progressObserver.progress
+    val exportedUri = progressObserver.exportedUri
+
+    fun onDismissExportDialog() {
+        viewModelScope.launch {
+            progressObserver.resetAll()
+        }
+    }
 
     init {
         viewModelScope.launch {

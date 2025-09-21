@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
+import com.stoyanvuchev.magicmessage.framework.service.ExportDataHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
@@ -68,7 +69,14 @@ class HomeScreenViewModel @Inject constructor(
     fun onUIAction(action: HomeScreenUIAction) {
         when (action) {
             is HomeScreenUIAction.NewMessage -> sendUIAction(action)
+            is HomeScreenUIAction.ExportGif -> exportGif(action)
         }
+    }
+
+    private fun exportGif(action: HomeScreenUIAction.ExportGif) {
+        ExportDataHolder.strokes = action.creation.drawingSnapshot.strokes
+        ExportDataHolder.bgLayer = action.creation.drawConfiguration.bgLayer
+        sendUIAction(action)
     }
 
     fun onNavigationEvent(event: NavigationEvent) {

@@ -27,16 +27,10 @@ package com.stoyanvuchev.magicmessage.presentation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,20 +39,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.stoyanvuchev.magicmessage.R
-import com.stoyanvuchev.magicmessage.core.ui.components.AuraButton
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBar
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarItem
 import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
-import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import com.stoyanvuchev.magicmessage.presentation.main.mainScreenNavDestinations
 import dev.chrisbanes.haze.HazeState
 
@@ -92,88 +81,38 @@ fun AppBottomNavBar(
         exit = remember { slideOutVertically { it } + fadeOut() }
     ) {
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        BottomNavBar(
+            modifier = Modifier.defaultHazeEffect(hazeState = hazeState)
         ) {
 
-            val isAuraBtnVisible by remember(currentDestination) {
-                derivedStateOf {
-                    currentDestination?.hasRoute(MainScreen.Home::class) ?: false
+            destinations.forEachIndexed { index, destination ->
+
+                val selected by remember(currentDestination, index) {
+                    derivedStateOf {
+                        currentDestination
+                            ?.hasRoute(destination::class)
+                            ?: false
+                    }
                 }
-            }
 
-            AnimatedVisibility(
-                modifier = Modifier.size(100.dp),
-                visible = isAuraBtnVisible,
-                enter = remember { fadeIn() + scaleIn(initialScale = .8f) },
-                exit = remember { scaleOut(targetScale = .8f) + fadeOut() }
-            ) {
-
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-
-                    AuraButton(
-                        onClick = remember {
-                            {
-                                navController.navigate(
-                                    MainScreen.Draw(null)
-                                ) { launchSingleTop = true }
-                            }
-                        },
-                        hazeState = hazeState,
-                        isGlowVisible = true,
-                        size = 56.dp
-                    ) {
+                BottomNavBarItem(
+                    selected = selected,
+                    onClick = { navController.navigate(destination) },
+                    icon = { offsetY ->
 
                         Icon(
-                            modifier = Modifier.size(24.dp),
-                            painter = painterResource(R.drawable.pencil_icon),
+                            modifier = Modifier.offset(y = offsetY),
+                            painter = painterResource(destination.icon),
                             contentDescription = null
                         )
 
+                    },
+                    label = {
+
+                        Text(text = stringResource(destination.label))
+
                     }
-
-                }
-
-            }
-
-            BottomNavBar(
-                modifier = Modifier.defaultHazeEffect(hazeState = hazeState)
-            ) {
-
-                destinations.forEachIndexed { index, destination ->
-
-                    val selected by remember(currentDestination, index) {
-                        derivedStateOf {
-                            currentDestination
-                                ?.hasRoute(destination::class)
-                                ?: false
-                        }
-                    }
-
-                    BottomNavBarItem(
-                        selected = selected,
-                        onClick = { navController.navigate(destination) },
-                        icon = { offsetY ->
-
-                            Icon(
-                                modifier = Modifier.offset(y = offsetY),
-                                painter = painterResource(destination.icon),
-                                contentDescription = null
-                            )
-
-                        },
-                        label = {
-
-                            Text(text = stringResource(destination.label))
-
-                        }
-                    )
-
-                }
+                )
 
             }
 
