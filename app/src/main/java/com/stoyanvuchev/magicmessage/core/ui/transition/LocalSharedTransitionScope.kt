@@ -22,17 +22,23 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
+package com.stoyanvuchev.magicmessage.core.ui.transition
 
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.unit.IntSize
-import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 
-@Stable
-data class DrawScreenState(
-    val messageId: Long? = null,
-    val dialogEditType: DialogEditType = DialogEditType.NONE,
-    val drawConfiguration: DrawConfiguration = DrawConfiguration(),
-    val canvasSize: IntSize = IntSize.Zero
+@OptIn(ExperimentalSharedTransitionApi::class)
+val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun ProvideSharedTransitionScope(
+    scope: SharedTransitionScope,
+    content: @Composable () -> Unit
+) = CompositionLocalProvider(
+    LocalSharedTransitionScope provides scope,
+    content = content
 )

@@ -28,9 +28,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,11 +70,19 @@ fun HomeScreenCreationItem(
                 indication = rememberRipple(),
                 role = Role.Image
             )
-            .fillMaxWidth()
-            .aspectRatio(1f)
             .clip(shape = Theme.shapes.smallShape)
             .background(color = Theme.colors.surfaceElevationHigh)
     ) {
+
+        val scaleX = findScaleFromSize(
+            a = creation.drawConfiguration.canvasWidth.toFloat(),
+            b = this.size.width
+        )
+
+        val scaleY = findScaleFromSize(
+            a = creation.drawConfiguration.canvasHeight.toFloat(),
+            b = this.size.height
+        )
 
         // Draw the background layer.
         when (creation.drawConfiguration.bgLayer) {
@@ -109,12 +116,9 @@ fun HomeScreenCreationItem(
         }
 
         scale(
-            scaleX = .33f,
-            scaleY = .33f,
-            pivot = this.center.copy(
-                x = this.center.x / 2,
-                y = this.center.y / 8
-            )
+            scaleX = scaleX,
+            scaleY = scaleY,
+            pivot = Offset.Zero
         ) {
 
             // Draw completed strokes.
@@ -124,4 +128,14 @@ fun HomeScreenCreationItem(
 
     }
 
+}
+
+@Stable
+private fun findScaleFromSize(
+    a: Float,
+    b: Float
+): Float {
+    val min = minOf(a, b)
+    val max = maxOf(a, b)
+    return min / max
 }

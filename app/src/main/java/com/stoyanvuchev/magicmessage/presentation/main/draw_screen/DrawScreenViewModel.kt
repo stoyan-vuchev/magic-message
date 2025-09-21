@@ -32,7 +32,6 @@ import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
-import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
 import com.stoyanvuchev.magicmessage.framework.service.ExportDataHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +45,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DrawScreenViewModel @Inject constructor(
-    private val progressObserver: ExporterProgressObserver,
     private val useCases: CreationUseCases,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -56,7 +54,7 @@ class DrawScreenViewModel @Inject constructor(
     private val _drawingController = MutableStateFlow(DrawingController())
     val drawingController = _drawingController.asStateFlow()
 
-    private val _state = MutableStateFlow(DrawScreenState())
+    private val _state = MutableStateFlow(DrawScreenState(messageId = id))
     val state = _state.asStateFlow()
 
     private val _uiActionChannel = Channel<DrawScreenUIAction>()
@@ -65,15 +63,14 @@ class DrawScreenViewModel @Inject constructor(
     private val _navigationEventChannel = Channel<NavigationEvent>()
     val navigationEventFlow = _navigationEventChannel.receiveAsFlow()
 
-    val exporterState = progressObserver.exporterState
-    val exporterProgress = progressObserver.progress
-    val exportedUri = progressObserver.exportedUri
-
     fun onUIAction(action: DrawScreenUIAction) {
         when (action) {
 
             is DrawScreenUIAction.Undo -> _drawingController.value.undo()
             is DrawScreenUIAction.Redo -> _drawingController.value.redo()
+
+            is DrawScreenUIAction.UpdateCanvasSize -> updateCanvasSize(action)
+
             is DrawScreenUIAction.OnStrokeEnded -> onStrokeEnded(
                 action.color,
                 action.width,
@@ -81,7 +78,6 @@ class DrawScreenViewModel @Inject constructor(
             )
 
             is DrawScreenUIAction.Export -> exportGif(action)
-            is DrawScreenUIAction.DismissExporterDialog -> progressObserver.resetAll()
 
             is DrawScreenUIAction.SetDialogEditType -> setDialogEditType(action)
             is DrawScreenUIAction.SetBrushEffect -> setBrushEffect(action)
@@ -97,6 +93,17 @@ class DrawScreenViewModel @Inject constructor(
     fun onNavigationEvent(event: NavigationEvent) {
         saveDraft()
         sendNavigationEvent(event)
+    }
+
+    private fun updateCanvasSize(action: DrawScreenUIAction.UpdateCanvasSize) {
+        _state.update {
+            it.copy(
+                drawConfiguration = it.drawConfiguration.copy(
+                    canvasWidth = action.width,
+                    canvasHeight = action.height
+                )
+            )
+        }
     }
 
     private fun setBGLayer(

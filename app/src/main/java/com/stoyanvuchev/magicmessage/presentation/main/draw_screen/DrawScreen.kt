@@ -24,7 +24,7 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 
-import android.net.Uri
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
@@ -42,52 +42,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
-import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DrawScreenDialog
-import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DrawScreenExportDialog
 import com.stoyanvuchev.systemuibarstweaker.LocalSystemUIBarsTweaker
 import com.stoyanvuchev.systemuibarstweaker.ScrimStyle
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalSharedTransitionApi::class
+)
 @Composable
 fun DrawScreen(
     state: DrawScreenState,
-    exporterProgress: Int,
-    exporterState: ExporterState,
-    exportedUri: Uri?,
     drawingController: DrawingController,
     onUIAction: (DrawScreenUIAction) -> Unit,
     onNavigationEvent: (NavigationEvent) -> Unit
 ) {
 
     val hazeState = rememberHazeState()
-    var canvasSize by remember { mutableStateOf(IntSize.Zero) }
     val tweaker = LocalSystemUIBarsTweaker.current
     val darkTheme by rememberUpdatedState(isInDarkThemeMode())
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
-        confirmValueChange = { it != SheetValue.PartiallyExpanded }
+        confirmValueChange = { v -> v != SheetValue.PartiallyExpanded }
     )
 
     DisposableEffect(
@@ -127,7 +120,6 @@ fun DrawScreen(
                 state = state,
                 hazeState = hazeState,
                 drawingController = drawingController,
-                canvasSize = canvasSize,
                 onUIAction = onUIAction,
                 onNavigationEvent = onNavigationEvent
             )
@@ -153,13 +145,18 @@ fun DrawScreen(
         ) {
 
             DrawingCanvas(
+                onSizeChanged = { size ->
+                    onUIAction(
+                        DrawScreenUIAction.UpdateCanvasSize(
+                            width = size.width,
+                            height = size.height
+                        )
+                    )
+                },
                 modifier = Modifier
                     .padding(24.dp)
                     .fillMaxWidth()
-                    .aspectRatio(3f / 4f)
-                    .onGloballyPositioned {
-                        canvasSize = it.size
-                    },
+                    .aspectRatio(3f / 4f),
                 controller = drawingController,
                 drawConfiguration = state.drawConfiguration,
                 onUIAction = onUIAction
@@ -208,18 +205,6 @@ fun DrawScreen(
             type = state.dialogEditType,
             state = state,
             sheetState = sheetState,
-            hazeState = hazeState,
-            onUIAction = onUIAction
-        )
-
-    }
-
-    if (exporterState != ExporterState.IDLE) {
-
-        DrawScreenExportDialog(
-            exporterProgress = exporterProgress,
-            exporterState = exporterState,
-            exportedUri = exportedUri,
             hazeState = hazeState,
             onUIAction = onUIAction
         )

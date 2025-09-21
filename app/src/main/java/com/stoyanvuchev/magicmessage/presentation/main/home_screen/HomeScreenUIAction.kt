@@ -25,10 +25,15 @@
 package com.stoyanvuchev.magicmessage.presentation.main.home_screen
 
 import androidx.compose.runtime.Immutable
+import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
 @Immutable
 interface HomeScreenUIAction {
 
     data object NewMessage : HomeScreenUIAction
+
+    data class ExportGif(
+        val creation: CreationModel
+    ) : HomeScreenUIAction
 
 }

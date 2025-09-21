@@ -48,7 +48,7 @@ class Exporter @Inject constructor(
                 "magic_message_${System.currentTimeMillis()}.gif"
             )
             put(MediaStore.MediaColumns.MIME_TYPE, "image/gif")
-            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/MagicMessage")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/Magic Message")
         }
 
         val uri = context.contentResolver.insert(

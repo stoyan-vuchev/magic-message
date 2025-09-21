@@ -37,6 +37,8 @@ import kotlinx.serialization.Serializable
 @Stable
 @Serializable
 data class DrawConfiguration(
+    val canvasWidth: Int = 720,
+    val canvasHeight: Int = 960,
     val effect: BrushEffect = BrushEffect.BUBBLES,
     val thickness: BrushThickness = BrushThickness.MEDIUM,
     @Serializable(with = ColorSerializer::class) val color: Color = Color.White,

@@ -43,15 +43,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
+            val navController = rememberNavController()
             val viewModel = hiltViewModel<MainActivityViewModel>()
             val isBoardingComplete by viewModel.isBoardingComplete.collectAsStateWithLifecycle()
-            val navController = rememberNavController()
+            val exporterProgress by viewModel.exporterProgress.collectAsStateWithLifecycle()
+            val exporterState by viewModel.exporterState.collectAsStateWithLifecycle()
+            val exportedUri by viewModel.exportedUri.collectAsStateWithLifecycle()
 
             MagicMessageTheme {
+
                 AppNavHost(
                     isBoardingComplete = isBoardingComplete,
-                    navController = navController
+                    navController = navController,
+                    exporterState = exporterState,
+                    exporterProgress = exporterProgress,
+                    exportedUri = exportedUri,
+                    onDismissExportDialog = viewModel::onDismissExportDialog
                 )
+
             }
 
         }

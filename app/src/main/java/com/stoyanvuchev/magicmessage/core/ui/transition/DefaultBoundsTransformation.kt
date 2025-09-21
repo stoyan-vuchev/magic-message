@@ -22,17 +22,15 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
+package com.stoyanvuchev.magicmessage.core.ui.transition
 
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.unit.IntSize
-import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.ui.geometry.Rect
 
-@Stable
-data class DrawScreenState(
-    val messageId: Long? = null,
-    val dialogEditType: DialogEditType = DialogEditType.NONE,
-    val drawConfiguration: DrawConfiguration = DrawConfiguration(),
-    val canvasSize: IntSize = IntSize.Zero
-)
+val defaultBoundsTransformation = { _: Rect, _: Rect ->
+    spring<Rect>(
+        dampingRatio = Spring.DampingRatioLowBouncy,
+        stiffness = Spring.StiffnessMediumLow
+    )
+}
