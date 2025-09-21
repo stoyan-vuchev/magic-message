@@ -34,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -41,6 +42,7 @@ import androidx.navigation.compose.composable
 import com.stoyanvuchev.magicmessage.core.ui.animation.LocalAnimatedContentScope
 import com.stoyanvuchev.magicmessage.core.ui.navigation.InitialScreen
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
+import com.stoyanvuchev.magicmessage.core.ui.transition.DefaultNavigationTransitions
 import com.stoyanvuchev.magicmessage.core.ui.transition.LocalSharedTransitionScope
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
@@ -95,6 +97,10 @@ fun AppNavHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .hazeSource(state = hazeState),
+                    enterTransition = remember { { DefaultNavigationTransitions.enter(this) } },
+                    exitTransition = remember { { DefaultNavigationTransitions.exit(this) } },
+                    popEnterTransition = remember { { DefaultNavigationTransitions.popEnter(this) } },
+                    popExitTransition = remember { { DefaultNavigationTransitions.popExit(this) } },
                     navController = navController,
                     startDestination = InitialScreen
                 ) {
