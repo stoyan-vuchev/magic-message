@@ -26,24 +26,19 @@ package com.stoyanvuchev.magicmessage.presentation
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.stoyanvuchev.magicmessage.core.ui.animation.LocalAnimatedContentScope
 import com.stoyanvuchev.magicmessage.core.ui.navigation.InitialScreen
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.transition.DefaultNavigationTransitions
-import com.stoyanvuchev.magicmessage.core.ui.transition.LocalSharedTransitionScope
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
 import com.stoyanvuchev.magicmessage.presentation.boarding.boardingNavGraph
@@ -65,66 +60,55 @@ fun AppNavHost(
     exporterProgress: Int,
     exportedUri: Uri?,
     onDismissExportDialog: () -> Unit
-) = SharedTransitionLayout {
+) {
 
     val hazeState = rememberHazeState()
 
-    AnimatedContent(
-        targetState = Unit,
-        label = "Top level AnimatedContent"
-    ) { targetState ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Theme.colors.surfaceElevationLow,
+        contentColor = Theme.colors.onSurfaceElevationLow,
+        bottomBar = {
 
-        CompositionLocalProvider(
-            LocalSharedTransitionScope provides this@SharedTransitionLayout,
-            LocalAnimatedContentScope provides this@AnimatedContent
+            AppBottomNavBar(
+                navController = navController,
+                hazeState = hazeState
+            )
+
+        }
+    ) { _ ->
+
+        NavHost(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeSource(
+                    state = hazeState,
+                    key = "root_haze_source"
+                ),
+            enterTransition = remember { { DefaultNavigationTransitions.enter(this) } },
+            exitTransition = remember { { DefaultNavigationTransitions.exit(this) } },
+            popEnterTransition = remember { { DefaultNavigationTransitions.popEnter(this) } },
+            popExitTransition = remember { { DefaultNavigationTransitions.popExit(this) } },
+            navController = navController,
+            startDestination = InitialScreen
         ) {
 
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
-                containerColor = Theme.colors.surfaceElevationLow,
-                contentColor = Theme.colors.onSurfaceElevationLow,
-                bottomBar = {
-
-                    AppBottomNavBar(
-                        navController = navController,
-                        hazeState = hazeState
-                    )
-
-                }
-            ) { _ ->
-
-                NavHost(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .hazeSource(state = hazeState),
-                    enterTransition = remember { { DefaultNavigationTransitions.enter(this) } },
-                    exitTransition = remember { { DefaultNavigationTransitions.exit(this) } },
-                    popEnterTransition = remember { { DefaultNavigationTransitions.popEnter(this) } },
-                    popExitTransition = remember { { DefaultNavigationTransitions.popExit(this) } },
-                    navController = navController,
-                    startDestination = InitialScreen
-                ) {
-
-                    composable<InitialScreen> {
-                        LaunchedEffect(isBoardingComplete) {
-                            if (isBoardingComplete != null) {
-                                navController.navigate(
-                                    if (isBoardingComplete) MainScreen.Home
-                                    else BoardingScreen.GetStarted
-                                ) {
-                                    popUpTo(navController.graph.id) { inclusive = false }
-                                    launchSingleTop = true
-                                }
-                            }
+            composable<InitialScreen> {
+                LaunchedEffect(isBoardingComplete) {
+                    if (isBoardingComplete != null) {
+                        navController.navigate(
+                            if (isBoardingComplete) MainScreen.Home
+                            else BoardingScreen.GetStarted
+                        ) {
+                            popUpTo(navController.graph.id) { inclusive = false }
+                            launchSingleTop = true
                         }
                     }
-
-                    boardingNavGraph(navController = navController)
-                    mainNavGraph(navController = navController)
-
                 }
-
             }
+
+            boardingNavGraph(navController = navController)
+            mainNavGraph(navController = navController)
 
         }
 

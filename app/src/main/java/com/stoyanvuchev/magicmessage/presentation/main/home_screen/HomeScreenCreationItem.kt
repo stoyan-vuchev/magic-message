@@ -26,17 +26,25 @@ package com.stoyanvuchev.magicmessage.presentation.main.home_screen
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.interaction.rememberRipple
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.ext.drawStroke
@@ -50,13 +58,34 @@ fun HomeScreenCreationItem(
     modifier: Modifier = Modifier,
     creation: CreationModel,
     onNavigationEvent: (NavigationEvent) -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: (IntSize) -> Unit
 ) {
+
+    var canvasSize by remember { mutableStateOf(IntSize.Zero) }
+
+    val scaleX by remember {
+        derivedStateOf {
+            findScaleFromSize(
+                a = creation.drawConfiguration.canvasWidth.toFloat(),
+                b = canvasSize.width.toFloat()
+            )
+        }
+    }
+
+    val scaleY by remember {
+        derivedStateOf {
+            findScaleFromSize(
+                a = creation.drawConfiguration.canvasHeight.toFloat(),
+                b = canvasSize.height.toFloat()
+            )
+        }
+    }
 
     Canvas(
         modifier = modifier
+            .onPlaced { canvasSize = it.size }
             .combinedClickable(
-                onClick = remember(creation.id) {
+                onClick = remember {
                     {
                         onNavigationEvent(
                             NavigationEvent.NavigateTo(
@@ -65,24 +94,19 @@ fun HomeScreenCreationItem(
                         )
                     }
                 },
-                onLongClick = onLongClick,
+                onLongClick = remember { { onLongClick(canvasSize) } },
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
                 role = Role.Image
             )
             .clip(shape = Theme.shapes.smallShape)
             .background(color = Theme.colors.surfaceElevationHigh)
+            .border(
+                width = 1.dp,
+                color = Theme.colors.outline,
+                shape = Theme.shapes.smallShape
+            )
     ) {
-
-        val scaleX = findScaleFromSize(
-            a = creation.drawConfiguration.canvasWidth.toFloat(),
-            b = this.size.width
-        )
-
-        val scaleY = findScaleFromSize(
-            a = creation.drawConfiguration.canvasHeight.toFloat(),
-            b = this.size.height
-        )
 
         // Draw the background layer.
         when (creation.drawConfiguration.bgLayer) {

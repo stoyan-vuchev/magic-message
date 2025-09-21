@@ -42,12 +42,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.interaction.rememberRipple
+import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
+import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun ListItemOption(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    hazeState: HazeState,
     label: @Composable () -> Unit,
     icon: @Composable (() -> Unit)? = null
 ) {
@@ -66,7 +69,8 @@ fun ListItemOption(
                     indication = rememberRipple(),
                     onClick = onClick
                 )
-                .background(color = Theme.colors.surfaceElevationHigh)
+                .defaultHazeEffect(hazeState = hazeState)
+                .background(Theme.colors.surfaceElevationHigh.copy(.5f))
                 .border(
                     width = 1.dp,
                     color = Theme.colors.outline,
