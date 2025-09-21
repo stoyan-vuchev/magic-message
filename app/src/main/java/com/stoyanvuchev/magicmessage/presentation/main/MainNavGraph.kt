@@ -26,16 +26,25 @@ package com.stoyanvuchev.magicmessage.presentation.main
 
 import android.content.Intent
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
+import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.framework.service.ExportGifService
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreen
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
@@ -43,6 +52,10 @@ import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenVie
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreen
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenViewModel
+import com.stoyanvuchev.magicmessage.presentation.main.transitions.FavoriteNavigationTransitions
+import com.stoyanvuchev.magicmessage.presentation.main.transitions.HomeNavigationTransitions
+import com.stoyanvuchev.magicmessage.presentation.main.transitions.MenuNavigationTransitions
+import com.stoyanvuchev.magicmessage.presentation.main.transitions.safeRoute
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
@@ -51,7 +64,36 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         startDestination = MainScreen.Home
     ) {
 
-        composable<MainScreen.Home> {
+        composable<MainScreen.Home>(
+            enterTransition = {
+                HomeNavigationTransitions.enter(
+                    scope = this,
+                    initialRoute = initialState.safeRoute(),
+                    targetRoute = targetState.safeRoute()
+                )
+            },
+            exitTransition = {
+                HomeNavigationTransitions.exit(
+                    scope = this,
+                    initialRoute = initialState.safeRoute(),
+                    targetRoute = targetState.safeRoute()
+                )
+            },
+            popEnterTransition = {
+                HomeNavigationTransitions.popEnter(
+                    scope = this,
+                    initialRoute = initialState.safeRoute(),
+                    targetRoute = targetState.safeRoute()
+                )
+            },
+            popExitTransition = {
+                HomeNavigationTransitions.popExit(
+                    scope = this,
+                    initialRoute = initialState.safeRoute(),
+                    targetRoute = targetState.safeRoute()
+                )
+            }
+        ) {
 
             val viewModel = hiltViewModel<HomeScreenViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -104,9 +146,101 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
     }
 
-    composable<MainScreen.Favorite> {}
+    composable<MainScreen.Favorite>(
+        enterTransition = {
+            FavoriteNavigationTransitions.enter(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        },
+        exitTransition = {
+            FavoriteNavigationTransitions.exit(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        },
+        popEnterTransition = {
+            FavoriteNavigationTransitions.popEnter(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        },
+        popExitTransition = {
+            FavoriteNavigationTransitions.popExit(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        }
+    ) {
 
-    composable<MainScreen.Menu> {}
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Text(
+                text = stringResource(R.string.favorite_screen_label),
+                style = Theme.typefaces.titleMedium,
+                color = Theme.colors.onSurfaceElevationLow
+            )
+
+        }
+
+    }
+
+    composable<MainScreen.Menu>(
+        enterTransition = {
+            MenuNavigationTransitions.enter(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        },
+        exitTransition = {
+            MenuNavigationTransitions.exit(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        },
+        popEnterTransition = {
+            MenuNavigationTransitions.popEnter(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        },
+        popExitTransition = {
+            MenuNavigationTransitions.popExit(
+                scope = this,
+                initialRoute = initialState.safeRoute(),
+                targetRoute = targetState.safeRoute()
+            )
+        }
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Text(
+                text = stringResource(R.string.menu_screen_label),
+                style = Theme.typefaces.titleMedium,
+                color = Theme.colors.onSurfaceElevationLow
+            )
+
+        }
+
+    }
 
     composable<MainScreen.Draw> {
 
@@ -146,12 +280,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                 when (event) {
 
                     is NavigationEvent.NavigateUp -> {
-                        navController.navigate(MainScreen.Home) {
-                            popUpTo(navController.graph.id) {
-                                inclusive = false
-                            }
-                            launchSingleTop = true
-                        }
+                        navController.navigateUp()
                     }
 
                     else -> Unit

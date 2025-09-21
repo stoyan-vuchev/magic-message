@@ -48,6 +48,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBar
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarItem
 import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
+import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import com.stoyanvuchev.magicmessage.presentation.main.mainScreenNavDestinations
 import dev.chrisbanes.haze.HazeState
 
@@ -97,7 +98,16 @@ fun AppBottomNavBar(
 
                 BottomNavBarItem(
                     selected = selected,
-                    onClick = { navController.navigate(destination) },
+                    onClick = {
+                        if (!selected) {
+                            navController.navigate(destination) {
+                                launchSingleTop = true
+                                popUpTo(MainScreen.Home) {
+                                    inclusive = false
+                                }
+                            }
+                        }
+                    },
                     icon = { offsetY ->
 
                         Icon(
