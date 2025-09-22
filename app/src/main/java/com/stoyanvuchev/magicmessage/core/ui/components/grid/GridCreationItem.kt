@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.home_screen
+package com.stoyanvuchev.magicmessage.core.ui.components.grid
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -38,27 +38,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.interaction.rememberRipple
-import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.ext.drawStroke
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
-import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 
 @Composable
-fun HomeScreenCreationItem(
+fun GridCreationItem(
     modifier: Modifier = Modifier,
     creation: CreationModel,
-    onNavigationEvent: (NavigationEvent) -> Unit,
-    onLongClick: (IntSize) -> Unit
+    onCreationClick: (CreationModel) -> Unit,
+    onCreationLongClick: (CreationModel, IntSize) -> Unit
 ) {
 
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
@@ -84,27 +84,24 @@ fun HomeScreenCreationItem(
     Canvas(
         modifier = modifier
             .onPlaced { canvasSize = it.size }
+            .background(
+                color = Theme.colors.surfaceElevationHigh,
+                shape = Theme.shapes.smallShape
+            )
+            .border(
+                width = 1.dp,
+                color = Theme.colors.outline
+                    .compositeOver(Theme.colors.surfaceElevationLow),
+                shape = Theme.shapes.smallShape
+            )
+            .clip(shape = Theme.shapes.smallShape)
+            .clipToBounds()
             .combinedClickable(
-                onClick = remember {
-                    {
-                        onNavigationEvent(
-                            NavigationEvent.NavigateTo(
-                                MainScreen.Draw(creation.id)
-                            )
-                        )
-                    }
-                },
-                onLongClick = remember { { onLongClick(canvasSize) } },
+                onClick = remember { { onCreationClick(creation) } },
+                onLongClick = remember { { onCreationLongClick(creation, canvasSize) } },
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
                 role = Role.Image
-            )
-            .clip(shape = Theme.shapes.smallShape)
-            .background(color = Theme.colors.surfaceElevationHigh)
-            .border(
-                width = 1.dp,
-                color = Theme.colors.outline,
-                shape = Theme.shapes.smallShape
             )
     ) {
 

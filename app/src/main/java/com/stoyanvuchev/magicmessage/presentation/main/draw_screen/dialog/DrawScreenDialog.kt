@@ -57,10 +57,9 @@ import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import com.stoyanvuchev.magicmessage.domain.brush.BrushThickness
+import com.stoyanvuchev.magicmessage.domain.defaultDrawColors
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenState
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
-import com.stoyanvuchev.magicmessage.domain.defaultDrawColors
-import dev.chrisbanes.haze.HazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +68,6 @@ fun DrawScreenDialog(
     type: DialogEditType,
     state: DrawScreenState,
     sheetState: SheetState,
-    hazeState: HazeState,
     onUIAction: (DrawScreenUIAction) -> Unit,
 ) {
 
@@ -99,7 +97,7 @@ fun DrawScreenDialog(
                         color = Theme.colors.outline,
                         shape = Theme.shapes.mediumShape
                     )
-                    .defaultHazeEffect(hazeState = hazeState)
+                    .defaultHazeEffect()
                     .background(color = Theme.colors.surfaceElevationHigh.copy(.25f))
                     .padding(8.dp)
             ) {

@@ -33,8 +33,10 @@ class CreationGetExportedUseCase @Inject constructor(
     private val repository: CreationRepository
 ) {
 
-    operator fun invoke(): Flow<List<CreationModel>> {
-        return repository.getFinished()
+    operator fun invoke(
+        onlyFavorite: Boolean = false
+    ): Flow<List<CreationModel>> {
+        return repository.getFinished(onlyFavorite)
     }
 
 }

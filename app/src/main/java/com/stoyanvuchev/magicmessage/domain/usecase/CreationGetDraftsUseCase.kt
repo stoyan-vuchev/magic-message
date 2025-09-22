@@ -33,8 +33,10 @@ class CreationGetDraftsUseCase @Inject constructor(
     private val repository: CreationRepository
 ) {
 
-    operator fun invoke(): Flow<List<CreationModel>> {
-        return repository.getDrafts()
+    operator fun invoke(
+        onlyFavorite: Boolean = false
+    ): Flow<List<CreationModel>> {
+        return repository.getDrafts(onlyFavorite)
     }
 
 }

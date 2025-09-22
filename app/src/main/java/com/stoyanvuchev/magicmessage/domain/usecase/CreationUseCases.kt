@@ -29,5 +29,7 @@ data class CreationUseCases(
     val getByIdUseCase: CreationGetByIdUseCase,
     val getExportedUseCase: CreationGetExportedUseCase,
     val getDraftsUseCase: CreationGetDraftsUseCase,
-    val markAsExportedUseCase: CreationMarkAsExportedUseCase
+    val markAsExportedUseCase: CreationMarkAsExportedUseCase,
+    val markAsFavoriteUseCase: CreationMarkAsFavoriteUseCase,
+    val removeAsFavoriteUseCase: CreationRemoveAsFavoriteUseCase
 )

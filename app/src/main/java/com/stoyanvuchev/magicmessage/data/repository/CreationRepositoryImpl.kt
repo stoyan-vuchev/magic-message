@@ -29,7 +29,6 @@ import com.stoyanvuchev.magicmessage.data.local.CreationEntity
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
 import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
-import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
 import com.stoyanvuchev.magicmessage.mappers.toModel
 import kotlinx.coroutines.flow.Flow
@@ -87,12 +86,12 @@ class CreationRepositoryImpl @Inject constructor(
         dao.update(creation.copy(isFavorite = false))
     }
 
-    override fun getDrafts(): Flow<List<CreationModel>> {
-        return dao.getAllDrafts().map { it.map { e -> e.toModel() } }
+    override fun getDrafts(onlyFavorite: Boolean): Flow<List<CreationModel>> {
+        return dao.getAllDrafts(onlyFavorite).map { it.map { e -> e.toModel() } }
     }
 
-    override fun getFinished(): Flow<List<CreationModel>> {
-        return dao.getAll().map { it.map { e -> e.toModel() } }
+    override fun getFinished(onlyFavorite: Boolean): Flow<List<CreationModel>> {
+        return dao.getAll(onlyFavorite).map { it.map { e -> e.toModel() } }
     }
 
     override suspend fun getById(id: Long): CreationModel? {

@@ -24,4 +24,7 @@
 
 package com.stoyanvuchev.magicmessage.domain.brush
 
+import androidx.compose.runtime.Stable
+
+@Stable
 enum class BrushEffect { NONE, BUBBLES, STARS, HEARTS }

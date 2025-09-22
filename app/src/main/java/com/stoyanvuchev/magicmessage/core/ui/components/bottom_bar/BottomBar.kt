@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_bar.BottomBarTokens.BottomBarHeight
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_bar.BottomBarTokens.BottomBarItemHorizontalPadding
+import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 
 @Composable
@@ -48,31 +49,28 @@ fun BottomBar(
     modifier: Modifier = Modifier,
     windowInsets: WindowInsets = WindowInsets.navigationBars,
     content: @Composable RowScope.() -> Unit
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .defaultHazeEffect()
+        .clipToBounds()
+        .then(modifier)
 ) {
 
-    Column(
+    HorizontalDivider(
+        modifier = Modifier.fillMaxWidth(),
+        color = Theme.colors.outline,
+        thickness = 1.dp
+    )
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clipToBounds()
-            .then(modifier)
-    ) {
-
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            color = Theme.colors.outline,
-            thickness = 1.dp
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(windowInsets)
-                .defaultMinSize(minHeight = BottomBarHeight),
-            horizontalArrangement = Arrangement.spacedBy(BottomBarItemHorizontalPadding),
-            verticalAlignment = Alignment.CenterVertically,
-            content = content
-        )
-
-    }
+            .windowInsetsPadding(windowInsets)
+            .defaultMinSize(minHeight = BottomBarHeight),
+        horizontalArrangement = Arrangement.spacedBy(BottomBarItemHorizontalPadding),
+        verticalAlignment = Alignment.CenterVertically,
+        content = content
+    )
 
 }

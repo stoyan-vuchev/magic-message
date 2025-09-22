@@ -29,6 +29,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalContentColor
@@ -41,6 +42,7 @@ import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTextStyle
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTypefaces
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.Typefaces
 import com.stoyanvuchev.systemuibarstweaker.ProvideSystemUIBarsTweaker
+import dev.chrisbanes.haze.rememberHazeState
 
 @Composable
 fun UIWrapper(
@@ -52,6 +54,7 @@ fun UIWrapper(
     content: @Composable () -> Unit
 ) = ProvideSystemUIBarsTweaker {
 
+    val hazeState = rememberHazeState()
     val finalColorPalette by rememberUpdatedState(
         if (animateColorPalette) colorPalette.asAnimatedColorPalette()
         else colorPalette
@@ -64,6 +67,7 @@ fun UIWrapper(
         LocalTypefaces provides typefaces,
         LocalTextStyle provides typefaces.bodyMedium,
         LocalShapes provides shapes,
+        LocalHazeState provides hazeState,
         content = content
     )
 

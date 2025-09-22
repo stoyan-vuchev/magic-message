@@ -40,76 +40,67 @@ import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.components.AuraButton
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBar
-import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
-import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun DrawScreenTopBar(
     state: DrawScreenState,
-    hazeState: HazeState,
     drawingController: DrawingController,
     onUIAction: (DrawScreenUIAction) -> Unit,
     onNavigationEvent: (NavigationEvent) -> Unit
-) {
+) = TopBar(
+    title = { Text(text = stringResource(R.string.app_name)) },
+    navigationAction = {
 
-    TopBar(
-        modifier = Modifier.defaultHazeEffect(hazeState = hazeState),
-        title = { Text(text = stringResource(R.string.app_name)) },
-        navigationAction = {
+        IconButton(
+            onClick = remember { { onNavigationEvent(NavigationEvent.NavigateUp) } }
+        ) {
+            Icon(
+                modifier = Modifier.size(28.dp),
+                painter = painterResource(R.drawable.arrow_left_outlined),
+                contentDescription = stringResource(R.string.navigate_back)
+            )
+        }
 
-            IconButton(
-                onClick = remember { { onNavigationEvent(NavigationEvent.NavigateUp) } }
-            ) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    painter = painterResource(R.drawable.arrow_left_outlined),
-                    contentDescription = null
-                )
-            }
+    },
+    actions = {
 
-        },
-        actions = {
+        IconButton(
+            onClick = remember { { onUIAction(DrawScreenUIAction.Undo) } },
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.undo),
+                contentDescription = stringResource(R.string.action_undo)
+            )
+        }
 
-            IconButton(
-                onClick = remember { { onUIAction(DrawScreenUIAction.Undo) } },
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.undo),
-                    contentDescription = null
-                )
-            }
+        IconButton(
+            onClick = remember { { onUIAction(DrawScreenUIAction.Redo) } }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.redo),
+                contentDescription = stringResource(R.string.action_redo)
+            )
+        }
 
-            IconButton(
-                onClick = remember { { onUIAction(DrawScreenUIAction.Redo) } }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.redo),
-                    contentDescription = null
-                )
-            }
+        val isGlowVisible by rememberUpdatedState(
+            drawingController.totalPointCount
+                    == DrawingController.MAX_POINTS
+        )
 
-            val isGlowVisible by rememberUpdatedState(
-                drawingController.totalPointCount
-                        == DrawingController.MAX_POINTS
+        AuraButton(
+            size = 40.dp,
+            onClick = { onUIAction(DrawScreenUIAction.Export(messageId = state.messageId)) },
+            isGlowVisible = isGlowVisible,
+            glowColor = state.drawConfiguration.color
+        ) {
+
+            Icon(
+                painter = painterResource(R.drawable.export),
+                contentDescription = stringResource(R.string.export_gif)
             )
 
-            AuraButton(
-                size = 40.dp,
-                onClick = { onUIAction(DrawScreenUIAction.Export(messageId = state.messageId)) },
-                hazeState = hazeState,
-                isGlowVisible = isGlowVisible,
-                glowColor = state.drawConfiguration.color
-            ) {
-
-                Icon(
-                    painter = painterResource(R.drawable.export),
-                    contentDescription = null
-                )
-
-            }
-
         }
-    )
 
-}
+    }
+)

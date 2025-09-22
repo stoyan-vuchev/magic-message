@@ -22,19 +22,19 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.domain.usecase
 
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
-import kotlinx.serialization.Serializable
+import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import javax.inject.Inject
 
-@Serializable
-@Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    @Serializable(with = ColorSerializer::class) val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+class CreationMarkAsFavoriteUseCase @Inject constructor(
+    private val repository: CreationRepository
+) {
+
+    suspend operator fun invoke(creationId: Long?) {
+        if (creationId != null) {
+            repository.markAsFavorite(creationId)
+        }
+    }
+
+}

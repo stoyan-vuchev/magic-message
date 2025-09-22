@@ -24,9 +24,11 @@
 
 package com.stoyanvuchev.magicmessage.domain.brush
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+@Stable
 enum class BrushThickness(
     val thickness: Dp
 ) {

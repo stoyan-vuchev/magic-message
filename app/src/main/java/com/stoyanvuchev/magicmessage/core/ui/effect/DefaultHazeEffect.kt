@@ -24,28 +24,28 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.effect
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.unit.dp
+import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 
+@Composable
 fun Modifier.defaultHazeEffect(
-    hazeState: HazeState
+    hazeState: HazeState = LocalHazeState.current
 ): Modifier {
-    return composed {
-        hazeEffect(
-            state = hazeState,
-            style = HazeStyle(
-                tint = HazeTint(color = Theme.colors.surfaceElevationLow.copy(.75f)),
-                blurRadius = 16.dp,
-                noiseFactor = -1f,
-                backgroundColor = Theme.colors.surfaceElevationLow
+    return hazeEffect(
+        state = hazeState,
+        style = HazeStyle(
+            tint = HazeTint(color = Theme.colors.surfaceElevationLow.copy(.75f)),
+            blurRadius = 16.dp,
+            noiseFactor = -1f,
+            backgroundColor = Theme.colors.surfaceElevationLow
 
-            )
         )
-    }
+    )
 }

@@ -22,19 +22,39 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.core.ui.etc
 
+import android.content.Context
+import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
-import kotlinx.serialization.Serializable
+import androidx.compose.ui.res.stringResource
 
-@Serializable
 @Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    @Serializable(with = ColorSerializer::class) val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+sealed interface UIString {
+
+    data class Basic(
+        val value: String
+    ) : UIString
+
+    class Resource(
+        @param:StringRes val resId: Int,
+        vararg val args: Any
+    ) : UIString
+
+    @Composable
+    fun asString(): String {
+        return when (this) {
+            is Basic -> value
+            is Resource -> stringResource(resId, *args)
+        }
+    }
+
+    fun asString(context: Context): String {
+        return when (this) {
+            is Basic -> value
+            is Resource -> context.getString(resId, *args)
+        }
+    }
+
+}

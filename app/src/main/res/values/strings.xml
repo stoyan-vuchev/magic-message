@@ -34,7 +34,16 @@
     <string name="exporter_label_completed_description">"Enjoy the GIF 🎉"</string>
     <string name="exporter_label_view">View</string>
     <string name="exporter_label_cancel">Cancel</string>
-    <string name="home_screen_exported_label">Exported</string>
-    <string name="home_screen_drafted_label">Drafts</string>
+    <string name="exported_label">Exported</string>
+    <string name="drafts_label">Drafts</string>
     <string name="home_screen_empty_text">Tap the pen icon\nto draw something.</string>
+    <string name="favorite_screen_empty_text">Add some favorites\nfrom the home screen.</string>
+    <string name="dismiss_item_details">Dismiss item details.</string>
+    <string name="add_to_favorite">Add to Favorite</string>
+    <string name="remove_from_favorite">Remove from Favorite</string>
+    <string name="move_to_trash">Move to Trash</string>
+    <string name="export_gif">Export GIF</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="action_undo">Undo action</string>
+    <string name="action_redo">Redo action</string>
 </resources>

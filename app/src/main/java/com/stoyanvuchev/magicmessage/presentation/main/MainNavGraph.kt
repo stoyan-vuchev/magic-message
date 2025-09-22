@@ -24,7 +24,6 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main
 
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,10 +44,13 @@ import androidx.navigation.navigation
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
-import com.stoyanvuchev.magicmessage.framework.service.ExportGifService
+import com.stoyanvuchev.magicmessage.framework.service.ExportGifServiceIntent
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreen
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenViewModel
+import com.stoyanvuchev.magicmessage.presentation.main.favorite_screen.FavoriteScreen
+import com.stoyanvuchev.magicmessage.presentation.main.favorite_screen.FavoriteScreenUIAction
+import com.stoyanvuchev.magicmessage.presentation.main.favorite_screen.FavoriteScreenViewModel
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreen
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenViewModel
@@ -104,14 +106,12 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                     when (action) {
 
                         is HomeScreenUIAction.ExportGif -> {
-                            Intent(
-                                context,
-                                ExportGifService::class.java
-                            ).apply {
-                                putExtra("width", action.creation.drawConfiguration.canvasWidth)
-                                putExtra("height", action.creation.drawConfiguration.canvasHeight)
-                                putExtra("messageId", action.creation.id)
-                            }.also { context.startForegroundService(it) }
+                            ExportGifServiceIntent.start(
+                                context = context,
+                                messageId = action.creation.id,
+                                width = action.creation.drawConfiguration.canvasWidth,
+                                height = action.creation.drawConfiguration.canvasHeight
+                            )
                         }
 
                         else -> Unit
@@ -177,20 +177,50 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         }
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
-            contentAlignment = Alignment.Center
-        ) {
+        val viewModel = hiltViewModel<FavoriteScreenViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val context = LocalContext.current
 
-            Text(
-                text = stringResource(R.string.favorite_screen_label),
-                style = Theme.typefaces.titleMedium,
-                color = Theme.colors.onSurfaceElevationLow
-            )
+        LaunchedEffect(viewModel.uiActionFlow) {
+            viewModel.uiActionFlow.collectLatest { action ->
+                when (action) {
 
+                    is FavoriteScreenUIAction.ExportGif -> {
+                        ExportGifServiceIntent.start(
+                            context = context,
+                            messageId = action.creation.id,
+                            width = action.creation.drawConfiguration.canvasWidth,
+                            height = action.creation.drawConfiguration.canvasHeight
+                        )
+                    }
+
+                    else -> Unit
+
+                }
+            }
         }
+
+        LaunchedEffect(viewModel.navigationFlow) {
+            viewModel.navigationFlow.collectLatest { event ->
+                when (event) {
+
+                    is NavigationEvent.NavigateTo -> {
+                        navController.navigate(event.screen) {
+                            launchSingleTop = true
+                        }
+                    }
+
+                    else -> Unit
+
+                }
+            }
+        }
+
+        FavoriteScreen(
+            state = state,
+            onUIAction = viewModel::onUIAction,
+            onNavigationEvent = viewModel::onNavigationEvent
+        )
 
     }
 
@@ -259,14 +289,12 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                 when (action) {
 
                     is DrawScreenUIAction.Export -> {
-                        Intent(
-                            context,
-                            ExportGifService::class.java
-                        ).apply {
-                            putExtra("width", state.drawConfiguration.canvasWidth)
-                            putExtra("height", state.drawConfiguration.canvasHeight)
-                            putExtra("messageId", action.messageId)
-                        }.also { context.startForegroundService(it) }
+                        ExportGifServiceIntent.start(
+                            context = context,
+                            messageId = state.messageId,
+                            width = state.drawConfiguration.canvasWidth,
+                            height = state.drawConfiguration.canvasHeight
+                        )
                     }
 
                     else -> Unit

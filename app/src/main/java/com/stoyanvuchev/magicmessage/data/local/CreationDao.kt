@@ -44,19 +44,41 @@ interface CreationDao {
     @Delete
     suspend fun delete(creation: CreationEntity)
 
-    @Query("SELECT * FROM creations WHERE isDraft IS FALSE ORDER BY createdAt DESC")
-    fun getAll(): Flow<List<CreationEntity>>
-
-    @Query("SELECT * FROM creations WHERE isDraft IS TRUE ORDER BY createdAt DESC")
-    fun getAllDrafts(): Flow<List<CreationEntity>>
-
-    @Query("SELECT * FROM creations WHERE id = :id")
-    suspend fun getById(id: Long): CreationEntity?
-
     @Query("DELETE FROM creations WHERE isDraft IS 1")
     suspend fun deleteAllDrafts()
 
     @Query("DELETE FROM creations")
     suspend fun deleteAllCreations()
+
+    // Exported
+
+    fun getAll(onlyFavorite: Boolean = false): Flow<List<CreationEntity>> {
+        return if (onlyFavorite) getAllExportedFavorite()
+        else getAllExported()
+    }
+
+    @Query("SELECT * FROM creations WHERE isDraft IS FALSE AND isFavorite IS TRUE ORDER BY createdAt DESC")
+    fun getAllExportedFavorite(): Flow<List<CreationEntity>>
+
+    @Query("SELECT * FROM creations WHERE isDraft IS FALSE ORDER BY createdAt DESC")
+    fun getAllExported(): Flow<List<CreationEntity>>
+
+    // Drafts
+
+    fun getAllDrafts(onlyFavorite: Boolean = false): Flow<List<CreationEntity>> {
+        return if (onlyFavorite) getAllFavoriteDrafts()
+        else getDrafts()
+    }
+
+    @Query("SELECT * FROM creations WHERE isDraft IS TRUE ORDER BY createdAt DESC")
+    fun getDrafts(): Flow<List<CreationEntity>>
+
+    @Query("SELECT * FROM creations WHERE isDraft IS TRUE AND isFavorite IS TRUE ORDER BY createdAt DESC")
+    fun getAllFavoriteDrafts(): Flow<List<CreationEntity>>
+
+    // By ID
+
+    @Query("SELECT * FROM creations WHERE id = :id")
+    suspend fun getById(id: Long): CreationEntity?
 
 }

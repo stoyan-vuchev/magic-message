@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.home_screen
+package com.stoyanvuchev.magicmessage.presentation.main.favorite_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,41 +42,41 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class FavoriteScreenViewModel @Inject constructor(
     private val useCases: CreationUseCases
 ) : ViewModel() {
 
-    val state: StateFlow<HomeScreenState> = combine(
-        flow = useCases.getExportedUseCase(onlyFavorite = false),
-        flow2 = useCases.getDraftsUseCase(onlyFavorite = false)
+    val state: StateFlow<FavoriteScreenState> = combine(
+        flow = useCases.getExportedUseCase(onlyFavorite = true),
+        flow2 = useCases.getDraftsUseCase(onlyFavorite = true)
     ) { exported, drafted ->
 
-        HomeScreenState(
-            exportedCreationsList = exported,
-            draftedCreationsList = drafted
+        FavoriteScreenState(
+            draftedCreationsList = drafted,
+            exportedCreationsList = exported
         )
 
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = HomeScreenState()
+        initialValue = FavoriteScreenState()
     )
 
-    private val _uiActionChannel = Channel<HomeScreenUIAction>()
+    private val _uiActionChannel = Channel<FavoriteScreenUIAction>()
     val uiActionFlow = _uiActionChannel.receiveAsFlow()
 
     private val _navigationChannel = Channel<NavigationEvent>()
     val navigationFlow = _navigationChannel.receiveAsFlow()
 
-    fun onUIAction(action: HomeScreenUIAction) {
+    fun onUIAction(action: FavoriteScreenUIAction) {
         when (action) {
-            is HomeScreenUIAction.RemoveFromFavorite -> removeFromFavorite(action)
-            is HomeScreenUIAction.AddToFavorite -> addToFavorite(action)
-            is HomeScreenUIAction.ExportGif -> exportGif(action)
+            is FavoriteScreenUIAction.RemoveFromFavorite -> removeFromFavorite(action)
+            is FavoriteScreenUIAction.AddToFavorite -> addToFavorite(action)
+            is FavoriteScreenUIAction.ExportGif -> exportGif(action)
         }
     }
 
-    private fun removeFromFavorite(action: HomeScreenUIAction.RemoveFromFavorite) {
+    private fun removeFromFavorite(action: FavoriteScreenUIAction.RemoveFromFavorite) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 useCases.removeAsFavoriteUseCase(action.creationId)
@@ -84,7 +84,7 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun addToFavorite(action: HomeScreenUIAction.AddToFavorite) {
+    private fun addToFavorite(action: FavoriteScreenUIAction.AddToFavorite) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 useCases.markAsFavoriteUseCase(action.creationId)
@@ -92,7 +92,7 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun exportGif(action: HomeScreenUIAction.ExportGif) {
+    private fun exportGif(action: FavoriteScreenUIAction.ExportGif) {
         ExportDataHolder.strokes = action.creation.drawingSnapshot.strokes
         ExportDataHolder.bgLayer = action.creation.drawConfiguration.bgLayer
         sendUIAction(action)
@@ -102,7 +102,7 @@ class HomeScreenViewModel @Inject constructor(
         sendNavigationEvent(event)
     }
 
-    private fun sendUIAction(action: HomeScreenUIAction) {
+    private fun sendUIAction(action: FavoriteScreenUIAction) {
         viewModelScope.launch { _uiActionChannel.send(action) }
     }
 

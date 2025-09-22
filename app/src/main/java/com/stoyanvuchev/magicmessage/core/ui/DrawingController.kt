@@ -53,7 +53,8 @@ class DrawingController {
                 totalPointCount = snapshot.totalPointCount
                 drawingEnabled = snapshot.drawingEnabled
                 strokes = mutableStateListOf<StrokeModel>().also { it.addAll(snapshot.strokes) }
-                currentPoints = mutableStateListOf<TimedPoint>().also { it.addAll(snapshot.currentPoints) }
+                currentPoints =
+                    mutableStateListOf<TimedPoint>().also { it.addAll(snapshot.currentPoints) }
                 undoStack = ArrayDeque(snapshot.undoStack)
                 redoStack = ArrayDeque(snapshot.redoStack)
                 startTime = snapshot.startTime
@@ -176,7 +177,6 @@ class DrawingController {
                     brushColor = color
                 )
             )
-            println("AJA: Spawned Particles: ${particlesInternal.size}")
         }
     }
 

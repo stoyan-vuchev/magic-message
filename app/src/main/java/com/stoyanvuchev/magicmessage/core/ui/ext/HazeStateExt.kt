@@ -22,19 +22,11 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.core.ui.ext
 
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
-import kotlinx.serialization.Serializable
+import androidx.compose.runtime.compositionLocalOf
+import dev.chrisbanes.haze.HazeState
 
-@Serializable
-@Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    @Serializable(with = ColorSerializer::class) val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+val LocalHazeState = compositionLocalOf {
+    HazeState(initialBlurEnabled = true)
+}

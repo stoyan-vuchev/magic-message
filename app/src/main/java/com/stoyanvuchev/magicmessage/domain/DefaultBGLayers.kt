@@ -24,11 +24,11 @@
 
 package com.stoyanvuchev.magicmessage.domain
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 
-@Immutable
+@Stable
 object DefaultBGLayers {
 
     val colorLayers: List<BackgroundLayer.ColorLayer> = defaultDrawColors

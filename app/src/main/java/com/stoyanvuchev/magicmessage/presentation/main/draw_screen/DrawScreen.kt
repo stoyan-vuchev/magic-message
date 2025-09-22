@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
+import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DialogEditType
@@ -59,7 +60,6 @@ import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog.DrawSc
 import com.stoyanvuchev.systemuibarstweaker.LocalSystemUIBarsTweaker
 import com.stoyanvuchev.systemuibarstweaker.ScrimStyle
 import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 @OptIn(
@@ -74,7 +74,6 @@ fun DrawScreen(
     onNavigationEvent: (NavigationEvent) -> Unit
 ) {
 
-    val hazeState = rememberHazeState()
     val tweaker = LocalSystemUIBarsTweaker.current
     val darkTheme by rememberUpdatedState(isInDarkThemeMode())
     val scope = rememberCoroutineScope()
@@ -118,7 +117,6 @@ fun DrawScreen(
 
             DrawScreenTopBar(
                 state = state,
-                hazeState = hazeState,
                 drawingController = drawingController,
                 onUIAction = onUIAction,
                 onNavigationEvent = onNavigationEvent
@@ -128,7 +126,6 @@ fun DrawScreen(
         bottomBar = {
 
             DrawScreenBottomBar(
-                hazeState = hazeState,
                 state = state,
                 onUIAction = onUIAction
             )
@@ -139,7 +136,10 @@ fun DrawScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .hazeSource(state = hazeState)
+                .hazeSource(
+                    state = LocalHazeState.current,
+                    key = "draw_screen_haze_source"
+                )
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
@@ -205,7 +205,6 @@ fun DrawScreen(
             type = state.dialogEditType,
             state = state,
             sheetState = sheetState,
-            hazeState = hazeState,
             onUIAction = onUIAction
         )
 
