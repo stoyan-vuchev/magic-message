@@ -22,19 +22,24 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.presentation.main.favorite_screen
 
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
-import kotlinx.serialization.Serializable
+import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
-@Serializable
 @Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    @Serializable(with = ColorSerializer::class) val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+interface FavoriteScreenUIAction {
+
+    data class RemoveFromFavorite(
+        val creationId: Long?
+    ) : FavoriteScreenUIAction
+
+    data class AddToFavorite(
+        val creationId: Long?
+    ) : FavoriteScreenUIAction
+
+    data class ExportGif(
+        val creation: CreationModel
+    ) : FavoriteScreenUIAction
+
+}

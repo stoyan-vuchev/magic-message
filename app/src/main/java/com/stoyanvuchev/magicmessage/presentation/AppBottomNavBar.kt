@@ -47,17 +47,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBar
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarItem
-import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import com.stoyanvuchev.magicmessage.presentation.main.mainScreenNavDestinations
-import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun AppBottomNavBar(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-    hazeState: HazeState
-) {
+fun AppBottomNavBar(navController: NavHostController) {
 
     val destinations = rememberSaveable { mainScreenNavDestinations }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -74,17 +68,13 @@ fun AppBottomNavBar(
     }
 
     AnimatedVisibility(
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(modifier),
+        modifier = Modifier.fillMaxWidth(),
         visible = isNavBarVisible,
         enter = remember { fadeIn() + slideInVertically { it } },
         exit = remember { slideOutVertically { it } + fadeOut() }
     ) {
 
-        BottomNavBar(
-            modifier = Modifier.defaultHazeEffect(hazeState = hazeState)
-        ) {
+        BottomNavBar {
 
             destinations.forEachIndexed { index, destination ->
 

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.home_screen
+package com.stoyanvuchev.magicmessage.presentation.main.favorite_screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -41,7 +41,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -58,7 +57,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
-import com.stoyanvuchev.magicmessage.core.ui.components.AuraButton
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarTokens.NavigationBarHeight
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.GridCreationItemDetailsLayout
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.GridOfCreationItems
@@ -74,9 +72,9 @@ import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun HomeScreen(
-    state: HomeScreenState,
-    onUIAction: (HomeScreenUIAction) -> Unit,
+fun FavoriteScreen(
+    state: FavoriteScreenState,
+    onUIAction: (FavoriteScreenUIAction) -> Unit,
     onNavigationEvent: (NavigationEvent) -> Unit
 ) {
 
@@ -93,7 +91,7 @@ fun HomeScreen(
         topBar = {
 
             TopBar(
-                title = { Text(text = stringResource(R.string.home_screen_label)) },
+                title = { Text(text = stringResource(R.string.favorite_screen_label)) },
                 actions = {
 
                     AnimatedVisibility(
@@ -118,36 +116,6 @@ fun HomeScreen(
 
                 }
             )
-
-        },
-        floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = {
-
-            if (sharedCreation == null) {
-
-                AuraButton(
-                    onClick = remember {
-                        {
-                            onNavigationEvent(
-                                NavigationEvent.NavigateTo(
-                                    MainScreen.Draw(null)
-                                )
-                            )
-                        }
-                    },
-                    isGlowVisible = true,
-                    size = 56.dp
-                ) {
-
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(R.drawable.pencil_icon),
-                        contentDescription = null
-                    )
-
-                }
-
-            }
 
         },
         bottomBar = {
@@ -178,13 +146,13 @@ fun HomeScreen(
             ) {
 
                 Icon(
-                    modifier = Modifier.size(100.dp),
-                    painter = painterResource(R.drawable.logo_icon),
+                    modifier = Modifier.size(80.dp),
+                    painter = painterResource(R.drawable.favorite_outlined),
                     contentDescription = null
                 )
 
                 Text(
-                    text = stringResource(R.string.home_screen_empty_text),
+                    text = stringResource(R.string.favorite_screen_empty_text),
                     style = Theme.typefaces.bodyLarge,
                     color = Theme.colors.onSurfaceElevationLow.copy(.5f)
                 )
@@ -200,16 +168,16 @@ fun HomeScreen(
             GridOfCreationItems(
                 lazyGridState = lazyGridState,
                 innerPadding = innerPadding,
-                hazeSourceKey = "home_screen_grid_key"
+                hazeSourceKey = "favorite_screen_grid_key"
             ) {
 
-                if (state.exportedCreationsList.isNotEmpty()) {
+                if (state.draftedCreationsList.isNotEmpty()) {
 
                     gridOfCreationItemsSection(
                         sharedTransitionScope = this@SharedTransitionLayout,
                         label = UIString.Resource(resId = R.string.drafts_label),
                         items = state.draftedCreationsList,
-                        categoryKey = "home_drafted_items",
+                        categoryKey = "favorite_drafted_items",
                         sharedCreation = sharedCreation,
                         boundsTransform = boundsTransform,
                         onCreationClick = { creation ->
@@ -233,7 +201,7 @@ fun HomeScreen(
                         sharedTransitionScope = this@SharedTransitionLayout,
                         label = UIString.Resource(resId = R.string.exported_label),
                         items = state.exportedCreationsList,
-                        categoryKey = "home_exported_items",
+                        categoryKey = "favorite_exported_items",
                         sharedCreation = sharedCreation,
                         boundsTransform = boundsTransform,
                         onCreationClick = { creation ->
@@ -277,12 +245,12 @@ fun HomeScreen(
                         onClick = remember {
                             {
                                 sharedCreation?.let {
-                                    onUIAction(HomeScreenUIAction.ExportGif(it))
+                                    onUIAction(FavoriteScreenUIAction.ExportGif(it))
                                     sharedCreation = null
                                 }
                             }
                         },
-                        label = { Text(text = "Export GIF") },
+                        label = { Text(text = stringResource(R.string.export_gif)) },
                         icon = {
 
                             Icon(
@@ -309,10 +277,10 @@ fun HomeScreen(
                             onUIAction(
                                 if (!isFavorite) {
                                     isFavorite = true
-                                    HomeScreenUIAction.AddToFavorite(sharedCreation?.id)
+                                    FavoriteScreenUIAction.AddToFavorite(sharedCreation?.id)
                                 } else {
                                     isFavorite = false
-                                    HomeScreenUIAction.RemoveFromFavorite(sharedCreation?.id)
+                                    FavoriteScreenUIAction.RemoveFromFavorite(sharedCreation?.id)
                                 }
                             )
                         }

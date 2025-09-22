@@ -66,14 +66,12 @@ import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
-import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun ExportDialog(
     exporterProgress: Int,
     exporterState: ExporterState,
     exportedUri: Uri?,
-    hazeState: HazeState,
     onDismissExportDialog: () -> Unit,
 ) {
 
@@ -96,7 +94,7 @@ fun ExportDialog(
                 modifier = Modifier
                     .padding(horizontal = 40.dp)
                     .clip(Theme.shapes.mediumShape)
-                    .defaultHazeEffect(hazeState = hazeState)
+                    .defaultHazeEffect()
                     .border(
                         width = 1.dp,
                         color = Theme.colors.outline,

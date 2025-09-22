@@ -34,6 +34,8 @@ import com.stoyanvuchev.magicmessage.domain.usecase.CreationGetByIdUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationGetDraftsUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationGetExportedUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationMarkAsExportedUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationMarkAsFavoriteUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.CreationRemoveAsFavoriteUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationSaveOrUpdateUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
 import dagger.Module
@@ -81,7 +83,9 @@ object CreationModule {
             getByIdUseCase = CreationGetByIdUseCase(repository),
             getExportedUseCase = CreationGetExportedUseCase(repository),
             getDraftsUseCase = CreationGetDraftsUseCase(repository),
-            markAsExportedUseCase = CreationMarkAsExportedUseCase(repository)
+            markAsExportedUseCase = CreationMarkAsExportedUseCase(repository),
+            markAsFavoriteUseCase = CreationMarkAsFavoriteUseCase(repository),
+            removeAsFavoriteUseCase = CreationRemoveAsFavoriteUseCase(repository)
         )
     }
 

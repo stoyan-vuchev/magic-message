@@ -60,6 +60,7 @@ import com.stoyanvuchev.magicmessage.core.ui.components.interaction.rememberRipp
 import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.effect.innerAuraGlow
 import com.stoyanvuchev.magicmessage.core.ui.effect.outerAuraGlow
+import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import dev.chrisbanes.haze.HazeState
 
@@ -67,7 +68,7 @@ import dev.chrisbanes.haze.HazeState
 fun AuraButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    hazeState: HazeState,
+    hazeState: HazeState = LocalHazeState.current,
     isGlowVisible: Boolean = true,
     glowColor: Color = Theme.colors.primary,
     size: Dp = 48.dp,

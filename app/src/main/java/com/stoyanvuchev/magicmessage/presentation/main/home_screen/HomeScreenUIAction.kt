@@ -24,13 +24,19 @@
 
 package com.stoyanvuchev.magicmessage.presentation.main.home_screen
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
-@Immutable
+@Stable
 interface HomeScreenUIAction {
 
-    data object NewMessage : HomeScreenUIAction
+    data class RemoveFromFavorite(
+        val creationId: Long?
+    ) : HomeScreenUIAction
+
+    data class AddToFavorite(
+        val creationId: Long?
+    ) : HomeScreenUIAction
 
     data class ExportGif(
         val creation: CreationModel

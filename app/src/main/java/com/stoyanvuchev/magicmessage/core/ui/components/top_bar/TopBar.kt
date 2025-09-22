@@ -43,10 +43,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
+import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBarTokens.TopBarActionHorizontalPadding
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBarTokens.TopBarActionItemsHorizontalPadding
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBarTokens.TopBarHeight
-import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBarTokens.TopBarActionHorizontalPadding
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBarTokens.TopBarTitleHorizontalPadding
+import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 
 @Composable
@@ -56,60 +57,57 @@ fun TopBar(
     navigationAction: @Composable (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit)? = null,
     windowInsets: WindowInsets = WindowInsets.statusBars
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .defaultHazeEffect()
+        .clipToBounds()
+        .then(modifier)
 ) {
 
-    Column(
+    Row(
         modifier = Modifier
+            .windowInsetsPadding(windowInsets)
             .fillMaxWidth()
-            .clipToBounds()
-            .then(modifier)
+            .height(TopBarHeight),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Row(
-            modifier = Modifier
-                .windowInsetsPadding(windowInsets)
-                .fillMaxWidth()
-                .height(TopBarHeight),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            if (navigationAction != null) {
-                Spacer(modifier = Modifier.width(TopBarActionHorizontalPadding))
-                navigationAction()
-                Spacer(modifier = Modifier.width(TopBarActionHorizontalPadding))
-            } else {
-                Spacer(modifier = Modifier.width(TopBarTitleHorizontalPadding))
-            }
-
-            CompositionLocalProvider(
-                LocalTextStyle provides Theme.typefaces.titleSmall,
-                content = title
-            )
-
+        if (navigationAction != null) {
+            Spacer(modifier = Modifier.width(TopBarActionHorizontalPadding))
+            navigationAction()
+            Spacer(modifier = Modifier.width(TopBarActionHorizontalPadding))
+        } else {
             Spacer(modifier = Modifier.width(TopBarTitleHorizontalPadding))
-
-            if (actions != null) {
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement
-                        .spacedBy(
-                            TopBarActionItemsHorizontalPadding,
-                            Alignment.End
-                        ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    content = actions
-                )
-                Spacer(modifier = Modifier.width(TopBarActionHorizontalPadding))
-            }
-
         }
 
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            color = Theme.colors.outline,
-            thickness = 1.dp
+        CompositionLocalProvider(
+            LocalTextStyle provides Theme.typefaces.titleSmall,
+            content = title
         )
 
+        Spacer(modifier = Modifier.width(TopBarTitleHorizontalPadding))
+
+        if (actions != null) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement
+                    .spacedBy(
+                        TopBarActionItemsHorizontalPadding,
+                        Alignment.End
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                content = actions
+            )
+            Spacer(modifier = Modifier.width(TopBarActionHorizontalPadding))
+        }
+
     }
+
+    HorizontalDivider(
+        modifier = Modifier.fillMaxWidth(),
+        color = Theme.colors.outline,
+        thickness = 1.dp
+    )
 
 }

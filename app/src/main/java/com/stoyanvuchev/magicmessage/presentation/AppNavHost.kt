@@ -26,7 +26,6 @@ package com.stoyanvuchev.magicmessage.presentation
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -44,14 +43,8 @@ import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
 import com.stoyanvuchev.magicmessage.presentation.boarding.boardingNavGraph
 import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import com.stoyanvuchev.magicmessage.presentation.main.mainNavGraph
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalSharedTransitionApi::class)
-@SuppressLint(
-    "UnusedMaterial3ScaffoldPaddingParameter",
-    "UnusedContentLambdaTargetStateParameter"
-)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AppNavHost(
     isBoardingComplete: Boolean?,
@@ -62,29 +55,15 @@ fun AppNavHost(
     onDismissExportDialog: () -> Unit
 ) {
 
-    val hazeState = rememberHazeState()
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Theme.colors.surfaceElevationLow,
         contentColor = Theme.colors.onSurfaceElevationLow,
-        bottomBar = {
-
-            AppBottomNavBar(
-                navController = navController,
-                hazeState = hazeState
-            )
-
-        }
+        bottomBar = { AppBottomNavBar(navController = navController) }
     ) { _ ->
 
         NavHost(
-            modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(
-                    state = hazeState,
-                    key = "root_haze_source"
-                ),
+            modifier = Modifier.fillMaxSize(),
             enterTransition = remember { { DefaultNavigationTransitions.enter(this) } },
             exitTransition = remember { { DefaultNavigationTransitions.exit(this) } },
             popEnterTransition = remember { { DefaultNavigationTransitions.popEnter(this) } },
@@ -120,7 +99,6 @@ fun AppNavHost(
             exporterProgress = exporterProgress,
             exporterState = exporterState,
             exportedUri = exportedUri,
-            hazeState = hazeState,
             onDismissExportDialog = onDismissExportDialog
         )
 

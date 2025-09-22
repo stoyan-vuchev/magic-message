@@ -22,19 +22,30 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.framework.service
 
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
-import kotlinx.serialization.Serializable
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat
 
-@Serializable
-@Stable
-data class StrokeModel(
-    val points: List<TimedPoint>,
-    @Serializable(with = ColorSerializer::class) val color: Color,
-    val width: Float,
-    val effect: BrushEffect = BrushEffect.NONE
-)
+object ExportGifServiceIntent {
+
+    fun start(
+        context: Context,
+        messageId: Long?,
+        width: Int,
+        height: Int
+    ) {
+
+        val intent = Intent(context, ExportGifService::class.java)
+            .apply {
+                putExtra("messageId", messageId)
+                putExtra("width", width)
+                putExtra("height", height)
+            }
+
+        ContextCompat.startForegroundService(context, intent)
+
+    }
+
+}

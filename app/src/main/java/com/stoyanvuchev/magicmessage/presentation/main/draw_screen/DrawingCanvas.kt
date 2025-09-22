@@ -25,20 +25,25 @@
 package com.stoyanvuchev.magicmessage.presentation.main.draw_screen
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.drag
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.ParticleUpdater
 import com.stoyanvuchev.magicmessage.core.ui.ext.drawStroke
+import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
@@ -60,6 +65,13 @@ fun DrawingCanvas(
     Canvas(
         modifier = modifier
             .onGloballyPositioned { onSizeChanged(it.size) }
+            .border(
+                width = 1.dp,
+                color = Theme.colors.outline
+                    .compositeOver(Theme.colors.surfaceElevationLow),
+                shape = Theme.shapes.smallShape
+            )
+            .clip(shape = Theme.shapes.smallShape)
             .clipToBounds()
             .pointerInput(drawConfiguration) {
                 if (!controller.drawingEnabled) return@pointerInput

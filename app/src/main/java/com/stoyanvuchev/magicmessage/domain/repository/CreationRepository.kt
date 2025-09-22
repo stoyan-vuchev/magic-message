@@ -42,8 +42,8 @@ interface CreationRepository {
     suspend fun markAsFavorite(id: Long)
     suspend fun removeAsFavorite(id: Long)
 
-    fun getDrafts(): Flow<List<CreationModel>>
-    fun getFinished(): Flow<List<CreationModel>>
+    fun getDrafts(onlyFavorite: Boolean): Flow<List<CreationModel>>
+    fun getFinished(onlyFavorite: Boolean): Flow<List<CreationModel>>
     suspend fun getById(id: Long): CreationModel?
 
     suspend fun deleteAllDrafts()
