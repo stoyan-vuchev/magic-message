@@ -28,6 +28,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.stoyanvuchev.magicmessage.R
 
 enum class ThemeMode { System, Light, Dark }
 
@@ -42,3 +45,21 @@ fun isInDarkThemeMode(
     ThemeMode.Light -> false
     ThemeMode.Dark -> true
 }
+
+@Composable
+fun ThemeMode.label() = stringResource(
+    when (this) {
+        ThemeMode.System -> R.string.theme_mode_system
+        ThemeMode.Dark -> R.string.theme_mode_dark
+        ThemeMode.Light -> R.string.theme_mode_light
+    }
+)
+
+@Composable
+fun ThemeMode.icon() = painterResource(
+    when (this) {
+        ThemeMode.System -> R.drawable.system_theme_mode_outlined
+        ThemeMode.Dark -> R.drawable.dark_theme_mode_outlined
+        ThemeMode.Light -> R.drawable.light_theme_mode_outlined
+    }
+)

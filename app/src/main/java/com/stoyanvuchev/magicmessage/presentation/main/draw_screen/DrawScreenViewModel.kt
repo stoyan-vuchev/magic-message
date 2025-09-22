@@ -31,7 +31,7 @@ import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.core.ui.DrawingController
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
-import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
+import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationUseCases
 import com.stoyanvuchev.magicmessage.framework.service.ExportDataHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

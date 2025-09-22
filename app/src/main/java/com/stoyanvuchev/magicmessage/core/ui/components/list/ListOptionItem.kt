@@ -27,6 +27,7 @@ package com.stoyanvuchev.magicmessage.core.ui.components.list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,7 +47,57 @@ import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 
 @Composable
-fun ListItemOption(
+fun ListOptionItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    label: @Composable () -> Unit,
+    icon: @Composable (() -> Unit)? = null
+) {
+
+    CompositionLocalProvider(
+        LocalContentColor provides Theme.colors.onSurfaceElevationHigh,
+        LocalTextStyle provides Theme.typefaces.bodyLarge
+    ) {
+
+        Row(
+            modifier = modifier
+                .padding(horizontal = 24.dp)
+                .clip(shape = Theme.shapes.verySmallShape)
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(),
+                    onClick = onClick,
+                    onLongClick = onLongClick
+                )
+                .defaultHazeEffect()
+                .background(Theme.colors.surfaceElevationHigh.copy(.5f))
+                .border(
+                    width = 1.dp,
+                    color = Theme.colors.outline,
+                    shape = Theme.shapes.verySmallShape
+                )
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            if (icon != null) {
+                icon()
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+
+            label()
+
+            Spacer(modifier = Modifier.weight(1f))
+
+        }
+
+    }
+
+}
+
+@Composable
+fun ListOptionItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     label: @Composable () -> Unit,

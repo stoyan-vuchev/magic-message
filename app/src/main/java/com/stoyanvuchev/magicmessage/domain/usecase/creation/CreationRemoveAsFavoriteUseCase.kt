@@ -22,30 +22,19 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.domain.usecase.creation
 
-import com.stoyanvuchev.magicmessage.domain.model.DrawConfiguration
-import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
-import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
 import javax.inject.Inject
 
-class CreationSaveOrUpdateUseCase @Inject constructor(
+class CreationRemoveAsFavoriteUseCase @Inject constructor(
     private val repository: CreationRepository
 ) {
 
-    suspend operator fun invoke(
-        draftId: Long?,
-        drawConfiguration: DrawConfiguration,
-        drawingSnapshot: DrawingSnapshot
-    ): Long {
-
-        return repository.saveOrUpdateDraft(
-            draftId = draftId,
-            drawConfiguration = drawConfiguration,
-            drawingSnapshot = drawingSnapshot
-        )
-
+    suspend operator fun invoke(creationId: Long?) {
+        if (creationId != null) {
+            repository.removeAsFavorite(creationId)
+        }
     }
 
 }

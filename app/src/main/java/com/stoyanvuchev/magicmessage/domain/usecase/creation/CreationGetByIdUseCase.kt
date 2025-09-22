@@ -22,15 +22,18 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.transition
+package com.stoyanvuchev.magicmessage.domain.usecase.creation
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.ui.geometry.Rect
+import com.stoyanvuchev.magicmessage.domain.model.CreationModel
+import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import javax.inject.Inject
 
-val defaultBoundsTransformation = { _: Rect, _: Rect ->
-    spring<Rect>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessMediumLow
-    )
+class CreationGetByIdUseCase @Inject constructor(
+    private val repository: CreationRepository
+) {
+
+    suspend operator fun invoke(id: Long): CreationModel? {
+        return repository.getById(id)
+    }
+
 }

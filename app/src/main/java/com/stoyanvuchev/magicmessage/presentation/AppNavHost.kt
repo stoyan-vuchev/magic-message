@@ -25,7 +25,6 @@
 package com.stoyanvuchev.magicmessage.presentation
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -47,11 +46,8 @@ import com.stoyanvuchev.magicmessage.presentation.main.mainNavGraph
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AppNavHost(
-    isBoardingComplete: Boolean?,
     navController: NavHostController,
-    exporterState: ExporterState,
-    exporterProgress: Int,
-    exportedUri: Uri?,
+    state: MainActivityState,
     onDismissExportDialog: () -> Unit
 ) {
 
@@ -73,10 +69,10 @@ fun AppNavHost(
         ) {
 
             composable<InitialScreen> {
-                LaunchedEffect(isBoardingComplete) {
-                    if (isBoardingComplete != null) {
+                LaunchedEffect(state.isBoardingComplete) {
+                    if (state.isBoardingComplete != null) {
                         navController.navigate(
-                            if (isBoardingComplete) MainScreen.Home
+                            if (state.isBoardingComplete) MainScreen.Home
                             else BoardingScreen.GetStarted
                         ) {
                             popUpTo(navController.graph.id) { inclusive = false }
@@ -93,12 +89,12 @@ fun AppNavHost(
 
     }
 
-    if (exporterState != ExporterState.IDLE) {
+    if (state.exporterState != ExporterState.IDLE) {
 
         ExportDialog(
-            exporterProgress = exporterProgress,
-            exporterState = exporterState,
-            exportedUri = exportedUri,
+            exporterProgress = state.exporterProgress,
+            exporterState = state.exporterState,
+            exportedUri = state.exportedUri,
             onDismissExportDialog = onDismissExportDialog
         )
 

@@ -46,4 +46,14 @@
     <string name="navigate_back">Navigate back</string>
     <string name="action_undo">Undo action</string>
     <string name="action_redo">Redo action</string>
+    <string name="menu_screen_personalization_label">Personalization</string>
+    <string name="theme_mode">Theme Mode</string>
+    <string name="theme_mode_dark">Dark</string>
+    <string name="theme_mode_system">System</string>
+    <string name="theme_mode_light">Light</string>
+    <string name="color_scheme">Color Scheme</string>
+    <string name="trash_label">Trash</string>
+    <string name="menu_screen_creations_label">Creations</string>
+    <string name="about_label">About the app</string>
+    <string name="menu_screen_other_label">Other</string>
 </resources>

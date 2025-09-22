@@ -26,6 +26,7 @@ package com.stoyanvuchev.magicmessage.core.ui.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -41,7 +42,9 @@ import com.stoyanvuchev.magicmessage.core.ui.theme.shape.Shapes
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTextStyle
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTypefaces
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.Typefaces
+import com.stoyanvuchev.systemuibarstweaker.LocalSystemUIBarsTweaker
 import com.stoyanvuchev.systemuibarstweaker.ProvideSystemUIBarsTweaker
+import com.stoyanvuchev.systemuibarstweaker.ScrimStyle
 import dev.chrisbanes.haze.rememberHazeState
 
 @Composable
@@ -54,11 +57,24 @@ fun UIWrapper(
     content: @Composable () -> Unit
 ) = ProvideSystemUIBarsTweaker {
 
+    val darkTheme = isInDarkThemeMode(themeMode)
+    val tweaker = LocalSystemUIBarsTweaker.current
     val hazeState = rememberHazeState()
     val finalColorPalette by rememberUpdatedState(
         if (animateColorPalette) colorPalette.asAnimatedColorPalette()
         else colorPalette
     )
+
+    DisposableEffect(darkTheme, tweaker) {
+        tweaker.tweakSystemBarsStyle(
+            statusBarStyle = tweaker.statusBarStyle.copy(darkIcons = !darkTheme),
+            navigationBarStyle = tweaker.navigationBarStyle.copy(
+                darkIcons = !darkTheme,
+                scrimStyle = ScrimStyle.None
+            )
+        )
+        onDispose {}
+    }
 
     CompositionLocalProvider(
         LocalThemeMode provides themeMode,

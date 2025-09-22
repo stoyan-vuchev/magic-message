@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.presentation
 
-import com.stoyanvuchev.magicmessage.domain.model.CreationModel
-import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
-import javax.inject.Inject
+import android.net.Uri
+import androidx.compose.runtime.Stable
+import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 
-class CreationGetByIdUseCase @Inject constructor(
-    private val repository: CreationRepository
-) {
-
-    suspend operator fun invoke(id: Long): CreationModel? {
-        return repository.getById(id)
-    }
-
-}
+@Stable
+data class MainActivityState(
+    val isBoardingComplete: Boolean? = null,
+    val themeMode: ThemeMode = ThemeMode.Dark,
+    val exporterState: ExporterState = ExporterState.IDLE,
+    val exporterProgress: Int = 0,
+    val exportedUri: Uri? = null
+)

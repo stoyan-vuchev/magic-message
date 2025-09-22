@@ -45,19 +45,15 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberNavController()
             val viewModel = hiltViewModel<MainActivityViewModel>()
-            val isBoardingComplete by viewModel.isBoardingComplete.collectAsStateWithLifecycle()
-            val exporterProgress by viewModel.exporterProgress.collectAsStateWithLifecycle()
-            val exporterState by viewModel.exporterState.collectAsStateWithLifecycle()
-            val exportedUri by viewModel.exportedUri.collectAsStateWithLifecycle()
+            val state by viewModel.state.collectAsStateWithLifecycle()
 
-            MagicMessageTheme {
+            MagicMessageTheme(
+                themeMode = state.themeMode
+            ) {
 
                 AppNavHost(
-                    isBoardingComplete = isBoardingComplete,
                     navController = navController,
-                    exporterState = exporterState,
-                    exporterProgress = exporterProgress,
-                    exportedUri = exportedUri,
+                    state = state,
                     onDismissExportDialog = viewModel::onDismissExportDialog
                 )
 

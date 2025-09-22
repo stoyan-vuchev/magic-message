@@ -22,18 +22,16 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.components.grid
+package com.stoyanvuchev.magicmessage.core.ui.components.list
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -43,34 +41,28 @@ import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun GridOfCreationItems(
-    lazyGridState: LazyGridState,
+fun ListOfOptionItems(
+    lazyListState: LazyListState,
     innerPadding: PaddingValues,
     hazeSourceKey: String,
-    content: LazyGridScope.() -> Unit
+    content: LazyListScope.() -> Unit
 ) = SharedTransitionLayout {
 
-    LazyVerticalGrid(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .hazeSource(
                 state = LocalHazeState.current,
                 key = hazeSourceKey
             ),
+        state = lazyListState,
         contentPadding = innerPadding,
-        state = lazyGridState,
-        columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
         content()
 
-        item(
-            span = { GridItemSpan(this.maxLineSpan) }
-        ) {
-            EmptyBottomSpacer()
-        }
+        item { EmptyBottomSpacer() }
 
     }
 
