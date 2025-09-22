@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.transition
+package com.stoyanvuchev.magicmessage.domain.usecase.creation
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.ui.geometry.Rect
-
-val defaultBoundsTransformation = { _: Rect, _: Rect ->
-    spring<Rect>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessMediumLow
-    )
-}
+data class CreationUseCases(
+    val saveOrUpdateUseCase: CreationSaveOrUpdateUseCase,
+    val getByIdUseCase: CreationGetByIdUseCase,
+    val getExportedUseCase: CreationGetExportedUseCase,
+    val getDraftsUseCase: CreationGetDraftsUseCase,
+    val markAsExportedUseCase: CreationMarkAsExportedUseCase,
+    val markAsFavoriteUseCase: CreationMarkAsFavoriteUseCase,
+    val removeAsFavoriteUseCase: CreationRemoveAsFavoriteUseCase
+)

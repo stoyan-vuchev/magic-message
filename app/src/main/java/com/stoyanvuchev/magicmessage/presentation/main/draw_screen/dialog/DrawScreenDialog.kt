@@ -53,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
+import com.stoyanvuchev.magicmessage.core.ui.components.RowSelectionItem
 import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
@@ -133,7 +134,7 @@ fun DrawScreenDialog(
 
                         DialogEditType.EFFECT -> {
 
-                            DrawScreenDialogItem(
+                            RowSelectionItem(
                                 selected = state.drawConfiguration.effect == BrushEffect.NONE,
                                 onClick = remember {
                                     {
@@ -169,7 +170,7 @@ fun DrawScreenDialog(
                                 }
                             )
 
-                            DrawScreenDialogItem(
+                            RowSelectionItem(
                                 selected = state.drawConfiguration.effect == BrushEffect.BUBBLES,
                                 onClick = remember {
                                     {
@@ -211,7 +212,7 @@ fun DrawScreenDialog(
 
                             BrushThickness.entries.forEach { thickness ->
 
-                                DrawScreenDialogItem(
+                                RowSelectionItem(
                                     selected = thickness == state.drawConfiguration.thickness,
                                     onClick = remember {
                                         { onUIAction(DrawScreenUIAction.SetBrushThickness(thickness)) }

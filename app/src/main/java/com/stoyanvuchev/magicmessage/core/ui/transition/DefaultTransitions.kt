@@ -28,12 +28,14 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavBackStackEntry
 
 @Stable
@@ -58,7 +60,7 @@ object DefaultTransitions {
             ) + scaleIn(
                 initialScale = initialScale,
                 animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    dampingRatio = Spring.DampingRatioNoBouncy,
                     stiffness = Spring.StiffnessMediumLow
                 )
             )
@@ -77,7 +79,12 @@ object DefaultTransitions {
                     )
                 ) + slideIntoContainer(
                     towards = slideDirection,
-                    initialOffset = initialOffset
+                    initialOffset = initialOffset,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    )
                 )
             }
         }
@@ -98,7 +105,7 @@ object DefaultTransitions {
             ) + scaleOut(
                 targetScale = targetScale,
                 animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    dampingRatio = Spring.DampingRatioNoBouncy,
                     stiffness = Spring.StiffnessMediumLow
                 )
             )
@@ -117,7 +124,12 @@ object DefaultTransitions {
                     )
                 ) + slideOutOfContainer(
                     towards = slideDirection,
-                    targetOffset = targetOffset
+                    targetOffset = targetOffset,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    )
                 )
             }
         }

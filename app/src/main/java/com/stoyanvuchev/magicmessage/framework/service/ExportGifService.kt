@@ -37,7 +37,7 @@ import androidx.core.app.NotificationCompat
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.domain.layer.BackgroundLayer
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
-import com.stoyanvuchev.magicmessage.domain.usecase.CreationUseCases
+import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationUseCases
 import com.stoyanvuchev.magicmessage.framework.export.Exporter
 import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState

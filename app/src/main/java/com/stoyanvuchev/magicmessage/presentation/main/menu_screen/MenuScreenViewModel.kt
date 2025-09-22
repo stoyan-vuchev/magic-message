@@ -22,18 +22,33 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.presentation.main.menu_screen
 
-import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class CreationRemoveAsFavoriteUseCase @Inject constructor(
-    private val repository: CreationRepository
-) {
+@HiltViewModel
+class MenuScreenViewModel @Inject constructor(
+    private val appPreferences: AppPreferences
+) : ViewModel() {
 
-    suspend operator fun invoke(creationId: Long?) {
-        if (creationId != null) {
-            repository.removeAsFavorite(creationId)
+    fun onUIAction(action: MenuScreenUIAction) {
+        when (action) {
+            is MenuScreenUIAction.SetThemeMode -> setThemeMode(action)
+        }
+    }
+
+    private fun setThemeMode(action: MenuScreenUIAction.SetThemeMode) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                appPreferences.setThemeMode(action.themeMode)
+            }
         }
     }
 

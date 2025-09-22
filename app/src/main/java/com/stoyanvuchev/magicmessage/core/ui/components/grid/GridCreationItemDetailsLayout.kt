@@ -123,7 +123,20 @@ fun SharedTransitionScope.GridCreationItemDetailsLayout(
 
                 Spacer(modifier = Modifier.height(64.dp))
 
-                actions()
+                Column(
+                    modifier = Modifier
+                        .sharedBounds(
+                            sharedContentState = rememberSharedContentState(
+                                key = "${sharedCreation.id ?: 0}-bounds"
+                            ),
+                            animatedVisibilityScope = this@AnimatedContent,
+                            boundsTransform = boundsTransform,
+                        )
+                ) {
+
+                    actions()
+
+                }
 
             }
 

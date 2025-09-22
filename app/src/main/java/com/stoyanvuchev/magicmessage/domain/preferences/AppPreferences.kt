@@ -24,9 +24,15 @@
 
 package com.stoyanvuchev.magicmessage.domain.preferences
 
+import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import kotlinx.coroutines.flow.Flow
+
 interface AppPreferences {
 
-    suspend fun getIsBoardingComplete(): Boolean?
+    fun getIsBoardingComplete(): Flow<Boolean?>
     suspend fun setIsBoardingComplete(isComplete: Boolean)
+
+    fun getThemeMode(): Flow<ThemeMode>
+    suspend fun setThemeMode(themeMode: ThemeMode)
 
 }

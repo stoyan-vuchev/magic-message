@@ -22,14 +22,19 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.domain.usecase.creation
 
-data class CreationUseCases(
-    val saveOrUpdateUseCase: CreationSaveOrUpdateUseCase,
-    val getByIdUseCase: CreationGetByIdUseCase,
-    val getExportedUseCase: CreationGetExportedUseCase,
-    val getDraftsUseCase: CreationGetDraftsUseCase,
-    val markAsExportedUseCase: CreationMarkAsExportedUseCase,
-    val markAsFavoriteUseCase: CreationMarkAsFavoriteUseCase,
-    val removeAsFavoriteUseCase: CreationRemoveAsFavoriteUseCase
-)
+import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import javax.inject.Inject
+
+class CreationMarkAsFavoriteUseCase @Inject constructor(
+    private val repository: CreationRepository
+) {
+
+    suspend operator fun invoke(creationId: Long?) {
+        if (creationId != null) {
+            repository.markAsFavorite(creationId)
+        }
+    }
+
+}

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.draw_screen.dialog
+package com.stoyanvuchev.magicmessage.core.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -49,7 +49,7 @@ import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
 
 @Composable
-fun RowScope.DrawScreenDialogItem(
+fun RowScope.RowSelectionItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     selected: Boolean,

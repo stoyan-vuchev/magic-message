@@ -28,9 +28,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
 import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class AppPreferencesImpl @Inject constructor(
@@ -39,14 +43,29 @@ class AppPreferencesImpl @Inject constructor(
 
     companion object {
         private val IS_BOARDING_COMPLETE_KEY = booleanPreferencesKey("is_boarding_complete")
+        private val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
     }
 
-    override suspend fun getIsBoardingComplete(): Boolean? {
-        return dataStore.data.map { it[IS_BOARDING_COMPLETE_KEY] }.first() ?: false
+    // Boarding
+
+    override fun getIsBoardingComplete(): Flow<Boolean?> {
+        return dataStore.data.map { it[IS_BOARDING_COMPLETE_KEY] ?: false }
     }
 
     override suspend fun setIsBoardingComplete(isComplete: Boolean) {
         dataStore.edit { it[IS_BOARDING_COMPLETE_KEY] = isComplete }
+    }
+
+    // Theme Mode
+
+    override fun getThemeMode(): Flow<ThemeMode> = dataStore.data.map {
+        val json = it[THEME_MODE_KEY]
+        json?.let { mode -> Json.decodeFromString<ThemeMode?>(mode) } ?: ThemeMode.Dark
+    }
+
+    override suspend fun setThemeMode(themeMode: ThemeMode) {
+        val json = Json.encodeToString(themeMode)
+        dataStore.edit { it[THEME_MODE_KEY] = json }
     }
 
 }

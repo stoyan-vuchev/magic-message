@@ -25,25 +25,16 @@
 package com.stoyanvuchev.magicmessage.presentation.main
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
-import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.framework.service.ExportGifServiceIntent
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreen
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
@@ -54,6 +45,8 @@ import com.stoyanvuchev.magicmessage.presentation.main.favorite_screen.FavoriteS
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreen
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.main.home_screen.HomeScreenViewModel
+import com.stoyanvuchev.magicmessage.presentation.main.menu_screen.MenuScreen
+import com.stoyanvuchev.magicmessage.presentation.main.menu_screen.MenuScreenViewModel
 import com.stoyanvuchev.magicmessage.presentation.main.transitions.FavoriteNavigationTransitions
 import com.stoyanvuchev.magicmessage.presentation.main.transitions.HomeNavigationTransitions
 import com.stoyanvuchev.magicmessage.presentation.main.transitions.MenuNavigationTransitions
@@ -255,20 +248,11 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         }
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
-            contentAlignment = Alignment.Center
-        ) {
+        val viewModel = hiltViewModel<MenuScreenViewModel>()
 
-            Text(
-                text = stringResource(R.string.menu_screen_label),
-                style = Theme.typefaces.titleMedium,
-                color = Theme.colors.onSurfaceElevationLow
-            )
-
-        }
+        MenuScreen(
+            onUIAction = viewModel::onUIAction
+        )
 
     }
 

@@ -22,21 +22,18 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.core.ui.components
 
-import com.stoyanvuchev.magicmessage.domain.model.CreationModel
-import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
-import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarTokens.NavigationBarHeight
 
-class CreationGetExportedUseCase @Inject constructor(
-    private val repository: CreationRepository
-) {
-
-    operator fun invoke(
-        onlyFavorite: Boolean = false
-    ): Flow<List<CreationModel>> {
-        return repository.getFinished(onlyFavorite)
-    }
-
-}
+@Composable
+fun EmptyBottomSpacer() = Spacer(
+    modifier = Modifier
+        .navigationBarsPadding()
+        .height(NavigationBarHeight)
+)

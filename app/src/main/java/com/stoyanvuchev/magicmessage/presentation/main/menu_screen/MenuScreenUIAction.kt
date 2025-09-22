@@ -22,19 +22,16 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.presentation.main.menu_screen
 
-import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
-import javax.inject.Inject
+import androidx.compose.runtime.Stable
+import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
 
-class CreationMarkAsFavoriteUseCase @Inject constructor(
-    private val repository: CreationRepository
-) {
+@Stable
+sealed interface MenuScreenUIAction {
 
-    suspend operator fun invoke(creationId: Long?) {
-        if (creationId != null) {
-            repository.markAsFavorite(creationId)
-        }
-    }
+    data class SetThemeMode(
+        val themeMode: ThemeMode
+    ) : MenuScreenUIAction
 
 }

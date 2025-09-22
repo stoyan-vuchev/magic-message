@@ -30,6 +30,7 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -115,20 +116,34 @@ fun LazyGridScope.gridOfCreationItemsSection(
             exit = fadeOut()
         ) {
 
-            GridCreationItem(
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .sharedElement(
+                    .sharedBounds(
                         sharedContentState = rememberSharedContentState(
-                            key = creation.id ?: 0
+                            key = "${creation.id ?: 0}-bounds"
                         ),
                         animatedVisibilityScope = this@AnimatedVisibility,
                         boundsTransform = boundsTransform,
-                    ),
-                creation = creation,
-                onCreationClick = onCreationClick,
-                onCreationLongClick = onCreationLongClick
-            )
+                    )
+                    .fillMaxSize()
+            ) {
+
+                GridCreationItem(
+                    modifier = Modifier
+                        .sharedElement(
+                            sharedContentState = rememberSharedContentState(
+                                key = creation.id ?: 0
+                            ),
+                            animatedVisibilityScope = this@AnimatedVisibility,
+                            boundsTransform = boundsTransform,
+                        )
+                        .fillMaxSize(),
+                    creation = creation,
+                    onCreationClick = onCreationClick,
+                    onCreationLongClick = onCreationLongClick
+                )
+
+            }
 
         }
 

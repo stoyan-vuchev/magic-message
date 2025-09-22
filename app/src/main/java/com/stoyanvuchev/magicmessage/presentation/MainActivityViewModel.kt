@@ -24,44 +24,51 @@
 
 package com.stoyanvuchev.magicmessage.presentation
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
 import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
 import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
+import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val appPreferences: AppPreferences,
-    private val progressObserver: ExporterProgressObserver
+    private val progressObserver: ExporterProgressObserver,
+    appPreferences: AppPreferences
 ) : ViewModel() {
 
-    private val _isBoardingComplete = MutableStateFlow<Boolean?>(null)
-    val isBoardingComplete = _isBoardingComplete.asStateFlow()
+    val state = combine(
+        appPreferences.getIsBoardingComplete(),
+        appPreferences.getThemeMode(),
+        progressObserver.exporterState,
+        progressObserver.progress,
+        progressObserver.exportedUri
+    ) { flows ->
 
-    val exporterState = progressObserver.exporterState
-    val exporterProgress = progressObserver.progress
-    val exportedUri = progressObserver.exportedUri
+        MainActivityState(
+            isBoardingComplete = flows[0] as Boolean?,
+            themeMode = flows[1] as ThemeMode,
+            exporterState = flows[2] as ExporterState,
+            exporterProgress = flows[3] as Int,
+            exportedUri = flows[4] as Uri?
+        )
+
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = MainActivityState()
+    )
 
     fun onDismissExportDialog() {
         viewModelScope.launch {
             progressObserver.resetAll()
-        }
-    }
-
-    init {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                appPreferences.getIsBoardingComplete()
-            }
-            _isBoardingComplete.update { result }
         }
     }
 

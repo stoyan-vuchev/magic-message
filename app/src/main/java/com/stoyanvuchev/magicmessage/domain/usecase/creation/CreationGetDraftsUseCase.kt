@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.domain.usecase.creation
 
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository

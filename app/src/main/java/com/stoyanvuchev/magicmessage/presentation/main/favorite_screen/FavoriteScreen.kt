@@ -37,7 +37,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -57,11 +56,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
-import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarTokens.NavigationBarHeight
+import com.stoyanvuchev.magicmessage.core.ui.components.EmptyBottomSpacer
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.GridCreationItemDetailsLayout
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.GridOfCreationItems
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.gridOfCreationItemsSection
-import com.stoyanvuchev.magicmessage.core.ui.components.list.ListItemOption
+import com.stoyanvuchev.magicmessage.core.ui.components.list.ListOptionItem
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBar
 import com.stoyanvuchev.magicmessage.core.ui.etc.UIString
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
@@ -118,15 +117,7 @@ fun FavoriteScreen(
             )
 
         },
-        bottomBar = {
-
-            Spacer(
-                modifier = Modifier
-                    .navigationBarsPadding()
-                    .height(NavigationBarHeight)
-            )
-
-        }
+        bottomBar = { EmptyBottomSpacer() }
     ) { innerPadding ->
 
         AnimatedVisibility(
@@ -161,7 +152,7 @@ fun FavoriteScreen(
 
         }
 
-        SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
+        SharedTransitionLayout {
 
             var canvasSize by remember { mutableStateOf(IntSize.Zero) }
 
@@ -240,7 +231,7 @@ fun FavoriteScreen(
 
                 if (sharedCreation?.isDraft == true) {
 
-                    ListItemOption(
+                    ListOptionItem(
                         modifier = Modifier.padding(horizontal = 32.dp),
                         onClick = remember {
                             {
@@ -270,7 +261,7 @@ fun FavoriteScreen(
                     mutableStateOf(sharedCreation?.isFavorite == true)
                 }
 
-                ListItemOption(
+                ListOptionItem(
                     modifier = Modifier.padding(horizontal = 32.dp),
                     onClick = remember(isFavorite) {
                         {
@@ -314,7 +305,7 @@ fun FavoriteScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                ListItemOption(
+                ListOptionItem(
                     modifier = Modifier.padding(horizontal = 32.dp),
                     onClick = remember { {} },
                     label = { Text(text = stringResource(R.string.move_to_trash)) },

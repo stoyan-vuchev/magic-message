@@ -22,17 +22,21 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.usecase
+package com.stoyanvuchev.magicmessage.domain.usecase.creation
 
+import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class CreationMarkAsExportedUseCase @Inject constructor(
+class CreationGetExportedUseCase @Inject constructor(
     private val repository: CreationRepository
 ) {
 
-    suspend operator fun invoke(messageId: Long) {
-        repository.markAsFinished(messageId = messageId)
+    operator fun invoke(
+        onlyFavorite: Boolean = false
+    ): Flow<List<CreationModel>> {
+        return repository.getFinished(onlyFavorite)
     }
 
 }
