@@ -31,5 +31,8 @@ data class CreationUseCases(
     val getDraftsUseCase: CreationGetDraftsUseCase,
     val markAsExportedUseCase: CreationMarkAsExportedUseCase,
     val markAsFavoriteUseCase: CreationMarkAsFavoriteUseCase,
-    val removeAsFavoriteUseCase: CreationRemoveAsFavoriteUseCase
+    val removeAsFavoriteUseCase: CreationRemoveAsFavoriteUseCase,
+    val restoreDeletedCreation: CreationRestoreDeletedUseCase,
+    val permanentlyDeleteCreation: CreationPermanentlyDeleteUseCase,
+    val moveCreationToTrash: CreationModeToTrashUseCase
 )

@@ -56,4 +56,11 @@
     <string name="menu_screen_creations_label">Creations</string>
     <string name="about_label">About the app</string>
     <string name="menu_screen_other_label">Other</string>
+    <string name="deleted_screen_label">Trash</string>
+    <string name="restore">Restore</string>
+    <string name="delete">Delete</string>
+    <string name="deleted_screen_empty_text">The trash is empty.</string>
+    <string name="delete_screen_confirm_delete_description">This action will delete the creation from the app, but not the export. This action can NOT be undone!</string>
+    <string name="delete_label_cancel">Cancel</string>
+    <string name="delete_label_permanently">Delete</string>
 </resources>

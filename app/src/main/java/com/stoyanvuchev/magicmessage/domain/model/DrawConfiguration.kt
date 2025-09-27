@@ -42,5 +42,5 @@ data class DrawConfiguration(
     val effect: BrushEffect = BrushEffect.BUBBLES,
     val thickness: BrushThickness = BrushThickness.MEDIUM,
     @Serializable(with = ColorSerializer::class) val color: Color = Color.White,
-    @Serializable(with = BackgroundLayerSerializer::class) val bgLayer: BackgroundLayer = DefaultBGLayers.linearGradientLayers.first()
+    @Stable @Serializable(with = BackgroundLayerSerializer::class) val bgLayer: BackgroundLayer = DefaultBGLayers.linearGradientLayers.first()
 )

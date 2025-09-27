@@ -22,18 +22,17 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.domain.usecase.creation
 
-import androidx.compose.runtime.Stable
-import kotlinx.serialization.Serializable
+import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
+import javax.inject.Inject
 
-@Stable
-@Serializable
-data class CreationModel(
-    val id: Long?,
-    val createdAt: Long,
-    val isDraft: Boolean,
-    val isFavorite: Boolean,
-    @Stable val drawConfiguration: DrawConfiguration,
-    @Stable val drawingSnapshot: DrawingSnapshot
-)
+class CreationModeToTrashUseCase @Inject constructor(
+    private val repository: CreationRepository
+) {
+
+    suspend operator fun invoke(creationId: Long) {
+        repository.moveCreationToTrash(creationId)
+    }
+
+}

@@ -34,9 +34,10 @@ class CreationGetDraftsUseCase @Inject constructor(
 ) {
 
     operator fun invoke(
-        onlyFavorite: Boolean = false
+        onlyFavorite: Boolean = false,
+        deleted: Boolean = false
     ): Flow<List<CreationModel>> {
-        return repository.getDrafts(onlyFavorite)
+        return repository.getDrafts(onlyFavorite, deleted)
     }
 
 }

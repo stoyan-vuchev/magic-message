@@ -28,15 +28,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -48,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,12 +58,9 @@ import com.stoyanvuchev.magicmessage.core.ui.components.EmptyBottomSpacer
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.GridCreationItemDetailsLayout
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.GridOfCreationItems
 import com.stoyanvuchev.magicmessage.core.ui.components.grid.gridOfCreationItemsSection
-import com.stoyanvuchev.magicmessage.core.ui.components.list.ListOptionItem
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBar
-import com.stoyanvuchev.magicmessage.core.ui.etc.UIString
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
-import com.stoyanvuchev.magicmessage.core.ui.transition.defaultBoundsTransformation
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 
@@ -79,9 +74,11 @@ fun FavoriteScreen(
 
     val lazyGridState = rememberLazyGridState()
     var sharedCreation by remember { mutableStateOf<CreationModel?>(null) }
-    val boundsTransform = remember { defaultBoundsTransformation }
 
-    BackHandler(enabled = sharedCreation != null) { sharedCreation = null }
+    BackHandler(
+        enabled = remember(sharedCreation) { sharedCreation != null },
+        onBack = remember { { sharedCreation = null } }
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -120,207 +117,115 @@ fun FavoriteScreen(
         bottomBar = { EmptyBottomSpacer() }
     ) { innerPadding ->
 
-        AnimatedVisibility(
-            modifier = Modifier.fillMaxSize(),
-            visible = state.exportedCreationsList.isEmpty()
-                    && state.draftedCreationsList.isEmpty(),
-            enter = fadeIn(),
-            exit = fadeOut(animationSpec = tween(100))
-        ) {
+        SharedTransitionLayout {
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
+            val isEmptyPlaceholderVisible by rememberUpdatedState(
+                state.exportedCreationsList.isEmpty()
+                        && state.draftedCreationsList.isEmpty()
+            )
+
+            AnimatedVisibility(
+                modifier = Modifier.fillMaxSize(),
+                visible = isEmptyPlaceholderVisible,
+                enter = fadeIn(),
+                exit = fadeOut(animationSpec = tween(100))
             ) {
 
-                Icon(
-                    modifier = Modifier.size(80.dp),
-                    painter = painterResource(R.drawable.favorite_outlined),
-                    contentDescription = null
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
+                ) {
 
-                Text(
-                    text = stringResource(R.string.favorite_screen_empty_text),
-                    style = Theme.typefaces.bodyLarge,
-                    color = Theme.colors.onSurfaceElevationLow.copy(.5f)
-                )
+                    Icon(
+                        modifier = Modifier.size(80.dp),
+                        painter = painterResource(R.drawable.favorite_outlined),
+                        contentDescription = null
+                    )
+
+                    Text(
+                        text = stringResource(R.string.favorite_screen_empty_text),
+                        style = Theme.typefaces.bodyLarge,
+                        color = Theme.colors.onSurfaceElevationLow.copy(.5f)
+                    )
+
+                }
 
             }
 
-        }
-
-        SharedTransitionLayout {
-
             var canvasSize by remember { mutableStateOf(IntSize.Zero) }
 
+            val onCreationClickLambda = remember<(CreationModel, IntSize) -> Unit> {
+                { creation, _ ->
+                    onNavigationEvent(
+                        NavigationEvent.NavigateTo(
+                            MainScreen.Draw(creation.id)
+                        )
+                    )
+                }
+            }
+
+            val onCreationLongClickLambda = remember<(CreationModel, IntSize) -> Unit> {
+                { creation, newCanvasSize ->
+                    if (canvasSize == IntSize.Zero) canvasSize = newCanvasSize
+                    sharedCreation = creation
+                }
+            }
+
+            val isLightWeightBlurApplied by rememberUpdatedState(
+                sharedCreation != null
+            )
+
             GridOfCreationItems(
+                isLightWeightBlurApplied = isLightWeightBlurApplied,
                 lazyGridState = lazyGridState,
                 innerPadding = innerPadding,
                 hazeSourceKey = "favorite_screen_grid_key"
             ) {
 
-                if (state.draftedCreationsList.isNotEmpty()) {
+                gridOfCreationItemsSection(
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    label = R.string.drafts_label,
+                    items = state.draftedCreationsList,
+                    categoryKey = "favorite_drafted_items",
+                    sharedCreation = sharedCreation,
+                    onCreationClick = onCreationClickLambda,
+                    onCreationLongClick = onCreationLongClickLambda
+                )
 
-                    gridOfCreationItemsSection(
-                        sharedTransitionScope = this@SharedTransitionLayout,
-                        label = UIString.Resource(resId = R.string.drafts_label),
-                        items = state.draftedCreationsList,
-                        categoryKey = "favorite_drafted_items",
-                        sharedCreation = sharedCreation,
-                        boundsTransform = boundsTransform,
-                        onCreationClick = { creation ->
-                            onNavigationEvent(
-                                NavigationEvent.NavigateTo(
-                                    MainScreen.Draw(creation.id)
-                                )
-                            )
-                        },
-                        onCreationLongClick = { creation, newCanvasSize ->
-                            if (canvasSize == IntSize.Zero) canvasSize = newCanvasSize
-                            sharedCreation = creation
-                        }
-                    )
-
-                }
-
-                if (state.exportedCreationsList.isNotEmpty()) {
-
-                    gridOfCreationItemsSection(
-                        sharedTransitionScope = this@SharedTransitionLayout,
-                        label = UIString.Resource(resId = R.string.exported_label),
-                        items = state.exportedCreationsList,
-                        categoryKey = "favorite_exported_items",
-                        sharedCreation = sharedCreation,
-                        boundsTransform = boundsTransform,
-                        onCreationClick = { creation ->
-                            onNavigationEvent(
-                                NavigationEvent.NavigateTo(
-                                    MainScreen.Draw(creation.id)
-                                )
-                            )
-                        },
-                        onCreationLongClick = { creation, newCanvasSize ->
-                            if (canvasSize == IntSize.Zero) canvasSize = newCanvasSize
-                            sharedCreation = creation
-                        }
-                    )
-
-                }
+                gridOfCreationItemsSection(
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    label = R.string.exported_label,
+                    items = state.exportedCreationsList,
+                    categoryKey = "favorite_exported_items",
+                    sharedCreation = sharedCreation,
+                    onCreationClick = onCreationClickLambda,
+                    onCreationLongClick = onCreationLongClickLambda
+                )
 
             }
 
             GridCreationItemDetailsLayout(
                 innerPadding = innerPadding,
-                boundsTransform = boundsTransform,
                 creation = sharedCreation,
                 canvasSize = canvasSize,
                 onDismiss = remember { { sharedCreation = null } },
-                onCreationClick = remember {
-                    {
-                        onNavigationEvent(
-                            NavigationEvent.NavigateTo(
-                                MainScreen.Draw(sharedCreation?.id)
-                            )
-                        )
-                    }
+                onCreationClick = onCreationClickLambda,
+                onExportGif = remember {
+                    { onUIAction(FavoriteScreenUIAction.ExportGif(it)) }
+                },
+                onMarkAsFavorite = remember {
+                    { onUIAction(FavoriteScreenUIAction.AddToFavorite(it)) }
+                },
+                onRemoveAsFavorite = remember {
+                    { onUIAction(FavoriteScreenUIAction.RemoveFromFavorite(it)) }
+                },
+                onMoveToTrash = remember {
+                    { onUIAction(FavoriteScreenUIAction.MoveToTrash(it)) }
                 }
-            ) {
-
-                if (sharedCreation?.isDraft == true) {
-
-                    ListOptionItem(
-                        modifier = Modifier.padding(horizontal = 32.dp),
-                        onClick = remember {
-                            {
-                                sharedCreation?.let {
-                                    onUIAction(FavoriteScreenUIAction.ExportGif(it))
-                                    sharedCreation = null
-                                }
-                            }
-                        },
-                        label = { Text(text = stringResource(R.string.export_gif)) },
-                        icon = {
-
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.export),
-                                contentDescription = null
-                            )
-
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                }
-
-                var isFavorite by remember {
-                    mutableStateOf(sharedCreation?.isFavorite == true)
-                }
-
-                ListOptionItem(
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                    onClick = remember(isFavorite) {
-                        {
-                            onUIAction(
-                                if (!isFavorite) {
-                                    isFavorite = true
-                                    FavoriteScreenUIAction.AddToFavorite(sharedCreation?.id)
-                                } else {
-                                    isFavorite = false
-                                    FavoriteScreenUIAction.RemoveFromFavorite(sharedCreation?.id)
-                                }
-                            )
-                        }
-                    },
-                    label = {
-
-                        Text(
-                            modifier = Modifier.animateContentSize(
-                                alignment = Alignment.Center
-                            ),
-                            text = stringResource(
-                                if (!isFavorite) R.string.add_to_favorite
-                                else R.string.remove_from_favorite
-                            )
-                        )
-
-                    },
-                    icon = {
-
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            painter = painterResource(
-                                if (isFavorite) R.drawable.favorite_filled
-                                else R.drawable.favorite_outlined
-                            ),
-                            contentDescription = null
-                        )
-
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ListOptionItem(
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                    onClick = remember { {} },
-                    label = { Text(text = stringResource(R.string.move_to_trash)) },
-                    icon = {
-
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            painter = painterResource(R.drawable.delete),
-                            contentDescription = null
-                        )
-
-                    }
-                )
-
-            }
+            )
 
         }
 

@@ -86,16 +86,34 @@ class CreationRepositoryImpl @Inject constructor(
         dao.update(creation.copy(isFavorite = false))
     }
 
-    override fun getDrafts(onlyFavorite: Boolean): Flow<List<CreationModel>> {
-        return dao.getAllDrafts(onlyFavorite).map { it.map { e -> e.toModel() } }
+    override fun getDrafts(
+        onlyFavorite: Boolean,
+        deleted: Boolean
+    ): Flow<List<CreationModel>> {
+        return dao.getAllDrafts(onlyFavorite, deleted)
+            .map { it.map { e -> e.toModel() } }
     }
 
-    override fun getFinished(onlyFavorite: Boolean): Flow<List<CreationModel>> {
-        return dao.getAll(onlyFavorite).map { it.map { e -> e.toModel() } }
+    override fun getFinished(
+        onlyFavorite: Boolean,
+        deleted: Boolean
+    ): Flow<List<CreationModel>> {
+        return dao.getAll(onlyFavorite, deleted)
+            .map { it.map { e -> e.toModel() } }
     }
 
     override suspend fun getById(id: Long): CreationModel? {
         return dao.getById(id)?.toModel()
+    }
+
+    override suspend fun moveCreationToTrash(creationId: Long) {
+        val creation = dao.getById(creationId) ?: return
+        dao.update(creation.copy(isDeleted = true))
+    }
+
+    override suspend fun restoreDeletedCreation(creationId: Long) {
+        val creation = dao.getById(creationId) ?: return
+        dao.update(creation.copy(isDeleted = false))
     }
 
     override suspend fun deleteAllDrafts() {
@@ -107,7 +125,8 @@ class CreationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteById(id: Long) {
-        dao.delete(dao.getById(id) ?: return)
+        val creation = dao.getById(id) ?: return
+        dao.delete(creation)
     }
 
 }

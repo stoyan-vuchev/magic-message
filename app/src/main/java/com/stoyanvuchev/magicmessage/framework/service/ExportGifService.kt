@@ -44,6 +44,7 @@ import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -90,11 +91,11 @@ class ExportGifService : Service() {
         val height = intent?.getIntExtra("height", 0) ?: 1920
         val messageId = intent?.getLongExtra("messageId", 0L) ?: 0L
 
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.Default + SupervisorJob()).launch {
 
             progressObserver.updateExporterState(ExporterState.EXPORTING)
 
-            val uri = exporter.exportGif(
+            exporter.exportGif(
                 strokes = ExportDataHolder.strokes,
                 width = width,
                 height = height,
@@ -102,9 +103,7 @@ class ExportGifService : Service() {
             ) { progress ->
                 progressObserver.updateProgress(progress)
                 updateProgress(progress)
-            }
-
-            uri?.let {
+            }?.let {
 
                 withContext(Dispatchers.IO) {
                     creationUseCases.markAsExportedUseCase(messageId = messageId)

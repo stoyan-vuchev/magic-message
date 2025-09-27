@@ -36,12 +36,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.EmptyBottomSpacer
+import com.stoyanvuchev.magicmessage.core.ui.effect.defaultLightWeightBlur
 import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
 import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ListOfOptionItems(
+    isLightWeightBlueApplied: Boolean,
     lazyListState: LazyListState,
     innerPadding: PaddingValues,
     hazeSourceKey: String,
@@ -54,7 +56,8 @@ fun ListOfOptionItems(
             .hazeSource(
                 state = LocalHazeState.current,
                 key = hazeSourceKey
-            ),
+            )
+            .defaultLightWeightBlur(isApplied = isLightWeightBlueApplied),
         state = lazyListState,
         contentPadding = innerPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp)

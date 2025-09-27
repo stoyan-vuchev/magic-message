@@ -33,7 +33,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Stable
 data class StrokeModel(
-    val points: List<TimedPoint>,
+    @Stable val points: List<TimedPoint>,
     @Serializable(with = ColorSerializer::class) val color: Color,
     val width: Float,
     val effect: BrushEffect = BrushEffect.NONE

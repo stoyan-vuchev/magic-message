@@ -60,7 +60,7 @@ object DefaultTransitions {
             ) + scaleIn(
                 initialScale = initialScale,
                 animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    dampingRatio = Spring.DampingRatioLowBouncy,
                     stiffness = Spring.StiffnessMediumLow
                 )
             )
@@ -105,7 +105,7 @@ object DefaultTransitions {
             ) + scaleOut(
                 targetScale = targetScale,
                 animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    dampingRatio = Spring.DampingRatioLowBouncy,
                     stiffness = Spring.StiffnessMediumLow
                 )
             )

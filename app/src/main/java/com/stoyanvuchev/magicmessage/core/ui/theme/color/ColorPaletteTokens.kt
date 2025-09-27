@@ -44,7 +44,7 @@ object LightColorPaletteTokens : ColorPaletteTokens {
     override val error: Color get() = Color(0xFFCA1F2D)
     override val onError: Color get() = Color(0xFFFFFFFF)
 
-    override val outline: Color get() = Color(0xFFC3D2DA)
+    override val outline: Color get() = Color(0x14000000)
 
 }
 
@@ -65,7 +65,7 @@ object DarkColorPaletteTokens : ColorPaletteTokens {
     override val error: Color get() = Color(0xFFCA1F2D)
     override val onError: Color get() = Color(0xFFFFFFFF)
 
-    override val outline: Color get() = Color(0x0AFFFFFF)
+    override val outline: Color get() = Color(0x14FFFFFF)
 
 }
 

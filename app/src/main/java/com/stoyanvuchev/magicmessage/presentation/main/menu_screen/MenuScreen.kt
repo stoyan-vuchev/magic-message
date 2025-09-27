@@ -51,6 +51,7 @@ import com.stoyanvuchev.magicmessage.core.ui.components.RowSelectionItem
 import com.stoyanvuchev.magicmessage.core.ui.components.list.ListOfOptionItems
 import com.stoyanvuchev.magicmessage.core.ui.components.list.ListOptionItemDetailsLayout
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBar
+import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.theme.LocalThemeMode
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
@@ -61,7 +62,8 @@ import com.stoyanvuchev.magicmessage.core.ui.transition.defaultBoundsTransformat
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MenuScreen(
-    onUIAction: (MenuScreenUIAction) -> Unit
+    onUIAction: (MenuScreenUIAction) -> Unit,
+    onNavigationEvent: (NavigationEvent) -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -110,7 +112,12 @@ fun MenuScreen(
 
         SharedTransitionLayout {
 
+            val isLightWeightBlueApplied by rememberUpdatedState(
+                sharedKey != null
+            )
+
             ListOfOptionItems(
+                isLightWeightBlueApplied = isLightWeightBlueApplied,
                 lazyListState = lazyListState,
                 innerPadding = innerPadding,
                 hazeSourceKey = "menu_screen_list_key"
@@ -127,7 +134,7 @@ fun MenuScreen(
                     sharedTransitionScope = this@SharedTransitionLayout,
                     sharedKey = sharedKey,
                     boundsTransform = boundsTransform,
-                    onSharedKey = onSharedKeyLambda
+                    onNavigationEvent = onNavigationEvent
                 )
 
                 menuScreenOtherSection(

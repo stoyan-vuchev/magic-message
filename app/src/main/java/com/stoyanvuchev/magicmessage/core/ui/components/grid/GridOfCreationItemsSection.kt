@@ -24,96 +24,81 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.components.grid
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.etc.CANVAS_ASPECT_RATIO
-import com.stoyanvuchev.magicmessage.core.ui.etc.UIString
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
+@Stable
 fun LazyGridScope.gridOfCreationItemsSection(
     sharedTransitionScope: SharedTransitionScope,
-    label: UIString,
+    @StringRes label: Int,
     items: List<CreationModel>,
     categoryKey: String,
     sharedCreation: CreationModel?,
-    boundsTransform: (Rect, Rect) -> SpringSpec<Rect>,
-    onCreationClick: (CreationModel) -> Unit,
+    onCreationClick: (CreationModel, IntSize) -> Unit,
     onCreationLongClick: (CreationModel, IntSize) -> Unit
 ) = with(sharedTransitionScope) {
 
-    item(
-        span = { GridItemSpan(this.maxLineSpan) }
-    ) {
+    if (items.isNotEmpty()) {
 
-        Spacer(modifier = Modifier.height(12.dp))
+        item(
+            key = "${categoryKey}_label",
+            contentType = "label",
+            span = { GridItemSpan(this.maxLineSpan) }
+        ) {
 
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .padding(top = 24.dp),
-            text = label.asString(),
-            style = Theme.typefaces.bodySmall,
-            color = Theme.colors.onSurfaceElevationLow.copy(.5f)
-        )
+            Text(
+                modifier = Modifier
+                    .animateItem()
+                    .padding(top = 32.dp),
+                text = stringResource(label),
+                style = Theme.typefaces.bodySmall,
+                color = Theme.colors.onSurfaceElevationLow.copy(.5f)
+            )
 
-        Spacer(modifier = Modifier.height(0.dp))
+        }
 
     }
 
     itemsIndexed(
         items = items,
-        key = { _, creation -> "${categoryKey}_${creation.createdAt}" }
+        key = { _, creation -> "${categoryKey}_${creation.id}" },
+        contentType = { _, _ -> "creation" }
     ) { i, creation ->
 
-        val startPadding by remember(i) {
-            derivedStateOf { if (i % 2 == 0) 24.dp else 0.dp }
+        val visible by remember(sharedCreation, creation) {
+            derivedStateOf { sharedCreation?.id != creation.id }
         }
-
-        val endPadding by remember(i) {
-            derivedStateOf { if (i % 2 == 0) 0.dp else 24.dp }
-        }
-
-        val visible by rememberUpdatedState(
-            sharedCreation?.id != creation.id
-        )
 
         AnimatedVisibility(
-            modifier = Modifier
-                .animateItem()
-                .padding(
-                    start = startPadding,
-                    end = endPadding
-                )
-                .fillMaxWidth()
-                .aspectRatio(ratio = CANVAS_ASPECT_RATIO),
+            modifier = Modifier.animateItem(),
             visible = visible,
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = remember { fadeIn() },
+            exit = remember { fadeOut() }
         ) {
 
             Box(
@@ -123,9 +108,9 @@ fun LazyGridScope.gridOfCreationItemsSection(
                             key = "${creation.id ?: 0}-bounds"
                         ),
                         animatedVisibilityScope = this@AnimatedVisibility,
-                        boundsTransform = boundsTransform,
                     )
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .aspectRatio(ratio = CANVAS_ASPECT_RATIO)
             ) {
 
                 GridCreationItem(
@@ -135,7 +120,6 @@ fun LazyGridScope.gridOfCreationItemsSection(
                                 key = creation.id ?: 0
                             ),
                             animatedVisibilityScope = this@AnimatedVisibility,
-                            boundsTransform = boundsTransform,
                         )
                         .fillMaxSize(),
                     creation = creation,

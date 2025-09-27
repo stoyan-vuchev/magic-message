@@ -25,6 +25,7 @@
 package com.stoyanvuchev.magicmessage.presentation
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ import com.stoyanvuchev.magicmessage.presentation.boarding.boardingNavGraph
 import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import com.stoyanvuchev.magicmessage.presentation.main.mainNavGraph
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AppNavHost(
