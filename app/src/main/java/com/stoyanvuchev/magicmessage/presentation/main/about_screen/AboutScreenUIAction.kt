@@ -22,34 +22,27 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.effect
+package com.stoyanvuchev.magicmessage.presentation.main.about_screen
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.unit.dp
-import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
-import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
+import androidx.compose.runtime.Stable
 
-@Composable
-fun Modifier.defaultHazeEffect(
-    hazeState: HazeState = LocalHazeState.current,
-    enabled: Boolean = true
-): Modifier {
-    return if (enabled) composed {
-        hazeEffect(
-            state = hazeState,
-            style = HazeStyle(
-                tint = HazeTint(color = Theme.colors.surfaceElevationLow.copy(.75f)),
-                blurRadius = 16.dp,
-                noiseFactor = -1f,
-                backgroundColor = Theme.colors.surfaceElevationLow
+@Stable
+sealed class AboutScreenUIAction(val url: String) {
 
-            )
-        )
-    } else Modifier
+    data object PrivacyPolicy : AboutScreenUIAction(
+        "https://github.com/stoyan-vuchev/magic-message/blob/main/legal/privacy_policy.md"
+    )
+
+    data object TermsOfService : AboutScreenUIAction(
+        "https://github.com/stoyan-vuchev/magic-message/blob/main/legal/terms_of_service.md"
+    )
+
+    data object GitHub : AboutScreenUIAction(
+        "https://github.com/stoyan-vuchev/magic-message"
+    )
+
+    data object DevGitHub : AboutScreenUIAction("https://github.com/stoyan-vuchev")
+    data object DevX : AboutScreenUIAction("https://x.com/stoyan_vuchev")
+    data object DevLinkedIn : AboutScreenUIAction("https://linkedin.com/in/stoyan-vuchev")
+
 }

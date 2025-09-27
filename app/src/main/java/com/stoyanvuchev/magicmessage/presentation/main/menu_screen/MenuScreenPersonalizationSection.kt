@@ -99,7 +99,7 @@ fun LazyListScope.menuScreenPersonalizationSection(
                                     animatedVisibilityScope = this@AnimatedVisibility,
                                     boundsTransform = boundsTransform,
                                 ),
-                                text = stringResource(R.string.theme_mode) + " - " + themeMode.label()
+                                text = stringResource(R.string.theme_mode) + ": " + themeMode.label()
                             )
 
                         },

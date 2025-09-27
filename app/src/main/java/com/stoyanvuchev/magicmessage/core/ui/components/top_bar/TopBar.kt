@@ -42,6 +42,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBarTokens.TopBarActionHorizontalPadding
 import com.stoyanvuchev.magicmessage.core.ui.components.top_bar.TopBarTokens.TopBarActionItemsHorizontalPadding
@@ -56,11 +57,13 @@ fun TopBar(
     title: @Composable () -> Unit,
     navigationAction: @Composable (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit)? = null,
-    windowInsets: WindowInsets = WindowInsets.statusBars
+    enableBlur: Boolean = true,
+    windowInsets: WindowInsets = WindowInsets.statusBars,
+    dividerColor: Color = Theme.colors.outline
 ) = Column(
     modifier = Modifier
         .fillMaxWidth()
-        .defaultHazeEffect()
+        .defaultHazeEffect(enabled = enableBlur)
         .clipToBounds()
         .then(modifier)
 ) {
@@ -106,7 +109,7 @@ fun TopBar(
 
     HorizontalDivider(
         modifier = Modifier.fillMaxWidth(),
-        color = Theme.colors.outline,
+        color = dividerColor,
         thickness = 1.dp
     )
 
