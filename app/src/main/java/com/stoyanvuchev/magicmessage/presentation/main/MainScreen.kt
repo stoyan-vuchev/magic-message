@@ -75,6 +75,12 @@ sealed class MainScreen(
         icon = R.drawable.delete
     )
 
+    @Serializable
+    data object About : MainScreen(
+        label = R.string.about_screen_label,
+        icon = R.drawable.info_outlined
+    )
+
 }
 
 val mainScreenNavDestinations: List<MainScreen> = listOf(

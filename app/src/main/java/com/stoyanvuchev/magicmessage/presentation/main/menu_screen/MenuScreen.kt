@@ -141,7 +141,7 @@ fun MenuScreen(
                     sharedTransitionScope = this@SharedTransitionLayout,
                     sharedKey = sharedKey,
                     boundsTransform = boundsTransform,
-                    onSharedKey = onSharedKeyLambda
+                    onNavigationEvent = onNavigationEvent
                 )
 
             }
@@ -150,9 +150,11 @@ fun MenuScreen(
                 when (sharedKey) {
                     "theme_mode" -> {
                         stringResource(R.string.theme_mode) +
-                                " - " + LocalThemeMode.current.label()
+                                ": " + LocalThemeMode.current.label()
                     }
-                    "color_scheme" -> stringResource(R.string.color_scheme)
+                    "color_scheme" -> {
+                        stringResource(R.string.color_scheme)
+                    }
                     "trash" -> stringResource(R.string.trash_label)
                     "about" -> stringResource(R.string.about_label)
                     else -> stringResource(R.string.app_name)

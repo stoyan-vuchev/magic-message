@@ -30,6 +30,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -38,6 +39,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.framework.service.ExportGifServiceIntent
+import com.stoyanvuchev.magicmessage.presentation.main.about_screen.AboutScreen
+import com.stoyanvuchev.magicmessage.presentation.main.about_screen.AboutScreenViewModel
 import com.stoyanvuchev.magicmessage.presentation.main.deleted_screen.DeletedScreen
 import com.stoyanvuchev.magicmessage.presentation.main.deleted_screen.DeletedScreenViewModel
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreen
@@ -349,6 +352,37 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
         DeletedScreen(
             state = state,
+            onUIAction = viewModel::onUIAction,
+            onNavigationEvent = viewModel::onNavigationEvent
+        )
+
+    }
+
+    composable<MainScreen.About> {
+
+        val viewModel = hiltViewModel<AboutScreenViewModel>()
+        val uriHandler = LocalUriHandler.current
+
+        LaunchedEffect(viewModel.uiActionFlow) {
+            viewModel.uiActionFlow.collectLatest { action ->
+                uriHandler.openUri(action.url)
+            }
+        }
+
+        LaunchedEffect(viewModel.navigationEventFlow) {
+            viewModel.navigationEventFlow.collectLatest { event ->
+                when (event) {
+                    is NavigationEvent.NavigateUp -> navController.navigateUp()
+                    is NavigationEvent.NavigateTo -> {
+                        navController.navigate(event.screen) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            }
+        }
+
+        AboutScreen(
             onUIAction = viewModel::onUIAction,
             onNavigationEvent = viewModel::onNavigationEvent
         )
