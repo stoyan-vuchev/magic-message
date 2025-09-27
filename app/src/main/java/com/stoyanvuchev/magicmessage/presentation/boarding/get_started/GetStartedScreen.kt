@@ -54,7 +54,6 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -80,7 +79,7 @@ import com.stoyanvuchev.magicmessage.core.ui.components.CheckboxField
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
-import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
+import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
 import com.stoyanvuchev.systemuibarstweaker.LocalSystemUIBarsTweaker
 import com.stoyanvuchev.systemuibarstweaker.ScrimStyle
 
@@ -320,7 +319,7 @@ fun GetStartedScreen(
                     {
                         onNavigationEvent(
                             NavigationEvent.NavigateTo(
-                                MainScreen.Home
+                                BoardingScreen.Permission
                             )
                         )
                     }
@@ -332,7 +331,7 @@ fun GetStartedScreen(
                     contentColor = gradientEnd,
                     disabledContentColor = gradientEnd
                 ),
-                shape = MaterialTheme.shapes.small
+                shape = Theme.shapes.largeShape
             ) {
 
                 Row(

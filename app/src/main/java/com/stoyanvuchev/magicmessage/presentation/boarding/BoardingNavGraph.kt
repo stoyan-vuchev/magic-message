@@ -24,8 +24,16 @@
 
 package com.stoyanvuchev.magicmessage.presentation.boarding
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -33,12 +41,20 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.presentation.boarding.get_started.GetStartedScreen
 import com.stoyanvuchev.magicmessage.presentation.boarding.get_started.GetStartedScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.boarding.get_started.GetStartedScreenViewModel
+import com.stoyanvuchev.magicmessage.presentation.boarding.permission_screen.PermissionScreen
+import com.stoyanvuchev.magicmessage.presentation.boarding.permission_screen.PermissionScreenUIAction
+import com.stoyanvuchev.magicmessage.presentation.boarding.permission_screen.PermissionScreenViewModel
+import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalPermissionsApi::class)
 fun NavGraphBuilder.boardingNavGraph(navController: NavHostController) {
 
     navigation<BoardingScreen.Navigation>(
@@ -75,7 +91,6 @@ fun NavGraphBuilder.boardingNavGraph(navController: NavHostController) {
 
                         is NavigationEvent.NavigateTo -> {
                             navController.navigate(navigationEvent.screen) {
-                                popUpTo(navController.graph.id) { inclusive = false }
                                 launchSingleTop = true
                             }
                         }
@@ -90,6 +105,67 @@ fun NavGraphBuilder.boardingNavGraph(navController: NavHostController) {
                 state = state,
                 onUIAction = viewModel::onUIAction,
                 onNavigationEvent = viewModel::onNavigationEvent
+            )
+
+        }
+
+        composable<BoardingScreen.Permission> {
+
+            val viewModel = hiltViewModel<PermissionScreenViewModel>()
+            val context = LocalContext.current
+
+            val notificationPermissionState = rememberPermissionState(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+
+            val isPermissionRevoked by rememberUpdatedState(
+                notificationPermissionState.status.shouldShowRationale
+            )
+
+            val launcher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted ->
+
+                if (isGranted) {
+                    navController.navigate(MainScreen.Home) {
+                        popUpTo(BoardingScreen.GetStarted) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+
+            }
+
+            LaunchedEffect(viewModel.uiActionFlow) {
+                viewModel.uiActionFlow.collectLatest { action ->
+                    when (action) {
+
+                        is PermissionScreenUIAction.RequestPermissions -> {
+                            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+
+                        is PermissionScreenUIAction.OpenSettings -> {
+
+                            val intent = Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            ).apply {
+                                data = Uri.fromParts(
+                                    "package",
+                                    context.packageName,
+                                    null
+                                )
+                            }
+
+                            context.startActivity(intent)
+
+                        }
+
+                    }
+                }
+            }
+
+            PermissionScreen(
+                isPermissionRevoked = isPermissionRevoked,
+                onUIAction = viewModel::onUIAction
             )
 
         }

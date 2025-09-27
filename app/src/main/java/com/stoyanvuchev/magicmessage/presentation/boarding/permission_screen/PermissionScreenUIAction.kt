@@ -22,24 +22,12 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.presentation.boarding.permission_screen
 
-import android.os.Parcelable
-import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
-import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Serializable
+import androidx.compose.runtime.Stable
 
-@Parcelize
-@Serializable
-sealed class BoardingScreen : Parcelable, NavigationScreen() {
-
-    @Serializable
-    data object Navigation : BoardingScreen()
-
-    @Serializable
-    data object GetStarted : BoardingScreen()
-
-    @Serializable
-    data object Permission : BoardingScreen()
-
+@Stable
+sealed interface PermissionScreenUIAction {
+    data object RequestPermissions : PermissionScreenUIAction
+    data object OpenSettings : PermissionScreenUIAction
 }
