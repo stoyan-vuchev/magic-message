@@ -69,4 +69,9 @@
     <string name="source_code">Source Code</string>
     <string name="developed_by">Developed by</string>
     <string name="developer_name">Stoyan Vuchev</string>
+    <string name="permission_screen_label">Permissions</string>
+    <string name="permission_screen_description">Before you proceed, please make sure to allow the following permissions, in order to unleash the maximum potential of the app.</string>
+    <string name="permission_screen_notifications_label">Notifications</string>
+    <string name="permission_screen_request_permission">Request Permissions</string>
+    <string name="permission_screen_change_settings">Change Settings</string>
 </resources>

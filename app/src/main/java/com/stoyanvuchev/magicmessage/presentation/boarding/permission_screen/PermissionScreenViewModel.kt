@@ -22,24 +22,28 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.boarding
+package com.stoyanvuchev.magicmessage.presentation.boarding.permission_screen
 
-import android.os.Parcelable
-import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
-import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Serializable
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-@Parcelize
-@Serializable
-sealed class BoardingScreen : Parcelable, NavigationScreen() {
+@HiltViewModel
+class PermissionScreenViewModel @Inject constructor() : ViewModel() {
 
-    @Serializable
-    data object Navigation : BoardingScreen()
+    private val _uiActionChannel = Channel<PermissionScreenUIAction>()
+    val uiActionFlow = _uiActionChannel.receiveAsFlow()
 
-    @Serializable
-    data object GetStarted : BoardingScreen()
+    fun onUIAction(action: PermissionScreenUIAction) {
+        sendUIAction(action)
+    }
 
-    @Serializable
-    data object Permission : BoardingScreen()
+    private fun sendUIAction(action: PermissionScreenUIAction) {
+        viewModelScope.launch { _uiActionChannel.send(action) }
+    }
 
 }
