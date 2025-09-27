@@ -29,6 +29,6 @@ import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
 @Stable
 class FavoriteScreenState(
-    val draftedCreationsList: List<CreationModel> = emptyList(),
-    val exportedCreationsList: List<CreationModel> = emptyList()
+    @Stable val draftedCreationsList: List<CreationModel> = emptyList(),
+    @Stable val exportedCreationsList: List<CreationModel> = emptyList()
 )

@@ -52,29 +52,35 @@ interface CreationDao {
 
     // Exported
 
-    fun getAll(onlyFavorite: Boolean = false): Flow<List<CreationEntity>> {
-        return if (onlyFavorite) getAllExportedFavorite()
-        else getAllExported()
+    fun getAll(
+        onlyFavorite: Boolean,
+        deleted: Boolean
+    ): Flow<List<CreationEntity>> {
+        return if (onlyFavorite) getAllExportedFavorite(deleted)
+        else getAllExported(deleted)
     }
 
-    @Query("SELECT * FROM creations WHERE isDraft IS FALSE AND isFavorite IS TRUE ORDER BY createdAt DESC")
-    fun getAllExportedFavorite(): Flow<List<CreationEntity>>
+    @Query("SELECT * FROM creations WHERE isDeleted = :deleted AND isDraft IS FALSE AND isFavorite IS TRUE ORDER BY createdAt DESC")
+    fun getAllExportedFavorite(deleted: Boolean): Flow<List<CreationEntity>>
 
-    @Query("SELECT * FROM creations WHERE isDraft IS FALSE ORDER BY createdAt DESC")
-    fun getAllExported(): Flow<List<CreationEntity>>
+    @Query("SELECT * FROM creations WHERE isDeleted = :deleted AND isDraft IS FALSE ORDER BY createdAt DESC")
+    fun getAllExported(deleted: Boolean): Flow<List<CreationEntity>>
 
     // Drafts
 
-    fun getAllDrafts(onlyFavorite: Boolean = false): Flow<List<CreationEntity>> {
-        return if (onlyFavorite) getAllFavoriteDrafts()
-        else getDrafts()
+    fun getAllDrafts(
+        onlyFavorite: Boolean,
+        deleted: Boolean
+    ): Flow<List<CreationEntity>> {
+        return if (onlyFavorite) getAllFavoriteDrafts(deleted)
+        else getDrafts(deleted)
     }
 
-    @Query("SELECT * FROM creations WHERE isDraft IS TRUE ORDER BY createdAt DESC")
-    fun getDrafts(): Flow<List<CreationEntity>>
+    @Query("SELECT * FROM creations WHERE isDeleted = :deleted AND isDraft IS TRUE ORDER BY createdAt DESC")
+    fun getDrafts(deleted: Boolean): Flow<List<CreationEntity>>
 
-    @Query("SELECT * FROM creations WHERE isDraft IS TRUE AND isFavorite IS TRUE ORDER BY createdAt DESC")
-    fun getAllFavoriteDrafts(): Flow<List<CreationEntity>>
+    @Query("SELECT * FROM creations WHERE isDeleted = :deleted AND isDraft IS TRUE AND isFavorite IS TRUE ORDER BY createdAt DESC")
+    fun getAllFavoriteDrafts(deleted: Boolean): Flow<List<CreationEntity>>
 
     // By ID
 

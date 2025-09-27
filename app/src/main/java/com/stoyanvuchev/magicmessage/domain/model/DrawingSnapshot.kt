@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 data class DrawingSnapshot(
     val totalPointCount: Int,
     val drawingEnabled: Boolean,
-    val strokes: List<StrokeModel>,
-    val currentPoints: List<TimedPoint>,
-    val undoStack: List<StrokeModel>,
-    val redoStack: List<StrokeModel>,
+    @Stable val strokes: List<StrokeModel>,
+    @Stable val currentPoints: List<TimedPoint>,
+    @Stable val undoStack: List<StrokeModel>,
+    @Stable val redoStack: List<StrokeModel>,
     val startTime: Long
 )

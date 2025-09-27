@@ -53,6 +53,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -64,7 +65,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_nav_bar.BottomNavBarTokens.NavigationBarHeight
-import com.stoyanvuchev.magicmessage.core.ui.effect.defaultHazeEffect
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -80,6 +80,9 @@ fun SharedTransitionScope.ListOptionItemDetailsLayout(
 ) {
 
     val isBackgroundVisible by rememberUpdatedState(sharedKey != null)
+    val topPadding by remember {
+        derivedStateOf { innerPadding.calculateTopPadding() }
+    }
 
     AnimatedVisibility(
         modifier = Modifier.fillMaxSize(),
@@ -92,9 +95,13 @@ fun SharedTransitionScope.ListOptionItemDetailsLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .navigationBarsPadding()
-                .padding(bottom = NavigationBarHeight)
-                .defaultHazeEffect()
-                .padding(top = innerPadding.calculateTopPadding())
+                .padding(
+                    top = topPadding,
+                    bottom = NavigationBarHeight
+                )
+                .background(
+                    color = Theme.colors.surfaceElevationLow.copy(.5f)
+                )
         )
 
     }
@@ -114,7 +121,7 @@ fun SharedTransitionScope.ListOptionItemDetailsLayout(
                 modifier = Modifier
                     .fillMaxSize()
                     .navigationBarsPadding()
-                    .padding(top = innerPadding.calculateTopPadding())
+                    .padding(top = topPadding)
                     .clickable(
                         onClick = remember { { onSharedKey(null) } },
                         indication = null,

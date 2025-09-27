@@ -30,15 +30,12 @@ import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationUseCases
 import com.stoyanvuchev.magicmessage.framework.service.ExportDataHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,14 +43,14 @@ class HomeScreenViewModel @Inject constructor(
     private val useCases: CreationUseCases
 ) : ViewModel() {
 
-    val state: StateFlow<HomeScreenState> = combine(
-        flow = useCases.getExportedUseCase(onlyFavorite = false),
-        flow2 = useCases.getDraftsUseCase(onlyFavorite = false)
-    ) { exported, drafted ->
+    val state = combine(
+        useCases.getDraftsUseCase(onlyFavorite = false),
+        useCases.getExportedUseCase(onlyFavorite = false)
+    ) { flows ->
 
         HomeScreenState(
-            exportedCreationsList = exported,
-            draftedCreationsList = drafted
+            draftedCreationsList = flows[0],
+            exportedCreationsList = flows[1]
         )
 
     }.stateIn(
@@ -70,25 +67,28 @@ class HomeScreenViewModel @Inject constructor(
 
     fun onUIAction(action: HomeScreenUIAction) {
         when (action) {
+            is HomeScreenUIAction.MoveToTrash -> moveToTrash(action)
             is HomeScreenUIAction.RemoveFromFavorite -> removeFromFavorite(action)
             is HomeScreenUIAction.AddToFavorite -> addToFavorite(action)
             is HomeScreenUIAction.ExportGif -> exportGif(action)
         }
     }
 
+    private fun moveToTrash(action: HomeScreenUIAction.MoveToTrash) {
+        viewModelScope.launch {
+            useCases.moveCreationToTrash(action.creationId)
+        }
+    }
+
     private fun removeFromFavorite(action: HomeScreenUIAction.RemoveFromFavorite) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                useCases.removeAsFavoriteUseCase(action.creationId)
-            }
+            useCases.removeAsFavoriteUseCase(action.creationId)
         }
     }
 
     private fun addToFavorite(action: HomeScreenUIAction.AddToFavorite) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                useCases.markAsFavoriteUseCase(action.creationId)
-            }
+            useCases.markAsFavoriteUseCase(action.creationId)
         }
     }
 

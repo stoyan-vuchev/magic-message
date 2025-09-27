@@ -30,6 +30,10 @@ import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 @Stable
 interface HomeScreenUIAction {
 
+    data class MoveToTrash(
+        val creationId: Long
+    ) : HomeScreenUIAction
+
     data class RemoveFromFavorite(
         val creationId: Long?
     ) : HomeScreenUIAction

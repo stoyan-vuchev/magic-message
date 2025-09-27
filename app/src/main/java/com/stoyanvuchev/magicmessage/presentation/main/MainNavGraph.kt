@@ -25,6 +25,8 @@
 package com.stoyanvuchev.magicmessage.presentation.main
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -36,6 +38,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.framework.service.ExportGifServiceIntent
+import com.stoyanvuchev.magicmessage.presentation.main.deleted_screen.DeletedScreen
+import com.stoyanvuchev.magicmessage.presentation.main.deleted_screen.DeletedScreenViewModel
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreen
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenUIAction
 import com.stoyanvuchev.magicmessage.presentation.main.draw_screen.DrawScreenViewModel
@@ -250,13 +254,32 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
         val viewModel = hiltViewModel<MenuScreenViewModel>()
 
+        LaunchedEffect(viewModel.navigationEventFlow) {
+            viewModel.navigationEventFlow.collectLatest { event ->
+                when (event) {
+                    is NavigationEvent.NavigateUp -> Unit
+                    is NavigationEvent.NavigateTo -> {
+                        navController.navigate(event.screen) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+            }
+        }
+
         MenuScreen(
-            onUIAction = viewModel::onUIAction
+            onUIAction = viewModel::onUIAction,
+            onNavigationEvent = viewModel::onNavigationEvent
         )
 
     }
 
-    composable<MainScreen.Draw> {
+    composable<MainScreen.Draw>(
+        enterTransition = { fadeIn() },
+        exitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() },
+        popExitTransition = { fadeOut() }
+    ) {
 
         val viewModel = hiltViewModel<DrawScreenViewModel>()
         val context = LocalContext.current
@@ -304,6 +327,28 @@ fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         DrawScreen(
             state = state,
             drawingController = drawingController,
+            onUIAction = viewModel::onUIAction,
+            onNavigationEvent = viewModel::onNavigationEvent
+        )
+
+    }
+
+    composable<MainScreen.Deleted> {
+
+        val viewModel = hiltViewModel<DeletedScreenViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        LaunchedEffect(viewModel.navigationEventFlow) {
+            viewModel.navigationEventFlow.collectLatest { event ->
+                when (event) {
+                    is NavigationEvent.NavigateUp -> navController.navigateUp()
+                    else -> Unit
+                }
+            }
+        }
+
+        DeletedScreen(
+            state = state,
             onUIAction = viewModel::onUIAction,
             onNavigationEvent = viewModel::onNavigationEvent
         )

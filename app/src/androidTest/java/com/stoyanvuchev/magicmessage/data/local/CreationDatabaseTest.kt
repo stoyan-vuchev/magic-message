@@ -153,7 +153,7 @@ class CreationDatabaseTest {
 
         dao.deleteAllDrafts()
 
-        val drafts = dao.getAllDrafts()
+        val drafts = dao.getAllDrafts(onlyFavorite = false, deleted = false)
         assertThat(drafts).isEqualTo(emptyList<CreationEntity>())
 
     }
@@ -175,7 +175,7 @@ class CreationDatabaseTest {
 
         dao.deleteAllCreations()
 
-        val drafts = dao.getAll()
+        val drafts = dao.getAll(onlyFavorite = false, deleted = false)
         assertThat(drafts).isEqualTo(emptyList<CreationEntity>())
 
     }

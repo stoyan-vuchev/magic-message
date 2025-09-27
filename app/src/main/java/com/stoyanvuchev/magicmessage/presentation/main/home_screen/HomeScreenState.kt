@@ -29,6 +29,6 @@ import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
 @Stable
 data class HomeScreenState(
-    val exportedCreationsList: List<CreationModel> = emptyList(),
-    val draftedCreationsList: List<CreationModel> = emptyList()
+    @Stable val exportedCreationsList: List<CreationModel> = emptyList(),
+    @Stable val draftedCreationsList: List<CreationModel> = emptyList()
 )

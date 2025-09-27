@@ -22,48 +22,76 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.presentation.main.menu_screen
+package com.stoyanvuchev.magicmessage.presentation.main.deleted_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
-import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
+import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MenuScreenViewModel @Inject constructor(
-    private val appPreferences: AppPreferences
+class DeletedScreenViewModel @Inject constructor(
+    private val useCases: CreationUseCases
 ) : ViewModel() {
+
+    val state = combine(
+        useCases.getDraftsUseCase(deleted = true),
+        useCases.getExportedUseCase(deleted = true)
+    ) { flows ->
+
+        DeletedScreenState(
+            draftedCreationsList = flows[0],
+            exportedCreationsList = flows[1]
+        )
+
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = DeletedScreenState()
+    )
 
     private val _navigationEventChannel = Channel<NavigationEvent>()
     val navigationEventFlow = _navigationEventChannel.receiveAsFlow()
 
-    fun onUIAction(action: MenuScreenUIAction) {
-        when (action) {
-            is MenuScreenUIAction.SetThemeMode -> setThemeMode(action)
-        }
+    fun onUIAction(
+        action: DeletedScreenUIAction
+    ) = when (action) {
+        is DeletedScreenUIAction.RestoreCreation -> restoreCreation(action)
+        is DeletedScreenUIAction.PermanentlyDeleteCreation -> permanentlyDeleteCreation(action)
     }
 
     fun onNavigationEvent(event: NavigationEvent) {
         sendNavigationEvent(event)
     }
 
-    private fun setThemeMode(action: MenuScreenUIAction.SetThemeMode) {
+    private fun restoreCreation(
+        action: DeletedScreenUIAction.RestoreCreation
+    ) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                appPreferences.setThemeMode(action.themeMode)
-            }
+            useCases.restoreDeletedCreation(action.creationId)
         }
     }
 
-    private fun sendNavigationEvent(event: NavigationEvent) {
-        viewModelScope.launch { _navigationEventChannel.send(event) }
+    private fun permanentlyDeleteCreation(
+        action: DeletedScreenUIAction.PermanentlyDeleteCreation
+    ) {
+        viewModelScope.launch {
+            useCases.permanentlyDeleteCreation(action.creationId)
+        }
+    }
+
+    private fun sendNavigationEvent(
+        navigationEvent: NavigationEvent
+    ) {
+        viewModelScope.launch { _navigationEventChannel.send(navigationEvent) }
     }
 
 }

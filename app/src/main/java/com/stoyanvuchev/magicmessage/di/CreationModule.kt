@@ -35,7 +35,10 @@ import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationGetDraftsUs
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationGetExportedUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationMarkAsExportedUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationMarkAsFavoriteUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationModeToTrashUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationPermanentlyDeleteUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationRemoveAsFavoriteUseCase
+import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationRestoreDeletedUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationSaveOrUpdateUseCase
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationUseCases
 import dagger.Module
@@ -85,7 +88,10 @@ object CreationModule {
             getDraftsUseCase = CreationGetDraftsUseCase(repository),
             markAsExportedUseCase = CreationMarkAsExportedUseCase(repository),
             markAsFavoriteUseCase = CreationMarkAsFavoriteUseCase(repository),
-            removeAsFavoriteUseCase = CreationRemoveAsFavoriteUseCase(repository)
+            removeAsFavoriteUseCase = CreationRemoveAsFavoriteUseCase(repository),
+            restoreDeletedCreation = CreationRestoreDeletedUseCase(repository),
+            permanentlyDeleteCreation = CreationPermanentlyDeleteUseCase(repository),
+            moveCreationToTrash = CreationModeToTrashUseCase(repository)
         )
     }
 

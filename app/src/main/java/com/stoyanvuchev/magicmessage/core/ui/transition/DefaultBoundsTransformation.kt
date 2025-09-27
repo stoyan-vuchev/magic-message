@@ -26,8 +26,10 @@ package com.stoyanvuchev.magicmessage.core.ui.transition
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Rect
 
+@Stable
 val defaultBoundsTransformation = { _: Rect, _: Rect ->
     spring<Rect>(
         dampingRatio = Spring.DampingRatioNoBouncy,

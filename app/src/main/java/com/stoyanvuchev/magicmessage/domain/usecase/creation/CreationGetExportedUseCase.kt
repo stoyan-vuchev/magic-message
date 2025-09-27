@@ -28,15 +28,17 @@ import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 import com.stoyanvuchev.magicmessage.domain.repository.CreationRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlin.Boolean
 
 class CreationGetExportedUseCase @Inject constructor(
     private val repository: CreationRepository
 ) {
 
     operator fun invoke(
-        onlyFavorite: Boolean = false
+        onlyFavorite: Boolean = false,
+        deleted: Boolean = false
     ): Flow<List<CreationModel>> {
-        return repository.getFinished(onlyFavorite)
+        return repository.getFinished(onlyFavorite, deleted)
     }
 
 }

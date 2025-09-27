@@ -163,9 +163,11 @@ class DrawScreenViewModel @Inject constructor(
     }
 
     private fun exportGif(action: DrawScreenUIAction.Export) {
-        ExportDataHolder.strokes = _drawingController.value.strokes
-        ExportDataHolder.bgLayer = _state.value.drawConfiguration.bgLayer
-        sendUIAction(action)
+        if (_drawingController.value.strokes.isNotEmpty()) {
+            ExportDataHolder.strokes = _drawingController.value.strokes
+            ExportDataHolder.bgLayer = _state.value.drawConfiguration.bgLayer
+            sendUIAction(action)
+        }
     }
 
     private fun sendUIAction(action: DrawScreenUIAction) {

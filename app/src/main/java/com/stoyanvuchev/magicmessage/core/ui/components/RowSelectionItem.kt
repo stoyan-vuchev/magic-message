@@ -41,12 +41,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.bottom_bar.BottomBarTokens.BottomBarHeight
 import com.stoyanvuchev.magicmessage.core.ui.components.interaction.rememberRipple
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
-import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
 
 @Composable
 fun RowScope.RowSelectionItem(
@@ -59,13 +59,13 @@ fun RowScope.RowSelectionItem(
 
     val bgColor by animateColorAsState(
         targetValue = Theme.colors.surfaceElevationHigh.copy(
-            alpha = if (selected) .75f else 0f
+            alpha = if (selected) .9f else 0f
         )
     )
 
     val borderColor by animateColorAsState(
         targetValue = Theme.colors.outline.copy(
-            alpha = if (selected) (if (isInDarkThemeMode()) .04f else 1f) else 0f
+            alpha = if (selected) .08f else 0f
         )
     )
 
@@ -78,15 +78,13 @@ fun RowScope.RowSelectionItem(
                 role = Role.Tab
             )
             .defaultMinSize(minHeight = BottomBarHeight)
+            .clip(shape = Theme.shapes.smallShape)
             .border(
                 width = 1.dp,
                 color = borderColor,
                 shape = Theme.shapes.smallShape
             )
-            .background(
-                color = bgColor,
-                shape = Theme.shapes.smallShape
-            )
+            .background(color = bgColor)
             .weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)

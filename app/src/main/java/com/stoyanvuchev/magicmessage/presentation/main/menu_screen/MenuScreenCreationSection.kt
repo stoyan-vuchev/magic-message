@@ -44,13 +44,15 @@ import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.components.list.ListOptionItem
 import com.stoyanvuchev.magicmessage.core.ui.components.list.listOfOptionItemsSelection
 import com.stoyanvuchev.magicmessage.core.ui.etc.UIString
+import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
+import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyListScope.menuScreenCreationSection(
     sharedTransitionScope: SharedTransitionScope,
     sharedKey: String?,
     boundsTransform: (Rect, Rect) -> SpringSpec<Rect>,
-    onSharedKey: (String?) -> Unit
+    onNavigationEvent: (NavigationEvent) -> Unit
 ) = listOfOptionItemsSelection(
     sharedTransitionScope = sharedTransitionScope,
     label = UIString.Resource(resId = R.string.menu_screen_creations_label),
@@ -63,7 +65,15 @@ fun LazyListScope.menuScreenCreationSection(
         item(key = "${categoryKey}_trash") {
 
             val deletedKey = remember { "trash" }
-            val onSharedKeyLambda = remember { { /*TODO*/ } }
+            val onSharedKeyLambda = remember {
+                {
+                    onNavigationEvent(
+                        NavigationEvent.NavigateTo(
+                            MainScreen.Deleted
+                        )
+                    )
+                }
+            }
 
             AnimatedVisibility(
                 modifier = Modifier

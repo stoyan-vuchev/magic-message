@@ -31,6 +31,7 @@ import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,10 +47,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -210,17 +212,23 @@ fun ExportDialog(
                         exportedUri?.let {
 
                             val context = LocalContext.current
-                            val painter = rememberDrawablePainter(
-                                drawable = createAnimatedImageDrawableFromImageDecoder(context, it)
-                            )
+                            val drawable = remember {
+                                createAnimatedImageDrawableFromImageDecoder(context, it)
+                            }
 
-                            Image(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(3f / 4f),
-                                painter = painter,
-                                contentDescription = null
-                            )
+                            if (drawable != null) {
+
+                                val painter = rememberDrawablePainter(drawable = drawable)
+
+                                Image(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(3f / 4f),
+                                    painter = painter,
+                                    contentDescription = null
+                                )
+
+                            }
 
                             Spacer(modifier = Modifier.height(16.dp))
 
@@ -229,38 +237,59 @@ fun ExportDialog(
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
+                            horizontalArrangement = Arrangement.spacedBy(
+                                8.dp,
+                                Alignment.End
+                            )
                         ) {
 
                             val uriHandler = LocalUriHandler.current
 
-                            TextButton(
+                            OutlinedButton(
                                 onClick = onDismissExportDialog,
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = Theme.colors.primary
+                                colors = ButtonDefaults.elevatedButtonColors(
+                                    containerColor = Theme.colors.surfaceElevationHigh,
+                                    contentColor = Theme.colors.onSurfaceElevationHigh
+                                ),
+                                shape = Theme.shapes.largeShape,
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = Theme.colors.outline
                                 )
                             ) {
+
                                 Text(
                                     text = stringResource(R.string.exporter_label_cancel),
                                     style = Theme.typefaces.bodyLarge
                                 )
+
                             }
 
-                            TextButton(
-                                onClick = {
-                                    exportedUri?.let {
-                                        uriHandler.openUri(it.toString())
-                                        onDismissExportDialog()
+                            OutlinedButton(
+                                onClick = remember {
+                                    {
+                                        exportedUri?.let {
+                                            uriHandler.openUri(it.toString())
+                                            onDismissExportDialog()
+                                        }
                                     }
                                 },
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = Theme.colors.primary
+                                colors = ButtonDefaults.elevatedButtonColors(
+                                    containerColor = Theme.colors.primary,
+                                    contentColor = Theme.colors.onPrimary
+                                ),
+                                shape = Theme.shapes.largeShape,
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = Theme.colors.outline
                                 )
                             ) {
+
                                 Text(
                                     text = stringResource(R.string.exporter_label_view),
                                     style = Theme.typefaces.bodyLarge
                                 )
+
                             }
 
                         }
@@ -280,8 +309,13 @@ fun ExportDialog(
 private fun createAnimatedImageDrawableFromImageDecoder(
     context: Context,
     uri: Uri
-): AnimatedImageDrawable {
+): AnimatedImageDrawable? {
     val source = ImageDecoder.createSource(context.contentResolver, uri)
     val drawable = ImageDecoder.decodeDrawable(source)
-    return drawable as AnimatedImageDrawable
+    return try {
+        drawable as AnimatedImageDrawable
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
 }

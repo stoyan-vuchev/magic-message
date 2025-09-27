@@ -57,7 +57,7 @@ import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 fun GridCreationItem(
     modifier: Modifier = Modifier,
     creation: CreationModel,
-    onCreationClick: (CreationModel) -> Unit,
+    onCreationClick: (CreationModel, IntSize) -> Unit,
     onCreationLongClick: (CreationModel, IntSize) -> Unit
 ) {
 
@@ -97,7 +97,7 @@ fun GridCreationItem(
             .clip(shape = Theme.shapes.smallShape)
             .clipToBounds()
             .combinedClickable(
-                onClick = remember { { onCreationClick(creation) } },
+                onClick = remember { { onCreationClick(creation, canvasSize) } },
                 onLongClick = remember { { onCreationLongClick(creation, canvasSize) } },
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),

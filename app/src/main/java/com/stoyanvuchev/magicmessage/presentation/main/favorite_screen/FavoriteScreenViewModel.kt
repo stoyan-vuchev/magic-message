@@ -30,7 +30,6 @@ import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.domain.usecase.creation.CreationUseCases
 import com.stoyanvuchev.magicmessage.framework.service.ExportDataHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +37,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,13 +45,13 @@ class FavoriteScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state: StateFlow<FavoriteScreenState> = combine(
-        flow = useCases.getExportedUseCase(onlyFavorite = true),
-        flow2 = useCases.getDraftsUseCase(onlyFavorite = true)
-    ) { exported, drafted ->
+        useCases.getDraftsUseCase(onlyFavorite = true),
+        useCases.getExportedUseCase(onlyFavorite = true)
+    ) { flows ->
 
         FavoriteScreenState(
-            draftedCreationsList = drafted,
-            exportedCreationsList = exported
+            draftedCreationsList = flows[0],
+            exportedCreationsList = flows[1]
         )
 
     }.stateIn(
@@ -70,25 +68,28 @@ class FavoriteScreenViewModel @Inject constructor(
 
     fun onUIAction(action: FavoriteScreenUIAction) {
         when (action) {
+            is FavoriteScreenUIAction.MoveToTrash -> moveToTrash(action)
             is FavoriteScreenUIAction.RemoveFromFavorite -> removeFromFavorite(action)
             is FavoriteScreenUIAction.AddToFavorite -> addToFavorite(action)
             is FavoriteScreenUIAction.ExportGif -> exportGif(action)
         }
     }
 
+    private fun moveToTrash(action: FavoriteScreenUIAction.MoveToTrash) {
+        viewModelScope.launch {
+            useCases.moveCreationToTrash(action.creationId)
+        }
+    }
+
     private fun removeFromFavorite(action: FavoriteScreenUIAction.RemoveFromFavorite) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                useCases.removeAsFavoriteUseCase(action.creationId)
-            }
+            useCases.removeAsFavoriteUseCase(action.creationId)
         }
     }
 
     private fun addToFavorite(action: FavoriteScreenUIAction.AddToFavorite) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                useCases.markAsFavoriteUseCase(action.creationId)
-            }
+            useCases.markAsFavoriteUseCase(action.creationId)
         }
     }
 

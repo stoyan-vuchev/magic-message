@@ -22,18 +22,31 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.core.ui.effect
 
-import androidx.compose.runtime.Stable
-import kotlinx.serialization.Serializable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.unit.dp
 
-@Stable
-@Serializable
-data class CreationModel(
-    val id: Long?,
-    val createdAt: Long,
-    val isDraft: Boolean,
-    val isFavorite: Boolean,
-    @Stable val drawConfiguration: DrawConfiguration,
-    @Stable val drawingSnapshot: DrawingSnapshot
-)
+fun Modifier.defaultLightWeightBlur(
+    isApplied: Boolean
+): Modifier {
+    return composed {
+
+        val radius by animateDpAsState(
+            targetValue = if (isApplied) 16.dp else 0.dp,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            )
+        )
+
+        blur(radius = radius)
+
+    }
+}

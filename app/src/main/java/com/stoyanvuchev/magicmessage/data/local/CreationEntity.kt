@@ -39,6 +39,7 @@ data class CreationEntity(
     val id: Long? = null,
 
     val createdAt: Long = 0L,
+    val isDeleted: Boolean = false,
     val isDraft: Boolean = true,
     val isFavorite: Boolean = false,
 

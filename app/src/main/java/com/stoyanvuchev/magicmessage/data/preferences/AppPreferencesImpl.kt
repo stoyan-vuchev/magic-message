@@ -32,7 +32,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
 import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -58,9 +57,12 @@ class AppPreferencesImpl @Inject constructor(
 
     // Theme Mode
 
-    override fun getThemeMode(): Flow<ThemeMode> = dataStore.data.map {
-        val json = it[THEME_MODE_KEY]
-        json?.let { mode -> Json.decodeFromString<ThemeMode?>(mode) } ?: ThemeMode.Dark
+    override fun getThemeMode(): Flow<ThemeMode> {
+        return dataStore.data.map {
+            it[THEME_MODE_KEY]?.let { mode ->
+                Json.decodeFromString<ThemeMode?>(mode)
+            } ?: ThemeMode.System
+        }
     }
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {

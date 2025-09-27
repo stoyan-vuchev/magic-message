@@ -34,12 +34,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
@@ -104,9 +104,7 @@ fun DrawScreenDialogBGLayerItem(
 
                 Box(
                     modifier = Modifier
-                        .defaultMinSize(48.dp)
-                        .weight(1f)
-                        .aspectRatio(1f)
+                        .size(48.dp)
                         .clickable(
                             onClick = remember {
                                 {
@@ -187,9 +185,7 @@ fun DrawScreenDialogBGLayerItem(
 
                 Box(
                     modifier = Modifier
-                        .defaultMinSize(64.dp)
-                        .weight(1f)
-                        .aspectRatio(1f)
+                        .size(72.dp)
                         .clickable(
                             onClick = remember {
                                 {
@@ -218,12 +214,14 @@ fun DrawScreenDialogBGLayerItem(
                         modifier = Modifier
                             .padding(8.dp)
                             .fillMaxSize()
+                            .clip(Theme.shapes.smallShape)
                             .border(
                                 width = 1.dp,
                                 color = Theme.colors.onSurfaceElevationLow.copy(.5f),
                                 shape = Theme.shapes.smallShape
                             )
                             .padding(3.dp)
+                            .clip(Theme.shapes.verySmallShape)
                             .background(
                                 brush = Brush.linearGradient(
                                     colors = layer.colors,

@@ -25,15 +25,16 @@
 package com.stoyanvuchev.magicmessage.presentation.main.transitions
 
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
 import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
 import com.stoyanvuchev.magicmessage.presentation.main.MainScreen
 
 fun NavBackStackEntry.safeRoute(): NavigationScreen? {
-    return when (destination.route) {
-        MainScreen.Home::class.qualifiedName -> MainScreen.Home
-        MainScreen.Favorite::class.qualifiedName -> MainScreen.Favorite
-        MainScreen.Menu::class.qualifiedName -> MainScreen.Menu
-        MainScreen.Draw::class.qualifiedName -> MainScreen.Draw(null)
+    return when {
+        destination.hasRoute<MainScreen.Home>() -> MainScreen.Home
+        destination.hasRoute<MainScreen.Favorite>() -> MainScreen.Favorite
+        destination.hasRoute<MainScreen.Menu>() -> MainScreen.Menu
+        destination.hasRoute<MainScreen.Draw>() -> MainScreen.Draw(null)
         else -> null
     }
 }

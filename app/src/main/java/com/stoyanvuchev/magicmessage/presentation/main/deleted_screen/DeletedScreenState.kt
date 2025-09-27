@@ -22,18 +22,13 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain.model
+package com.stoyanvuchev.magicmessage.presentation.main.deleted_screen
 
 import androidx.compose.runtime.Stable
-import kotlinx.serialization.Serializable
+import com.stoyanvuchev.magicmessage.domain.model.CreationModel
 
 @Stable
-@Serializable
-data class CreationModel(
-    val id: Long?,
-    val createdAt: Long,
-    val isDraft: Boolean,
-    val isFavorite: Boolean,
-    @Stable val drawConfiguration: DrawConfiguration,
-    @Stable val drawingSnapshot: DrawingSnapshot
+data class DeletedScreenState(
+    @Stable val draftedCreationsList: List<CreationModel> = emptyList(),
+    @Stable val exportedCreationsList: List<CreationModel> = emptyList()
 )

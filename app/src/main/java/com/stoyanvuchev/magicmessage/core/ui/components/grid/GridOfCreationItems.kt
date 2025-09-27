@@ -29,6 +29,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
@@ -38,12 +39,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.core.ui.components.EmptyBottomSpacer
+import com.stoyanvuchev.magicmessage.core.ui.effect.defaultLightWeightBlur
 import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
 import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun GridOfCreationItems(
+    isLightWeightBlurApplied: Boolean,
     lazyGridState: LazyGridState,
     innerPadding: PaddingValues,
     hazeSourceKey: String,
@@ -56,7 +59,9 @@ fun GridOfCreationItems(
             .hazeSource(
                 state = LocalHazeState.current,
                 key = hazeSourceKey
-            ),
+            )
+            .defaultLightWeightBlur(isApplied = isLightWeightBlurApplied)
+            .padding(horizontal = 24.dp),
         contentPadding = innerPadding,
         state = lazyGridState,
         columns = GridCells.Fixed(2),

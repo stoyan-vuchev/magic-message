@@ -27,6 +27,8 @@ package com.stoyanvuchev.magicmessage.presentation.main.transitions
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Stable
 import androidx.navigation.NavBackStackEntry
 import com.stoyanvuchev.magicmessage.core.ui.navigation.NavigationScreen
@@ -58,6 +60,10 @@ object FavoriteNavigationTransitions : NavigationTransitions {
                 )
             }
 
+            initialRoute is MainScreen.Favorite && targetRoute is MainScreen.Draw -> {
+                fadeIn()
+            }
+
             else -> DefaultTransitions.Enter.fadeInWithScaleIn(
                 initialScale = DefaultTransitions.INITIAL_SCALE
             )
@@ -84,6 +90,10 @@ object FavoriteNavigationTransitions : NavigationTransitions {
                     scope = scope,
                     slideDirection = AnimatedContentTransitionScope.SlideDirection.Start
                 )
+            }
+
+            initialRoute is MainScreen.Favorite && targetRoute is MainScreen.Draw -> {
+                fadeOut()
             }
 
             else -> DefaultTransitions.Exit.fadeOutWithScaleOut(
@@ -114,6 +124,10 @@ object FavoriteNavigationTransitions : NavigationTransitions {
                 )
             }
 
+            initialRoute is MainScreen.Draw && targetRoute is MainScreen.Favorite -> {
+                fadeIn()
+            }
+
             else -> DefaultTransitions.Enter.fadeInWithScaleIn(
                 initialScale = DefaultTransitions.INITIAL_POP_SCALE
             )
@@ -140,6 +154,10 @@ object FavoriteNavigationTransitions : NavigationTransitions {
                     scope = scope,
                     slideDirection = AnimatedContentTransitionScope.SlideDirection.Start
                 )
+            }
+
+            initialRoute is MainScreen.Favorite && targetRoute is MainScreen.Draw -> {
+                fadeOut()
             }
 
             else -> DefaultTransitions.Exit.fadeOutWithScaleOut(
