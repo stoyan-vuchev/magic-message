@@ -27,12 +27,14 @@ package com.stoyanvuchev.magicmessage.presentation
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 
 @Stable
 data class MainActivityState(
     val isBoardingComplete: Boolean? = null,
-    val themeMode: ThemeMode = ThemeMode.Dark,
+    val themeMode: ThemeMode = ThemeMode.DARK,
+    val colorScheme: ColorScheme = ColorScheme.BLUE,
     val exporterState: ExporterState = ExporterState.IDLE,
     val exporterProgress: Int = 0,
     val exportedUri: Uri? = null

@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.theme.color
+package com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 
-object LightColorPaletteTokens : ColorPaletteTokens {
+object BlueLightColorPaletteTokens : ColorPaletteTokens {
+
+    override val scheme: ColorScheme get() = ColorScheme.BLUE
 
     override val primary: Color get() = Color(0xFF007BD1)
     override val onPrimary: Color get() = Color(0xFFFFFFFF)
@@ -48,7 +50,9 @@ object LightColorPaletteTokens : ColorPaletteTokens {
 
 }
 
-object DarkColorPaletteTokens : ColorPaletteTokens {
+object BlueDarkColorPaletteTokens : ColorPaletteTokens {
+
+    override val scheme: ColorScheme get() = ColorScheme.BLUE
 
     override val primary: Color get() = Color(0xFF007BD1)
     override val onPrimary: Color get() = Color(0xFFFFFFFF)
@@ -67,19 +71,4 @@ object DarkColorPaletteTokens : ColorPaletteTokens {
 
     override val outline: Color get() = Color(0x14FFFFFF)
 
-}
-
-@Immutable
-interface ColorPaletteTokens {
-    val primary: Color
-    val onPrimary: Color
-    val surfaceElevationLow: Color
-    val onSurfaceElevationLow: Color
-    val surfaceElevationMedium: Color
-    val onSurfaceElevationMedium: Color
-    val surfaceElevationHigh: Color
-    val onSurfaceElevationHigh: Color
-    val error: Color
-    val onError: Color
-    val outline: Color
 }

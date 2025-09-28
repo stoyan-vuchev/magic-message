@@ -27,9 +27,13 @@ package com.stoyanvuchev.magicmessage.core.ui.theme.color
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.BlueDarkColorPaletteTokens
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.BlueLightColorPaletteTokens
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.ColorPaletteTokens
 
 @Stable
 data class ColorPalette(
+    val scheme: ColorScheme,
     val primary: Color,
     val onPrimary: Color,
     val surfaceElevationLow: Color,
@@ -44,58 +48,32 @@ data class ColorPalette(
 )
 
 @Stable
-fun lightColorPalette(
-    primary: Color = LightColorPaletteTokens.primary,
-    onPrimary: Color = LightColorPaletteTokens.onPrimary,
-    surfaceElevationLow: Color = LightColorPaletteTokens.surfaceElevationLow,
-    onSurfaceElevationLow: Color = LightColorPaletteTokens.onSurfaceElevationLow,
-    surfaceElevationMedium: Color = LightColorPaletteTokens.surfaceElevationMedium,
-    onSurfaceElevationMedium: Color = LightColorPaletteTokens.onSurfaceElevationMedium,
-    surfaceElevationHigh: Color = LightColorPaletteTokens.surfaceElevationHigh,
-    onSurfaceElevationHigh: Color = LightColorPaletteTokens.onSurfaceElevationHigh,
-    error: Color = LightColorPaletteTokens.error,
-    onError: Color = LightColorPaletteTokens.onError,
-    outline: Color = LightColorPaletteTokens.outline
+fun colorPalette(
+    tokens: ColorPaletteTokens
 ) = ColorPalette(
-    primary = primary,
-    onPrimary = onPrimary,
-    surfaceElevationLow = surfaceElevationLow,
-    onSurfaceElevationLow = onSurfaceElevationLow,
-    surfaceElevationMedium = surfaceElevationMedium,
-    onSurfaceElevationMedium = onSurfaceElevationMedium,
-    surfaceElevationHigh = surfaceElevationHigh,
-    onSurfaceElevationHigh = onSurfaceElevationHigh,
-    error = error,
-    onError = onError,
-    outline = outline
+    scheme = tokens.scheme,
+    primary = tokens.primary,
+    onPrimary = tokens.onPrimary,
+    surfaceElevationLow = tokens.surfaceElevationLow,
+    onSurfaceElevationLow = tokens.onSurfaceElevationLow,
+    surfaceElevationMedium = tokens.surfaceElevationMedium,
+    onSurfaceElevationMedium = tokens.onSurfaceElevationMedium,
+    surfaceElevationHigh = tokens.surfaceElevationHigh,
+    onSurfaceElevationHigh = tokens.onSurfaceElevationHigh,
+    error = tokens.error,
+    onError = tokens.onError,
+    outline = tokens.outline
 )
 
 @Stable
-fun darkColorPalette(
-    primary: Color = DarkColorPaletteTokens.primary,
-    onPrimary: Color = DarkColorPaletteTokens.onPrimary,
-    surfaceElevationLow: Color = DarkColorPaletteTokens.surfaceElevationLow,
-    onSurfaceElevationLow: Color = DarkColorPaletteTokens.onSurfaceElevationLow,
-    surfaceElevationMedium: Color = DarkColorPaletteTokens.surfaceElevationMedium,
-    onSurfaceElevationMedium: Color = DarkColorPaletteTokens.onSurfaceElevationMedium,
-    surfaceElevationHigh: Color = DarkColorPaletteTokens.surfaceElevationHigh,
-    onSurfaceElevationHigh: Color = DarkColorPaletteTokens.onSurfaceElevationHigh,
-    error: Color = DarkColorPaletteTokens.error,
-    onError: Color = DarkColorPaletteTokens.onError,
-    outline: Color = DarkColorPaletteTokens.outline
-) = ColorPalette(
-    primary = primary,
-    onPrimary = onPrimary,
-    surfaceElevationLow = surfaceElevationLow,
-    onSurfaceElevationLow = onSurfaceElevationLow,
-    surfaceElevationMedium = surfaceElevationMedium,
-    onSurfaceElevationMedium = onSurfaceElevationMedium,
-    surfaceElevationHigh = surfaceElevationHigh,
-    onSurfaceElevationHigh = onSurfaceElevationHigh,
-    error = error,
-    onError = onError,
-    outline = outline
-)
+fun getThemedColorPalette(
+    darkTheme: Boolean,
+    lightThemeTokens: ColorPaletteTokens = BlueLightColorPaletteTokens,
+    darkThemeTokens: ColorPaletteTokens = BlueDarkColorPaletteTokens
+): ColorPalette {
+    return if (darkTheme) colorPalette(darkThemeTokens)
+    else colorPalette(lightThemeTokens)
+}
 
-val LocalColorPalette = compositionLocalOf { lightColorPalette() }
+val LocalColorPalette = compositionLocalOf { colorPalette(BlueLightColorPaletteTokens) }
 val LocalContentColor = compositionLocalOf { Color.Unspecified }

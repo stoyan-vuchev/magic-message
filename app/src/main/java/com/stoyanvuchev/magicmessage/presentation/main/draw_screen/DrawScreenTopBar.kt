@@ -90,8 +90,7 @@ fun DrawScreenTopBar(
         AuraButton(
             size = 40.dp,
             onClick = { onUIAction(DrawScreenUIAction.Export(messageId = state.messageId)) },
-            isGlowVisible = isGlowVisible,
-            glowColor = state.drawConfiguration.color
+            isGlowVisible = isGlowVisible
         ) {
 
             Icon(

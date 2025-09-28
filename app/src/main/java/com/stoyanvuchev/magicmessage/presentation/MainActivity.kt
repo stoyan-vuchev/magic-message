@@ -48,7 +48,8 @@ class MainActivity : ComponentActivity() {
             val state by viewModel.state.collectAsStateWithLifecycle()
 
             MagicMessageTheme(
-                themeMode = state.themeMode
+                themeMode = state.themeMode,
+                colorScheme = state.colorScheme
             ) {
 
                 AppNavHost(

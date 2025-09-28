@@ -55,6 +55,7 @@ fun ColorPalette.asAnimatedColorPalette(): ColorPalette {
     val animatedOutline by animateColor(this.outline)
 
     return ColorPalette(
+        scheme = this.scheme,
         primary = animatedPrimary,
         onPrimary = animatedOnPrimary,
         surfaceElevationLow = animatedSurfaceElevationLow,

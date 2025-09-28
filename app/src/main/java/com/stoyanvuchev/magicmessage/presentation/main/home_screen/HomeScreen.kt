@@ -136,7 +136,7 @@ fun HomeScreen(
                 ) {
 
                     Icon(
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(26.dp),
                         painter = painterResource(R.drawable.pencil_icon),
                         contentDescription = null
                     )

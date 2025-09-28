@@ -27,7 +27,6 @@ package com.stoyanvuchev.magicmessage.core.ui.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import com.stoyanvuchev.magicmessage.core.ui.ext.LocalHazeState
@@ -35,8 +34,7 @@ import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalContentColor
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.asAnimatedColorPalette
-import com.stoyanvuchev.magicmessage.core.ui.theme.color.darkColorPalette
-import com.stoyanvuchev.magicmessage.core.ui.theme.color.lightColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.getThemedColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.shape.LocalShapes
 import com.stoyanvuchev.magicmessage.core.ui.theme.shape.Shapes
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTextStyle
@@ -49,8 +47,8 @@ import dev.chrisbanes.haze.rememberHazeState
 
 @Composable
 fun UIWrapper(
-    themeMode: ThemeMode = ThemeMode.System,
-    colorPalette: ColorPalette = getDefaultColorPalette(isInDarkThemeMode(themeMode)),
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
+    colorPalette: ColorPalette = getThemedColorPalette(isInDarkThemeMode(themeMode)),
     animateColorPalette: Boolean = true,
     typefaces: Typefaces = Typefaces.Default,
     shapes: Shapes = Shapes.Default,
@@ -87,10 +85,4 @@ fun UIWrapper(
         content = content
     )
 
-}
-
-@Stable
-fun getDefaultColorPalette(darkTheme: Boolean): ColorPalette {
-    return (if (darkTheme) darkColorPalette()
-    else lightColorPalette())
 }

@@ -28,7 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.toColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.shape.LocalShapes
 import com.stoyanvuchev.magicmessage.core.ui.theme.shape.Shapes
 import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTypefaces
@@ -37,9 +39,11 @@ import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.Typefaces
 @Composable
 fun MagicMessageTheme(
     themeMode: ThemeMode = LocalThemeMode.current,
+    colorScheme: ColorScheme = ColorScheme.BLUE,
     content: @Composable () -> Unit
 ) = UIWrapper(
     themeMode = themeMode,
+    colorPalette = colorScheme.toColorPalette(isInDarkThemeMode(themeMode)),
     content = content
 )
 

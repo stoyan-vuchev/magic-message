@@ -47,6 +47,7 @@ class MenuScreenViewModel @Inject constructor(
     fun onUIAction(action: MenuScreenUIAction) {
         when (action) {
             is MenuScreenUIAction.SetThemeMode -> setThemeMode(action)
+            is MenuScreenUIAction.SetColorScheme -> setColorScheme(action)
         }
     }
 
@@ -58,6 +59,14 @@ class MenuScreenViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 appPreferences.setThemeMode(action.themeMode)
+            }
+        }
+    }
+
+    private fun setColorScheme(action: MenuScreenUIAction.SetColorScheme) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                appPreferences.setColorScheme(action.colorScheme)
             }
         }
     }

@@ -45,6 +45,8 @@ import com.stoyanvuchev.magicmessage.core.ui.components.list.ListOptionItem
 import com.stoyanvuchev.magicmessage.core.ui.components.list.listOfOptionItemsSelection
 import com.stoyanvuchev.magicmessage.core.ui.etc.UIString
 import com.stoyanvuchev.magicmessage.core.ui.theme.LocalThemeMode
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.label
 import com.stoyanvuchev.magicmessage.core.ui.theme.icon
 import com.stoyanvuchev.magicmessage.core.ui.theme.label
 
@@ -126,7 +128,8 @@ fun LazyListScope.menuScreenPersonalizationSection(
         item(key = "${categoryKey}_color_scheme") {
 
             val colorSchemeKey = remember { "color_scheme" }
-            val onSharedKeyLambda = remember { { /*TODO*/ } }
+            val onSharedKeyLambda = remember { { onSharedKey(colorSchemeKey) } }
+            val scheme = LocalColorPalette.current.scheme
 
             AnimatedVisibility(
                 modifier = Modifier
@@ -158,7 +161,7 @@ fun LazyListScope.menuScreenPersonalizationSection(
                                     animatedVisibilityScope = this@AnimatedVisibility,
                                     boundsTransform = boundsTransform,
                                 ),
-                                text = stringResource(R.string.color_scheme)
+                                text = stringResource(R.string.color_scheme) + ": " + scheme.label()
                             )
 
                         },
