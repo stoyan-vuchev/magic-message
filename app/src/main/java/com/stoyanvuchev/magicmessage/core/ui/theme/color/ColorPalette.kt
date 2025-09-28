@@ -24,12 +24,18 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.theme.color
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.res.colorResource
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.BlueDarkColorPaletteTokens
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.BlueLightColorPaletteTokens
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.ColorPaletteTokens
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.MonoDarkColorPaletteTokens
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.MonoLightColorPaletteTokens
 
 @Stable
 data class ColorPalette(
@@ -73,6 +79,41 @@ fun getThemedColorPalette(
 ): ColorPalette {
     return if (darkTheme) colorPalette(darkThemeTokens)
     else colorPalette(lightThemeTokens)
+}
+
+@Stable
+@Composable
+fun getDynamicColorPalette(
+    darkTheme: Boolean
+): ColorPalette {
+
+    val primary = colorResource(android.R.color.system_accent1_500)
+    val primaryComposite = remember(primary) { primary.copy(alpha = .04f) }
+    val onPrimary = remember { Color.White }
+    val tokens = remember(darkTheme) {
+        if (darkTheme) MonoDarkColorPaletteTokens
+        else MonoLightColorPaletteTokens
+    }
+
+    val surfaceLow = primaryComposite.compositeOver(tokens.surfaceElevationLow)
+    val surfaceMedium = primaryComposite.compositeOver(tokens.surfaceElevationMedium)
+    val surfaceHigh = primaryComposite.compositeOver(tokens.surfaceElevationHigh)
+
+    return ColorPalette(
+        scheme = ColorScheme.DYNAMIC,
+        primary = primary,
+        onPrimary = onPrimary,
+        surfaceElevationLow = surfaceLow,
+        onSurfaceElevationLow = tokens.onSurfaceElevationLow,
+        surfaceElevationMedium = surfaceMedium,
+        onSurfaceElevationMedium = tokens.onSurfaceElevationMedium,
+        surfaceElevationHigh = surfaceHigh,
+        onSurfaceElevationHigh = tokens.onSurfaceElevationHigh,
+        error = tokens.error,
+        onError = tokens.onError,
+        outline = tokens.outline
+    )
+
 }
 
 val LocalColorPalette = compositionLocalOf { colorPalette(BlueLightColorPaletteTokens) }

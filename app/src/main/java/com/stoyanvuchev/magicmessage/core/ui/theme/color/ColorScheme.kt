@@ -33,9 +33,10 @@ import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.BlueLightColorPa
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.MonoDarkColorPaletteTokens
 import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.MonoLightColorPaletteTokens
 
-enum class ColorScheme { MONO, BLUE }
+enum class ColorScheme { MONO, BLUE, DYNAMIC }
 
 @Stable
+@Composable
 fun ColorScheme.toColorPalette(
     darkTheme: Boolean
 ): ColorPalette = when (this) {
@@ -52,6 +53,8 @@ fun ColorScheme.toColorPalette(
         darkThemeTokens = MonoDarkColorPaletteTokens
     )
 
+    ColorScheme.DYNAMIC -> getDynamicColorPalette(darkTheme)
+
 }
 
 @Composable
@@ -59,5 +62,6 @@ fun ColorScheme.label() = stringResource(
     when (this) {
         ColorScheme.BLUE -> R.string.color_scheme_blue
         ColorScheme.MONO -> R.string.color_scheme_mono
+        ColorScheme.DYNAMIC -> R.string.color_scheme_dynamic
     }
 )

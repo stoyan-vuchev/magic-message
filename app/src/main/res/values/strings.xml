@@ -76,4 +76,5 @@
     <string name="permission_screen_change_settings">Change Settings</string>
     <string name="color_scheme_blue">Blue</string>
     <string name="color_scheme_mono">Mono</string>
+    <string name="color_scheme_dynamic">Dynamic</string>
 </resources>
