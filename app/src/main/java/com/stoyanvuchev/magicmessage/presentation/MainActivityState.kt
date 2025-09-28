@@ -33,7 +33,7 @@ import com.stoyanvuchev.magicmessage.framework.export.ExporterState
 @Stable
 data class MainActivityState(
     val isBoardingComplete: Boolean? = null,
-    val themeMode: ThemeMode = ThemeMode.DARK,
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val colorScheme: ColorScheme = ColorScheme.BLUE,
     val exporterState: ExporterState = ExporterState.IDLE,
     val exporterProgress: Int = 0,

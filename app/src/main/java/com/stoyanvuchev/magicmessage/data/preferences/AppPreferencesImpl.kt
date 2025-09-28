@@ -78,7 +78,7 @@ class AppPreferencesImpl @Inject constructor(
         return dataStore.data.map {
             it[COLOR_SCHEME_KEY]?.let { scheme ->
                 Json.decodeFromString<ColorScheme?>(scheme)
-            } ?: ColorScheme.MONO
+            } ?: ColorScheme.DYNAMIC
         }
     }
 
