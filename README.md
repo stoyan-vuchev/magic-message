@@ -25,11 +25,15 @@ Magic Message transforms your doodles into animated works of art. Whether it’s
 glowing strokes, or particle effects that burst with energy, this app gives you the freedom to turn
 imagination into motion.
 
+<br/>
+
 <div style="display: flex; gap: 8px;">
   <img src="/content/app_home_screen.jpg" alt="" width="175px" />
   <img src="/content/draw_screen_bg_layer.jpg" alt="" width="175px" />
   <img src="/content/draw_screen_drawing.jpg" alt="" width="175px" />
 </div>
+
+<br/>
 
 🎨 Draw Freely
 
