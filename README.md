@@ -67,7 +67,7 @@ imagination into motion.
 
 ## License
 
-Magic Message is Open Source and licenced under the MIT License.
+Magic Message is Open Source and licensed under the MIT License.
 
 ```
 MIT License
