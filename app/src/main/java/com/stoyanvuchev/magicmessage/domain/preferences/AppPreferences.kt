@@ -25,6 +25,7 @@
 package com.stoyanvuchev.magicmessage.domain.preferences
 
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 import kotlinx.coroutines.flow.Flow
 
 interface AppPreferences {
@@ -34,5 +35,8 @@ interface AppPreferences {
 
     fun getThemeMode(): Flow<ThemeMode>
     suspend fun setThemeMode(themeMode: ThemeMode)
+
+    fun getColorScheme(): Flow<ColorScheme>
+    suspend fun setColorScheme(colorScheme: ColorScheme)
 
 }

@@ -28,6 +28,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
 import com.stoyanvuchev.magicmessage.framework.export.ExporterProgressObserver
 import com.stoyanvuchev.magicmessage.framework.export.ExporterState
@@ -47,6 +48,7 @@ class MainActivityViewModel @Inject constructor(
     val state = combine(
         appPreferences.getIsBoardingComplete(),
         appPreferences.getThemeMode(),
+        appPreferences.getColorScheme(),
         progressObserver.exporterState,
         progressObserver.progress,
         progressObserver.exportedUri
@@ -55,9 +57,10 @@ class MainActivityViewModel @Inject constructor(
         MainActivityState(
             isBoardingComplete = flows[0] as Boolean?,
             themeMode = flows[1] as ThemeMode,
-            exporterState = flows[2] as ExporterState,
-            exporterProgress = flows[3] as Int,
-            exportedUri = flows[4] as Uri?
+            colorScheme = flows[2] as ColorScheme,
+            exporterState = flows[3] as ExporterState,
+            exporterProgress = flows[4] as Int,
+            exportedUri = flows[5] as Uri?
         )
 
     }.stateIn(

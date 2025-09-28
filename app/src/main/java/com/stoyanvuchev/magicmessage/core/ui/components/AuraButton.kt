@@ -24,6 +24,7 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateFloatAsState
@@ -71,6 +72,9 @@ fun AuraButton(
     hazeState: HazeState = LocalHazeState.current,
     isGlowVisible: Boolean = true,
     glowColor: Color = Theme.colors.primary,
+    onGlowColor: Color = Theme.colors.onPrimary,
+    inactiveColor: Color = Theme.colors.surfaceElevationMedium,
+    onInactiveColor: Color = Theme.colors.onSurfaceElevationMedium,
     size: Dp = 48.dp,
     content: @Composable (() -> Unit)
 ) {
@@ -115,6 +119,16 @@ fun AuraButton(
         animationSpec = tween(durationMillis = 360)
     )
 
+    val containerColor by animateColorAsState(
+        targetValue = if (isGlowVisible) glowColor
+        else inactiveColor
+    )
+
+    val contentColor by animateColorAsState(
+        targetValue = if (isGlowVisible) onGlowColor
+        else onInactiveColor
+    )
+
     Box(
         modifier = Modifier
             .size(size)
@@ -135,7 +149,7 @@ fun AuraButton(
             .clip(CircleShape)
             .defaultHazeEffect(hazeState = hazeState)
             .background(
-                color = glowColor.copy(alpha.coerceIn(0f, .25f)),
+                color = containerColor,
                 shape = CircleShape
             )
             .border(
@@ -153,7 +167,7 @@ fun AuraButton(
     ) {
 
         CompositionLocalProvider(
-            LocalContentColor provides Theme.colors.onSurfaceElevationHigh,
+            LocalContentColor provides contentColor,
             content = content
         )
 

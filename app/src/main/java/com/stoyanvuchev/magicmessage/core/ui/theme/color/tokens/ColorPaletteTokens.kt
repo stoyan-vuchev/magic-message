@@ -22,44 +22,24 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.theme
+package com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import com.stoyanvuchev.magicmessage.R
-
-enum class ThemeMode { SYSTEM, LIGHT, DARK }
-
-val LocalThemeMode = compositionLocalOf { ThemeMode.SYSTEM }
+import androidx.compose.ui.graphics.Color
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 
 @Stable
-@Composable
-fun isInDarkThemeMode(
-    themeMode: ThemeMode = LocalThemeMode.current
-) = when (themeMode) {
-    ThemeMode.SYSTEM -> isSystemInDarkTheme()
-    ThemeMode.LIGHT -> false
-    ThemeMode.DARK -> true
+interface ColorPaletteTokens {
+    val scheme: ColorScheme
+    val primary: Color
+    val onPrimary: Color
+    val surfaceElevationLow: Color
+    val onSurfaceElevationLow: Color
+    val surfaceElevationMedium: Color
+    val onSurfaceElevationMedium: Color
+    val surfaceElevationHigh: Color
+    val onSurfaceElevationHigh: Color
+    val error: Color
+    val onError: Color
+    val outline: Color
 }
-
-@Composable
-fun ThemeMode.label() = stringResource(
-    when (this) {
-        ThemeMode.SYSTEM -> R.string.theme_mode_system
-        ThemeMode.DARK -> R.string.theme_mode_dark
-        ThemeMode.LIGHT -> R.string.theme_mode_light
-    }
-)
-
-@Composable
-fun ThemeMode.icon() = painterResource(
-    when (this) {
-        ThemeMode.SYSTEM -> R.drawable.system_theme_mode_outlined
-        ThemeMode.DARK -> R.drawable.dark_theme_mode_outlined
-        ThemeMode.LIGHT -> R.drawable.light_theme_mode_outlined
-    }
-)

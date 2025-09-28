@@ -30,8 +30,14 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -45,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.components.EmptyBottomSpacer
 import com.stoyanvuchev.magicmessage.core.ui.components.RowSelectionItem
@@ -55,7 +62,12 @@ import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
 import com.stoyanvuchev.magicmessage.core.ui.theme.LocalThemeMode
 import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.label
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.toColorPalette
 import com.stoyanvuchev.magicmessage.core.ui.theme.icon
+import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
 import com.stoyanvuchev.magicmessage.core.ui.theme.label
 import com.stoyanvuchev.magicmessage.core.ui.transition.defaultBoundsTransformation
 
@@ -148,16 +160,21 @@ fun MenuScreen(
 
             val label by rememberUpdatedState(
                 when (sharedKey) {
+
                     "theme_mode" -> {
                         stringResource(R.string.theme_mode) +
                                 ": " + LocalThemeMode.current.label()
                     }
+
                     "color_scheme" -> {
-                        stringResource(R.string.color_scheme)
+                        stringResource(R.string.color_scheme) +
+                                ": " + LocalColorPalette.current.scheme.label()
                     }
+
                     "trash" -> stringResource(R.string.trash_label)
                     "about" -> stringResource(R.string.about_label)
                     else -> stringResource(R.string.app_name)
+
                 }
             )
 
@@ -212,19 +229,45 @@ fun MenuScreen(
 
                     "color_scheme" -> {
 
-                        RowSelectionItem(
-                            onClick = remember { {} },
-                            selected = true,
-                            label = { Text(text = "Default") },
-                            icon = {
+                        ColorScheme.entries.forEach { colorScheme ->
 
-                                Icon(
-                                    painter = painterResource(R.drawable.color_scheme_default_outlined),
-                                    contentDescription = null
-                                )
+                            val darkTheme = isInDarkThemeMode()
+                            val color by rememberUpdatedState(
+                                colorScheme.toColorPalette(darkTheme).primary
+                            )
 
-                            }
-                        )
+                            RowSelectionItem(
+                                onClick = remember {
+                                    {
+                                        onUIAction(
+                                            MenuScreenUIAction.SetColorScheme(colorScheme)
+                                        )
+                                    }
+                                },
+                                selected = colorScheme == LocalColorPalette.current.scheme,
+                                label = { Text(text = colorScheme.label()) },
+                                icon = {
+
+                                    Box(
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .border(
+                                                width = 1.dp,
+                                                color = Theme.colors.onSurfaceElevationLow
+                                                    .copy(.5f),
+                                                shape = CircleShape
+                                            )
+                                            .padding(3.dp)
+                                            .background(
+                                                color = color,
+                                                shape = CircleShape
+                                            )
+                                    )
+
+                                }
+                            )
+
+                        }
 
                     }
 

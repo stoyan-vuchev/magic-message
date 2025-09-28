@@ -26,12 +26,17 @@ package com.stoyanvuchev.magicmessage.presentation.main.menu_screen
 
 import androidx.compose.runtime.Stable
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 
 @Stable
 sealed interface MenuScreenUIAction {
 
     data class SetThemeMode(
         val themeMode: ThemeMode
+    ) : MenuScreenUIAction
+
+    data class SetColorScheme(
+        val colorScheme: ColorScheme
     ) : MenuScreenUIAction
 
 }

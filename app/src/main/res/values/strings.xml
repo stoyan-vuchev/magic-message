@@ -74,4 +74,6 @@
     <string name="permission_screen_notifications_label">Notifications</string>
     <string name="permission_screen_request_permission">Request Permissions</string>
     <string name="permission_screen_change_settings">Change Settings</string>
+    <string name="color_scheme_blue">Blue</string>
+    <string name="color_scheme_mono">Mono</string>
 </resources>

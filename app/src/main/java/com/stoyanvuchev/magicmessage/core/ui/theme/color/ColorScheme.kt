@@ -22,44 +22,42 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.core.ui.theme
+package com.stoyanvuchev.magicmessage.core.ui.theme.color
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.stoyanvuchev.magicmessage.R
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.BlueDarkColorPaletteTokens
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.BlueLightColorPaletteTokens
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.MonoDarkColorPaletteTokens
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.tokens.MonoLightColorPaletteTokens
 
-enum class ThemeMode { SYSTEM, LIGHT, DARK }
-
-val LocalThemeMode = compositionLocalOf { ThemeMode.SYSTEM }
+enum class ColorScheme { MONO, BLUE }
 
 @Stable
-@Composable
-fun isInDarkThemeMode(
-    themeMode: ThemeMode = LocalThemeMode.current
-) = when (themeMode) {
-    ThemeMode.SYSTEM -> isSystemInDarkTheme()
-    ThemeMode.LIGHT -> false
-    ThemeMode.DARK -> true
+fun ColorScheme.toColorPalette(
+    darkTheme: Boolean
+): ColorPalette = when (this) {
+
+    ColorScheme.BLUE -> getThemedColorPalette(
+        darkTheme = darkTheme,
+        lightThemeTokens = BlueLightColorPaletteTokens,
+        darkThemeTokens = BlueDarkColorPaletteTokens
+    )
+
+    ColorScheme.MONO -> getThemedColorPalette(
+        darkTheme = darkTheme,
+        lightThemeTokens = MonoLightColorPaletteTokens,
+        darkThemeTokens = MonoDarkColorPaletteTokens
+    )
+
 }
 
 @Composable
-fun ThemeMode.label() = stringResource(
+fun ColorScheme.label() = stringResource(
     when (this) {
-        ThemeMode.SYSTEM -> R.string.theme_mode_system
-        ThemeMode.DARK -> R.string.theme_mode_dark
-        ThemeMode.LIGHT -> R.string.theme_mode_light
-    }
-)
-
-@Composable
-fun ThemeMode.icon() = painterResource(
-    when (this) {
-        ThemeMode.SYSTEM -> R.drawable.system_theme_mode_outlined
-        ThemeMode.DARK -> R.drawable.dark_theme_mode_outlined
-        ThemeMode.LIGHT -> R.drawable.light_theme_mode_outlined
+        ColorScheme.BLUE -> R.string.color_scheme_blue
+        ColorScheme.MONO -> R.string.color_scheme_mono
     }
 )

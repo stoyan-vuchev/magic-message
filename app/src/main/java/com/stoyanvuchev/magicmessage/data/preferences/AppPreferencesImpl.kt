@@ -30,6 +30,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.stoyanvuchev.magicmessage.core.ui.theme.ThemeMode
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
 import com.stoyanvuchev.magicmessage.domain.preferences.AppPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -43,6 +44,7 @@ class AppPreferencesImpl @Inject constructor(
     companion object {
         private val IS_BOARDING_COMPLETE_KEY = booleanPreferencesKey("is_boarding_complete")
         private val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
+        private val COLOR_SCHEME_KEY = stringPreferencesKey("color_scheme")
     }
 
     // Boarding
@@ -61,13 +63,28 @@ class AppPreferencesImpl @Inject constructor(
         return dataStore.data.map {
             it[THEME_MODE_KEY]?.let { mode ->
                 Json.decodeFromString<ThemeMode?>(mode)
-            } ?: ThemeMode.System
+            } ?: ThemeMode.SYSTEM
         }
     }
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
         val json = Json.encodeToString(themeMode)
         dataStore.edit { it[THEME_MODE_KEY] = json }
+    }
+
+    // Color Scheme
+
+    override fun getColorScheme(): Flow<ColorScheme> {
+        return dataStore.data.map {
+            it[COLOR_SCHEME_KEY]?.let { scheme ->
+                Json.decodeFromString<ColorScheme?>(scheme)
+            } ?: ColorScheme.MONO
+        }
+    }
+
+    override suspend fun setColorScheme(colorScheme: ColorScheme) {
+        val json = Json.encodeToString(colorScheme)
+        dataStore.edit { it[COLOR_SCHEME_KEY] = json }
     }
 
 }
