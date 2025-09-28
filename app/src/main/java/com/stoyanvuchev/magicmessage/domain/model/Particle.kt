@@ -24,16 +24,26 @@
 
 package com.stoyanvuchev.magicmessage.domain.model
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
+import com.stoyanvuchev.magicmessage.domain.serializer.OffsetSerializer
+import kotlinx.serialization.Serializable
 
-@Stable
+@Serializable
 data class Particle(
+
+    @Serializable(with = OffsetSerializer::class)
     var position: Offset,
+
+    @Serializable(with = OffsetSerializer::class)
     var velocity: Offset,
+
+    @Serializable(with = ColorSerializer::class)
     var color: Color,
+
     var size: Float,
     var lifetime: Long,
     var age: Long = 0L
+
 )

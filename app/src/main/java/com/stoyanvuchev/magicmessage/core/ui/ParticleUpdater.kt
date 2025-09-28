@@ -26,14 +26,18 @@ package com.stoyanvuchev.magicmessage.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
 @Composable
-fun ParticleUpdater(controller: DrawingController) {
-    LaunchedEffect(Unit) {
+fun ParticleUpdater(
+    controller: DrawingController,
+    brushEffect: BrushEffect
+) = LaunchedEffect(controller, brushEffect) {
+    if (brushEffect != BrushEffect.NONE) {
         withContext(Dispatchers.Default) {
 
             var lastTime = System.currentTimeMillis()

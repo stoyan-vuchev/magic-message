@@ -22,6 +22,30 @@
  * SOFTWARE.
  */
 
-package com.stoyanvuchev.magicmessage.domain
+package com.stoyanvuchev.magicmessage.framework.service
 
-enum class BrushType { NORMAL, GLOW }
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat
+
+object ExportGifServiceIntent {
+
+    fun start(
+        context: Context,
+        messageId: Long?,
+        width: Int,
+        height: Int
+    ) {
+
+        val intent = Intent(context, ExportGifService::class.java)
+            .apply {
+                putExtra("messageId", messageId)
+                putExtra("width", width)
+                putExtra("height", height)
+            }
+
+        ContextCompat.startForegroundService(context, intent)
+
+    }
+
+}

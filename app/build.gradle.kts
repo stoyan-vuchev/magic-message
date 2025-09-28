@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.dagger.hilt.android)
 }
 
@@ -19,8 +20,8 @@ android {
         minSdk = 33
         targetSdk = 36
 
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 3
+        versionName = "v0.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -72,12 +73,16 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.android.ndk.gif)
+    implementation(libs.kotlinx.serialization.json)
 
     // Fancy UI
     implementation(libs.stoyanVuchev.systemUIBarsTweaker)
     implementation(libs.stoyanVuchev.squircleShape)
     implementation(libs.chrisBanes.haze)
     implementation(libs.coil.compose)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.drawable.painter)
 
     // Local Storage
     implementation(libs.room.runtime)

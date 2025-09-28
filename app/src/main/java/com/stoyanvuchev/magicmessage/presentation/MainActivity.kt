@@ -28,6 +28,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.stoyanvuchev.magicmessage.core.ui.theme.MagicMessageTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,8 +42,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             val navController = rememberNavController()
-            MagicMessageTheme { AppNavHost(navController = navController) }
+            val viewModel = hiltViewModel<MainActivityViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            MagicMessageTheme(
+                themeMode = state.themeMode,
+                colorScheme = state.colorScheme
+            ) {
+
+                AppNavHost(
+                    navController = navController,
+                    state = state,
+                    onDismissExportDialog = viewModel::onDismissExportDialog
+                )
+
+            }
+
         }
     }
 

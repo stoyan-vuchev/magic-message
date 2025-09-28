@@ -34,7 +34,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import com.stoyanvuchev.magicmessage.core.ui.utils.ParticleUtils
-import com.stoyanvuchev.magicmessage.domain.BrushType
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.model.DrawingSnapshot
 import com.stoyanvuchev.magicmessage.domain.model.Particle
 import com.stoyanvuchev.magicmessage.domain.model.StrokeModel
 import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
@@ -42,48 +43,86 @@ import com.stoyanvuchev.magicmessage.domain.model.TimedPoint
 @Stable
 class DrawingController {
 
-    // Max allowed points per session
-    val maxPoints: Int = 500
+    companion object {
+
+        // Max allowed points per session
+        const val MAX_POINTS: Int = 500
+
+        fun fromSnapshot(snapshot: DrawingSnapshot): DrawingController {
+            return DrawingController().apply {
+                totalPointCount = snapshot.totalPointCount
+                drawingEnabled = snapshot.drawingEnabled
+                strokes = mutableStateListOf<StrokeModel>().also { it.addAll(snapshot.strokes) }
+                currentPoints =
+                    mutableStateListOf<TimedPoint>().also { it.addAll(snapshot.currentPoints) }
+                undoStack = ArrayDeque(snapshot.undoStack)
+                redoStack = ArrayDeque(snapshot.redoStack)
+                startTime = snapshot.startTime
+            }
+        }
+
+    }
+
     var totalPointCount by mutableIntStateOf(0)
         private set
 
     var drawingEnabled by mutableStateOf(true)
         private set
 
-    val strokes = mutableStateListOf<StrokeModel>()
+    var strokes = mutableStateListOf<StrokeModel>()
+        private set
 
-    private val _particles = mutableListOf<Particle>()
+    private var particlesInternal = mutableListOf<Particle>()
     val particles: SnapshotStateList<Particle> = mutableStateListOf()
 
-    val currentPoints = mutableStateListOf<TimedPoint>()
+    var currentPoints = mutableStateListOf<TimedPoint>()
+        private set
 
-    private val undoStack = ArrayDeque<StrokeModel>()
-    private val redoStack = ArrayDeque<StrokeModel>()
+    var undoStack = ArrayDeque<StrokeModel>()
+        private set
+
+    var redoStack = ArrayDeque<StrokeModel>()
+        private set
 
     private var startTime: Long = 0
     private val lock = Any()
 
+    fun snapshot(): DrawingSnapshot {
+        return DrawingSnapshot(
+            totalPointCount = totalPointCount,
+            drawingEnabled = drawingEnabled,
+            strokes = strokes.toList(),
+            currentPoints = currentPoints.toList(),
+            undoStack = undoStack.toList(),
+            redoStack = redoStack.toList(),
+            startTime = startTime
+        )
+    }
+
     fun startStroke(
         offset: Offset,
-        color: Color
+        color: Color,
+        effect: BrushEffect
     ) {
         if (!drawingEnabled) return
         currentPoints.clear()
         startTime = System.currentTimeMillis()
         currentPoints.add(TimedPoint(offset, 0L))
-        spawnParticles(offset, color)
+        if (effect != BrushEffect.NONE) {
+            spawnParticles(offset, color)
+        }
     }
 
     fun addPoint(
         offset: Offset,
-        color: Color
+        color: Color,
+        effect: BrushEffect
     ) {
 
         if (!drawingEnabled) return
 
-        // Check if adding this point exceeds the max
-        val prospectiveTotal = totalPointCount + currentPoints.size + 1
-        if (prospectiveTotal > maxPoints) {
+        val prospectiveTotal = totalPointCount + 1
+        if (prospectiveTotal > MAX_POINTS) {
             drawingEnabled = false
             return
         }
@@ -91,14 +130,19 @@ class DrawingController {
         val t = System.currentTimeMillis() - startTime
         val point = TimedPoint(offset, t)
         currentPoints.add(point)
-        spawnParticles(offset, color)
+
+        totalPointCount += 1
+
+        if (effect != BrushEffect.NONE) {
+            spawnParticles(offset, color)
+        }
 
     }
 
     fun endStroke(
         color: Color,
         width: Float,
-        brush: BrushType
+        effect: BrushEffect
     ) {
         if (currentPoints.isNotEmpty()) {
 
@@ -106,15 +150,14 @@ class DrawingController {
                 points = currentPoints.toList(),
                 color = color,
                 width = width,
-                brush = brush
+                effect = effect
             )
 
             strokes.add(stroke)
             undoStack.addLast(stroke)
             redoStack.clear()
 
-            totalPointCount += stroke.points.size
-            if (totalPointCount >= maxPoints) {
+            if (totalPointCount >= MAX_POINTS) {
                 drawingEnabled = false
             }
 
@@ -128,7 +171,7 @@ class DrawingController {
         color: Color
     ) {
         synchronized(lock) {
-            _particles.addAll(
+            particlesInternal.addAll(
                 ParticleUtils.spawnParticles(
                     at = offset,
                     brushColor = color
@@ -139,7 +182,7 @@ class DrawingController {
 
     fun updateParticles(deltaMs: Long) {
         synchronized(lock) {
-            val iterator = _particles.iterator()
+            val iterator = particlesInternal.iterator()
             while (iterator.hasNext()) {
                 val p = iterator.next()
                 p.position += p.velocity * (deltaMs / 16f)
@@ -151,12 +194,12 @@ class DrawingController {
 
     fun syncParticlesToUI() {
         particles.clear()
-        particles.addAll(_particles)
+        particles.addAll(particlesInternal)
     }
 
     fun clear() {
         strokes.clear()
-        _particles.clear()
+        particlesInternal.clear()
         currentPoints.clear()
         undoStack.clear()
         redoStack.clear()
@@ -169,9 +212,10 @@ class DrawingController {
         val last = undoStack.removeLastOrNull() ?: return
         strokes.remove(last)
         redoStack.addLast(last)
+        particlesInternal.clear()
 
         totalPointCount -= last.points.size
-        if (!drawingEnabled && totalPointCount < maxPoints) {
+        if (!drawingEnabled && totalPointCount < MAX_POINTS) {
             drawingEnabled = true
         }
 
@@ -184,7 +228,7 @@ class DrawingController {
         undoStack.addLast(last)
 
         totalPointCount += last.points.size
-        if (totalPointCount >= maxPoints) {
+        if (totalPointCount >= MAX_POINTS) {
             drawingEnabled = false
         }
 

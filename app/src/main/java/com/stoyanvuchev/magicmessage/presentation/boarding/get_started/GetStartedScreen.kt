@@ -54,7 +54,6 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -78,6 +77,8 @@ import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.magicmessage.R
 import com.stoyanvuchev.magicmessage.core.ui.components.CheckboxField
 import com.stoyanvuchev.magicmessage.core.ui.event.NavigationEvent
+import com.stoyanvuchev.magicmessage.core.ui.theme.Theme
+import com.stoyanvuchev.magicmessage.core.ui.theme.isInDarkThemeMode
 import com.stoyanvuchev.magicmessage.presentation.boarding.BoardingScreen
 import com.stoyanvuchev.systemuibarstweaker.LocalSystemUIBarsTweaker
 import com.stoyanvuchev.systemuibarstweaker.ScrimStyle
@@ -129,8 +130,9 @@ fun GetStartedScreen(
     )
 
     val tweaker = LocalSystemUIBarsTweaker.current
+    val isInDarkTheme = isInDarkThemeMode()
 
-    DisposableEffect(tweaker) {
+    DisposableEffect(tweaker, isInDarkTheme) {
         tweaker.tweakSystemBarsStyle(
             statusBarStyle = tweaker.statusBarStyle.copy(darkIcons = false),
             navigationBarStyle = tweaker.navigationBarStyle.copy(
@@ -138,7 +140,15 @@ fun GetStartedScreen(
                 scrimStyle = ScrimStyle.None
             )
         )
-        onDispose {}
+        onDispose {
+            tweaker.tweakSystemBarsStyle(
+                statusBarStyle = tweaker.statusBarStyle.copy(darkIcons = !isInDarkTheme),
+                navigationBarStyle = tweaker.navigationBarStyle.copy(
+                    darkIcons = !isInDarkTheme,
+                    scrimStyle = ScrimStyle.None
+                )
+            )
+        }
     }
 
     Column(
@@ -166,9 +176,9 @@ fun GetStartedScreen(
             withStyle(
                 SpanStyle(
                     color = Color.White,
-                    fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
-                    fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
-                    fontSize = MaterialTheme.typography.titleMedium.fontSize
+                    fontFamily = Theme.typefaces.titleMedium.fontFamily,
+                    fontWeight = Theme.typefaces.titleMedium.fontWeight,
+                    fontSize = Theme.typefaces.titleMedium.fontSize
                 )
             ) {
                 append("${stringResource(R.string.get_started_screen_title_one)} ")
@@ -177,9 +187,9 @@ fun GetStartedScreen(
             withStyle(
                 SpanStyle(
                     color = Color.White,
-                    fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-                    fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    fontFamily = Theme.typefaces.titleLarge.fontFamily,
+                    fontWeight = Theme.typefaces.titleLarge.fontWeight,
+                    fontSize = Theme.typefaces.titleLarge.fontSize,
                     textDecoration = TextDecoration.Underline
                 )
             ) {
@@ -192,7 +202,7 @@ fun GetStartedScreen(
             modifier = Modifier.padding(horizontal = 16.dp),
             text = annotatedString,
             color = Color.White,
-            style = MaterialTheme.typography.titleMedium
+            style = Theme.typefaces.titleMedium
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -205,9 +215,9 @@ fun GetStartedScreen(
                 withStyle(
                     SpanStyle(
                         color = Color.White,
-                        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-                        fontWeight = MaterialTheme.typography.bodyMedium.fontWeight,
-                        fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                        fontFamily = Theme.typefaces.bodyMedium.fontFamily,
+                        fontWeight = Theme.typefaces.bodyMedium.fontWeight,
+                        fontSize = Theme.typefaces.bodyMedium.fontSize
                     )
                 ) {
                     append(stringResource(R.string.get_started_screen_agreement_one))
@@ -220,9 +230,7 @@ fun GetStartedScreen(
                     LinkAnnotation.Clickable(
                         tag = "privacy_policy",
                         linkInteractionListener = {
-                            onNavigationEvent(
-                                NavigationEvent.NavigateTo(BoardingScreen.PrivacyPolicy)
-                            )
+                            onUIAction(GetStartedScreenUIAction.ViewPrivacyPolicy())
                         }
                     )
                 ) {
@@ -230,9 +238,9 @@ fun GetStartedScreen(
                     withStyle(
                         SpanStyle(
                             color = Color.White,
-                            fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
+                            fontFamily = Theme.typefaces.bodyLarge.fontFamily,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            fontSize = Theme.typefaces.bodyLarge.fontSize,
                             textDecoration = TextDecoration.Underline
                         )
                     ) {
@@ -258,9 +266,9 @@ fun GetStartedScreen(
                 withStyle(
                     SpanStyle(
                         color = Color.White,
-                        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-                        fontWeight = MaterialTheme.typography.bodyMedium.fontWeight,
-                        fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                        fontFamily = Theme.typefaces.bodyMedium.fontFamily,
+                        fontWeight = Theme.typefaces.bodyMedium.fontWeight,
+                        fontSize = Theme.typefaces.bodyMedium.fontSize
                     )
                 ) {
                     append(stringResource(R.string.get_started_screen_agreement_one))
@@ -273,9 +281,7 @@ fun GetStartedScreen(
                     LinkAnnotation.Clickable(
                         tag = "tos",
                         linkInteractionListener = {
-                            onNavigationEvent(
-                                NavigationEvent.NavigateTo(BoardingScreen.TermsOfService)
-                            )
+                            onUIAction(GetStartedScreenUIAction.ViewTermsOfService())
                         }
                     )
                 ) {
@@ -283,9 +289,9 @@ fun GetStartedScreen(
                     withStyle(
                         SpanStyle(
                             color = Color.White,
-                            fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
+                            fontFamily = Theme.typefaces.bodyLarge.fontFamily,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            fontSize = Theme.typefaces.bodyLarge.fontSize,
                             textDecoration = TextDecoration.Underline
                         )
                     ) {
@@ -313,7 +319,7 @@ fun GetStartedScreen(
                     {
                         onNavigationEvent(
                             NavigationEvent.NavigateTo(
-                                BoardingScreen.PermissionNotice
+                                BoardingScreen.Permission
                             )
                         )
                     }
@@ -325,7 +331,7 @@ fun GetStartedScreen(
                     contentColor = gradientEnd,
                     disabledContentColor = gradientEnd
                 ),
-                shape = MaterialTheme.shapes.small
+                shape = Theme.shapes.largeShape
             ) {
 
                 Row(
@@ -336,7 +342,7 @@ fun GetStartedScreen(
 
                     Text(
                         text = stringResource(R.string.get_started_screen_btn_label),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = Theme.typefaces.bodyLarge
                     )
 
                     AnimatedVisibility(

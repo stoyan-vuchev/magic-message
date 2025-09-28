@@ -28,6 +28,16 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 interface GetStartedScreenUIAction {
+
     data object TogglePrivacyPolicy : GetStartedScreenUIAction
     data object ToggleTermsOfService : GetStartedScreenUIAction
+
+    data class ViewPrivacyPolicy(
+        val url: String = "https://github.com/stoyan-vuchev/magic-message/blob/main/legal/privacy_policy.md"
+    ) : GetStartedScreenUIAction
+
+    data class ViewTermsOfService(
+        val url: String = "https://github.com/stoyan-vuchev/magic-message/blob/main/legal/terms_of_service.md"
+    ) : GetStartedScreenUIAction
+
 }

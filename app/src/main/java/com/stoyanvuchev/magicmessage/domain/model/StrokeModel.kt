@@ -26,12 +26,15 @@ package com.stoyanvuchev.magicmessage.domain.model
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
-import com.stoyanvuchev.magicmessage.domain.BrushType
+import com.stoyanvuchev.magicmessage.domain.brush.BrushEffect
+import com.stoyanvuchev.magicmessage.domain.serializer.ColorSerializer
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Stable
 data class StrokeModel(
-    val points: List<TimedPoint>,
-    val color: Color,
+    @Stable val points: List<TimedPoint>,
+    @Serializable(with = ColorSerializer::class) val color: Color,
     val width: Float,
-    val brush: BrushType
+    val effect: BrushEffect = BrushEffect.NONE
 )

@@ -24,11 +24,15 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.navigation
 
+import android.os.Parcelable
 import androidx.compose.runtime.Immutable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Immutable
-interface NavigationScreen
+open class NavigationScreen : Parcelable
 
+@Parcelize
 @Serializable
-data object InitialScreen : NavigationScreen
+data object InitialScreen : Parcelable, NavigationScreen()

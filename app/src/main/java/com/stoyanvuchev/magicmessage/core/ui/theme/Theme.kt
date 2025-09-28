@@ -24,33 +24,45 @@
 
 package com.stoyanvuchev.magicmessage.core.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.platform.LocalContext
-import com.stoyanvuchev.systemuibarstweaker.ProvideSystemUIBarsTweaker
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.ColorScheme
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.LocalColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.color.toColorPalette
+import com.stoyanvuchev.magicmessage.core.ui.theme.shape.LocalShapes
+import com.stoyanvuchev.magicmessage.core.ui.theme.shape.Shapes
+import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.LocalTypefaces
+import com.stoyanvuchev.magicmessage.core.ui.theme.typeface.Typefaces
 
 @Composable
 fun MagicMessageTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = LocalThemeMode.current,
+    colorScheme: ColorScheme = ColorScheme.BLUE,
     content: @Composable () -> Unit
-) = ProvideSystemUIBarsTweaker {
+) = UIWrapper(
+    themeMode = themeMode,
+    colorPalette = colorScheme.toColorPalette(isInDarkThemeMode(themeMode)),
+    content = content
+)
 
-    val context = LocalContext.current
-    val colorScheme by rememberUpdatedState(
-        if (darkTheme) dynamicDarkColorScheme(context)
-        else dynamicLightColorScheme(context)
-    )
+@Stable
+object Theme {
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+    val colors: ColorPalette
+        @ReadOnlyComposable
+        @Composable
+        get() = LocalColorPalette.current
+
+    val shapes: Shapes
+        @ReadOnlyComposable
+        @Composable
+        get() = LocalShapes.current
+
+    val typefaces: Typefaces
+        @ReadOnlyComposable
+        @Composable
+        get() = LocalTypefaces.current
 
 }
