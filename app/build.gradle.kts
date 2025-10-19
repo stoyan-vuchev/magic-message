@@ -20,8 +20,8 @@ android {
         minSdk = 33
         targetSdk = 36
 
-        versionCode = 3
-        versionName = "v0.1.2"
+        versionCode = 251019001
+        versionName = "v1.0.0.25.10.19"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons)
     implementation(libs.google.material)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

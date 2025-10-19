@@ -64,7 +64,11 @@ class Exporter @Inject constructor(
     ): Uri? {
 
         val totalDuration = strokes.maxOfOrNull { it.points.last().timestamp } ?: 0L
-        val frameInterval = 33L // ~30fps
+        val frameInterval = 66L // ~15fps
+
+        val scale = .5f
+        val scaledWidth = (width * scale).roundToInt()
+        val scaledHeight = (height * scale).roundToInt()
 
         val values = ContentValues().apply {
             put(
@@ -80,8 +84,8 @@ class Exporter @Inject constructor(
         )!!
 
         val output = context.contentResolver.openOutputStream(uri)!!
-        val bitmap = createBitmap(width, height)
-        val canvas = Canvas(bitmap)
+        val bitmap = createBitmap(scaledWidth, scaledHeight)
+        val canvas = Canvas(bitmap).apply { scale(scale, scale) }
 
         // Create a temporary file for NDK encoder.
         val tempFile = File(
@@ -90,7 +94,7 @@ class Exporter @Inject constructor(
         )
 
         val encoder = GifEncoder()
-        encoder.init(width, height, tempFile.absolutePath)
+        encoder.init(scaledWidth, scaledHeight, tempFile.absolutePath)
 
         try {
 
@@ -144,15 +148,7 @@ class Exporter @Inject constructor(
                             if (p.age >= p.lifetime) iterator.remove()
                             else {
                                 // Draw particle
-                                canvas.drawCircle(
-                                    p.position.x,
-                                    p.position.y,
-                                    p.size,
-                                    Paint().apply {
-                                        this.color = p.color.toArgb()
-                                        this.style = Paint.Style.FILL
-                                    }
-                                )
+                                Renderer.drawParticle(canvas, p)
                             }
 
                         }
@@ -163,12 +159,13 @@ class Exporter @Inject constructor(
                     encoder.encodeFrame(bitmap, frameInterval.toInt())
 
                     // Update progress
-                    val progress =
-                        ((elapsedTime + frameTime - strokeStart).toDouble() / totalDuration) * 100
+                    val progress = ((elapsedTime + frameTime - strokeStart).toDouble() / totalDuration) * 100
                     updateProgress(progress.roundToInt().coerceIn(0, 100))
+
                 }
 
                 elapsedTime += strokeEnd - strokeStart
+
             }
 
         } catch (e: Exception) {
@@ -192,62 +189,62 @@ class Exporter @Inject constructor(
         background: BackgroundLayer,
         width: Int,
         height: Int
-    ) {
-        when (background) {
+    ) = when (background) {
 
-            is BackgroundLayer.ColorLayer -> {
+        is BackgroundLayer.ColorLayer -> {
 
-                val paint = Paint().apply {
-                    this.style = Paint.Style.FILL
-                    this.color = background.color.toArgb()
-                }
-
-                canvas.drawRect(
-                    0f,
-                    0f,
-                    width.toFloat(),
-                    height.toFloat(),
-                    paint
-                )
-
+            val paint = Paint().apply {
+                this.style = Paint.Style.FILL
+                this.color = background.color.toArgb()
+                this.isFilterBitmap = false
+                this.isAntiAlias = true
             }
 
-            is BackgroundLayer.LinearGradientLayer -> {
+            canvas.drawRect(
+                0f,
+                0f,
+                width.toFloat(),
+                height.toFloat(),
+                paint
+            )
 
-                val shader = LinearGradient(
-                    background.start.x,
-                    background.start.y,
-                    background.end?.x ?: width.toFloat(),
-                    background.end?.y ?: height.toFloat(),
-                    background.colors.map { it.toArgb() }.toIntArray(),
-                    null,
-                    Shader.TileMode.CLAMP
-                )
+        }
 
-                val paint = Paint()
-                paint.shader = shader
+        is BackgroundLayer.LinearGradientLayer -> {
 
-                canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
-                paint.shader = null
+            val shader = LinearGradient(
+                background.start.x,
+                background.start.y,
+                background.end?.x ?: width.toFloat(),
+                background.end?.y ?: height.toFloat(),
+                background.colors.map { it.toArgb() }.toIntArray(),
+                null,
+                Shader.TileMode.CLAMP
+            )
 
-            }
+            val paint = Paint()
+            paint.shader = shader
 
-            is BackgroundLayer.ImageLayer -> {
+            canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+            paint.shader = null
 
-                val inputStream = context.contentResolver.openInputStream(background.uri)
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                val paint = Paint()
+        }
 
-                inputStream?.close()
-                bitmap?.let {
-                    val src = Rect(0, 0, it.width, it.height)
-                    val dst = Rect(0, 0, width, height)
-                    canvas.drawBitmap(it, src, dst, paint)
-                }
+        is BackgroundLayer.ImageLayer -> {
 
+            val inputStream = context.contentResolver.openInputStream(background.uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val paint = Paint()
+
+            inputStream?.close()
+            bitmap?.let {
+                val src = Rect(0, 0, it.width, it.height)
+                val dst = Rect(0, 0, width, height)
+                canvas.drawBitmap(it, src, dst, paint)
             }
 
         }
+
     }
 
 }

@@ -4,15 +4,16 @@
 agp = "8.13.0"
 kotlin = "2.2.20"
 ksp = "2.2.20-2.0.3"
-daggerHilt = "2.57.1"
+daggerHilt = "2.57.2"
 
 # Core Libs Versions
 coreKtx = "1.17.0"
 lifecycleRuntimeKtx = "2.9.4"
 activityCompose = "1.11.0"
-navigationCompose = "2.9.4"
-composeBom = "2025.09.00"
+navigationCompose = "2.9.5"
+composeBom = "2025.10.00"
 material = "1.13.0"
+materialIcons ="1.7.8"
 androidNdkGif = "v1.0.2"
 kotlinxSerializationJson = "1.9.0"
 
@@ -24,7 +25,7 @@ coil = "3.3.0"
 accompanist = "0.37.3"
 
 # Local Storage Libs Verisons
-room = "2.8.0"
+room = "2.8.2"
 dataStore = "1.1.7"
 
 # DI Libs Versions
@@ -55,6 +56,7 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIcons" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 android-ndk-gif = { group = "com.github.DonMarv00", name = "android-ndk-gif-16kb", version.ref = "androidNdkGif" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }

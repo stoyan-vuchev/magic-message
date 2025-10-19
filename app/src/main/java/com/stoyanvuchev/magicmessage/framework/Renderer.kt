@@ -1,6 +1,29 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025 Stoyan Vuchev
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.stoyanvuchev.magicmessage.framework
 
-import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
@@ -22,6 +45,7 @@ object Renderer {
             strokeWidth = stroke.width
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
+            isFilterBitmap = false
             isAntiAlias = true
         }
 
@@ -35,16 +59,17 @@ object Renderer {
     ) {
 
         val paint = Paint().apply {
-            color = p.color.toArgb()
-            alpha = (255 * (1f - p.age.toFloat() / p.lifetime)).coerceIn(0f, 1f).toInt()
-            maskFilter = BlurMaskFilter(p.size / 2, BlurMaskFilter.Blur.NORMAL)
-            isAntiAlias = true
+            this.color = p.color.toArgb()
+            this.style = Paint.Style.FILL
+            this.isFilterBitmap = false
+            this.isAntiAlias = true
         }
 
+        // Draw particle
         canvas.drawCircle(
             p.position.x,
             p.position.y,
-            p.size / 2,
+            p.size,
             paint
         )
 
